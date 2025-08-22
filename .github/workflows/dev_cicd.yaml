@@ -28,9 +28,9 @@ jobs:
     name: Validate & Plan
     runs-on: ubuntu-latest
     environment: development # refer to custom environment
-    defaults:
-      run:
-        working-directory: ${{ env.TF_WORKING_DIR }}
+    # defaults:
+    #   run:
+    #     working-directory: ${{ env.TF_WORKING_DIR }}
     steps:
       - name: echo evn
         run: echo ${{env.AWS_REGION}}
