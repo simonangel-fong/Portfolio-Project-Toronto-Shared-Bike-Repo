@@ -1,0 +1,118 @@
+name: Dev CI/CD
+
+on:
+  pull_request:
+    paths:
+      - "module/**"
+      - "dev/**"
+      - ".github/workflows/**"
+  push:
+    branches: ["master"]
+    paths:
+      - "module/**"
+      - "dev/**"
+      - ".github/workflows/dev_cicd.yaml"
+  workflow_dispatch: {}
+
+env:
+  TF_WORKING_DIR: dev
+  TF_VAR_region: ${{ secrets.AWS_REGION }}
+
+permissions:
+  id-token: write # for AWS OIDC
+  contents: read
+
+jobs:
+  validate_and_plan:
+    name: Validate & Plan
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.5
+
+      - name: Terraform Init with backend S3 bucket
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
+            -backend-config="region=${{ secrets.AWS_REGION }}" \
+            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}" \
+            -backend-config="encrypt=true"
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
+          aws-region: ${{ env.TF_VAR_region }}
+
+      - name: Cache .terraform
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.terraform.d/plugin-cache
+            ${{ env.TF_WORKING_DIR }}/.terraform
+          key: ${{ runner.os }}-tf-${{ hashFiles('**/.terraform.lock.hcl') }}
+          restore-keys: |
+            ${{ runner.os }}-tf-
+
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
+
+      - name: Terraform init
+        run: terraform init -upgrade
+        env:
+          TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan
+        run: terraform plan -out=tfplan
+      - name: Save plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.TF_WORKING_DIR }}/tfplan
+
+  # apply:
+  #   name: Apply (main only, with approval)
+  #   needs: validate_and_plan
+  #   if: github.ref == 'refs/heads/main'
+  #   runs-on: ubuntu-latest
+  #   environment: prod # Protect this env with required reviewers in Settings → Environments
+  #   defaults:
+  #     run:
+  #       working-directory: ${{ env.TF_WORKING_DIR }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+
+  #     - name: Setup Terraform
+  #       uses: hashicorp/setup-terraform@v3
+  #       with:
+  #         terraform_version: 1.7.5
+
+  #     - name: Configure AWS credentials (OIDC)
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
+  #         aws-region: ${{ env.TF_VAR_region }}
+
+  #     - name: Download plan artifact
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: tfplan
+  #         path: ${{ env.TF_WORKING_DIR }}
+
+  #     - name: Terraform init
+  #       run: terraform init -upgrade
+
+  #     - name: Terraform apply
+  #       run: terraform apply -auto-approve tfplan
