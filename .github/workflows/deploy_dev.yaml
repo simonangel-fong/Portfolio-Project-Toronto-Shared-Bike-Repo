@@ -38,6 +38,14 @@ jobs:
         with:
           terraform_version: 1.7.5
 
+      - name: Terraform Init with backend S3 bucket
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
+            -backend-config="region=${{ secrets.AWS_REGION }}" \
+            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}" \
+            -backend-config="encrypt=true"
+
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
