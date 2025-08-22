@@ -59,7 +59,7 @@ jobs:
 
       - name: Terraform init (S3 backend)
         run: |
-          terraform init -input=false \
+          terraform init -migrate-state -input=false \
             -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
             -backend-config="region=${{ secrets.AWS_REGION }}" \
             -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}" \
