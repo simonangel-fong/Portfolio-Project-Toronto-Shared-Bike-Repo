@@ -15,12 +15,14 @@ on:
   workflow_dispatch: {}
 
 env:
+  TERRAFORM_VERSION: 1.7.5
+  TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
   TF_WORKING_DIR: dev
   TF_VAR_aws_region: ${{ vars.AWS_REGION }}
   TF_VAR_vpc_cidr: ${{ vars.VPC_CIDR }}
 
 permissions:
-  id-token: write # for AWS OIDC
+  id-token: write
   contents: read
 
 jobs:
@@ -36,20 +38,14 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
           aws-region: ${{ env.TF_VAR_aws_region }}
-
-      - name: Terraform Init with backend S3 bucket
-        run: |
-          terraform init \
-            -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
-            -backend-config="region=${{ secrets.AWS_REGION }}" \
-            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}" \
-            -backend-config="encrypt=true"
 
       - name: Cache .terraform
         uses: actions/cache@v4
@@ -61,57 +57,65 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-tf-
 
-      - name: Terraform fmt
-        run: terraform fmt -check -recursive
+      - name: Terraform init (S3 backend)
+        run: |
+          terraform init -upgrade -input=false \
+            -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
+            -backend-config="region=${{ secrets.AWS_REGION }}" \
+            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}" \
+            -backend-config="encrypt=true"
 
-      - name: Terraform init
-        run: terraform init -upgrade
-        env:
-          TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive -no-color
 
       - name: Terraform validate
-        run: terraform validate
+        run: terraform validate -no-color
 
       - name: Terraform plan
-        run: terraform plan -out=tfplan
+        run: terraform plan -out=tfplan -input=false -no-color
+
       - name: Save plan artifact
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}/tfplan
 
-  # apply:
-  #   name: Apply (main only, with approval)
-  #   needs: validate_and_plan
-  #   if: github.ref == 'refs/heads/main'
-  #   runs-on: ubuntu-latest
-  #   environment: prod # Protect this env with required reviewers in Settings → Environments
-  #   defaults:
-  #     run:
-  #       working-directory: ${{ env.TF_WORKING_DIR }}
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+  apply:
+    name: Apply (master only, with approval)
+    needs: validate_and_plan
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Setup Terraform
-  #       uses: hashicorp/setup-terraform@v3
-  #       with:
-  #         terraform_version: 1.7.5
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
 
-  #     - name: Configure AWS credentials (OIDC)
-  #       uses: aws-actions/configure-aws-credentials@v4
-  #       with:
-  #         role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
-  #         aws-region: ${{ env.TF_VAR_region }}
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
+          aws-region: ${{ env.TF_VAR_aws_region }}
 
-  #     - name: Download plan artifact
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: tfplan
-  #         path: ${{ env.TF_WORKING_DIR }}
+      - name: Download plan artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.TF_WORKING_DIR }}
 
-  #     - name: Terraform init
-  #       run: terraform init -upgrade
+      - name: Terraform init (S3 backend)
+        run: |
+          terraform init -upgrade -input=false \
+            -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
+            -backend-config="region=${{ vars.AWS_REGION }}" \
+            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}" \
+            -backend-config="encrypt=true"
 
-  #     - name: Terraform apply
-  #       run: terraform apply -auto-approve tfplan
+      - name: Terraform apply
+        run: terraform apply -auto-approve tfplan -input=false -no-color
