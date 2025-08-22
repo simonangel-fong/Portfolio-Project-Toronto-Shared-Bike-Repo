@@ -59,7 +59,7 @@ jobs:
 
       - name: Terraform init (S3 backend)
         run: |
-          terraform init -upgrade -input=false \
+          terraform init -input=false \
             -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
             -backend-config="region=${{ secrets.AWS_REGION }}" \
             -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}" \
@@ -111,7 +111,7 @@ jobs:
 
       - name: Terraform init (S3 backend)
         run: |
-          terraform init -upgrade -input=false \
+          terraform init -reconfigure -input=false \
             -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
             -backend-config="region=${{ vars.AWS_REGION }}" \
             -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}" \
