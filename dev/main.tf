@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "../module"
+  source = "../module/vpc"
 
   project    = var.project
   app        = var.app
