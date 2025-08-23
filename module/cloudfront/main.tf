@@ -1,67 +1,75 @@
+data "aws_region" "current" {}
 
+# acm certificate
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1" # Required for CloudFront ACM
+}
 
-data "aws_acm_certificate" "acm_cert" {
+data "aws_acm_certificate" "cf_certificate" {
   domain      = var.cert_domain
-  region      = var.cert_region
+  provider    = aws.us_east_1
   types       = ["AMAZON_ISSUED"]
   most_recent = true
 }
 
-# locals {
-#   s3_origin_id = "cloudfront-s3-${aws_s3_bucket.s3_bucket.bucket}"
-# }
+# cloudfront
+resource "aws_cloudfront_distribution" "api_cdn" {
+  origin {
+    origin_id   = "apigw"
+    domain_name = "${var.apigw_id}.execute-api.${data.aws_region.current.region}.amazonaws.com"
+    origin_path = "/${var.apigw_stage}"
 
-# # cloudfron
-# resource "aws_cloudfront_distribution" "s3_website_distribution" {
-#   origin {
-#     domain_name = "todo-app.arguswatcher.net.s3-website.ca-central-1.amazonaws.com"
-#     origin_id   = local.s3_origin_id
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
 
-#     custom_origin_config {
-#       http_port              = 80
-#       https_port             = 443
-#       origin_protocol_policy = "http-only" # S3 static hosting only supports HTTP
-#       origin_ssl_protocols   = ["TLSv1.2"]
-#     }
-#   }
+  default_cache_behavior {
+    target_origin_id       = "apigw"
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD", "OPTIONS"]
+    compress               = true
 
-#   enabled             = true
-#   default_root_object = "index.html"
+    # Forwards CORS-related headers
+    forwarded_values {
+      query_string = true # Enable query string forwarding
 
-#   aliases = ["${var.app_name}.${var.domain_name}"]
+      # Headers for CORS
+      headers = [
+        "Access-Control-Request-Headers",
+        "Access-Control-Request-Method",
+        "Origin",
+        "Authorization",
+        "Content-Type"
+      ]
 
-#   default_cache_behavior {
-#     allowed_methods  = ["GET", "HEAD"]
-#     cached_methods   = ["GET", "HEAD"]
-#     target_origin_id = local.s3_origin_id
+      cookies {
+        forward = "none"
+      }
+    }
+  }
 
-#     viewer_protocol_policy = "redirect-to-https"
+  enabled             = true
+  default_root_object = ""
+  aliases             = ["${var.dns_domain}"]
+  price_class         = "PriceClass_100"
 
-#     forwarded_values {
-#       query_string = false
-#       cookies {
-#         forward = "none"
-#       }
-#     }
-#   }
+  viewer_certificate {
+    acm_certificate_arn      = data.aws_acm_certificate.cf_certificate.arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
+  }
 
-#   price_class = "PriceClass_100"
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
 
-#   viewer_certificate {
-#     acm_certificate_arn      = data.aws_acm_certificate.cf_certificate.arn
-#     ssl_support_method       = "sni-only"
-#     minimum_protocol_version = "TLSv1.2_2021"
-#   }
-
-#   restrictions {
-#     geo_restriction {
-#       restriction_type = "none"
-#     }
-#   }
-
-#   # tags = {
-#   #   Name = "${var.app_name}.${var.domain_name}"
-#   # }
-
-#   depends_on = [data.aws_acm_certificate.cf_certificate]
-# }
+  depends_on = [data.aws_acm_certificate.cf_certificate]
+}

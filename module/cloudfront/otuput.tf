@@ -1,3 +1,3 @@
-output "acm_cert_id" {
-  value = data.aws_acm_certificate.acm_cert.id
+output "cf_domain" {
+  value = aws_cloudfront_distribution.api_cdn.domain_name
 }

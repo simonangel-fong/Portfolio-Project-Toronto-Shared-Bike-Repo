@@ -11,7 +11,7 @@ module "vpc" {
   vpc_cidr   = var.vpc_cidr
 }
 
-output "vpc_id" { value = module.vpc.aws_vpc_id }
+# output "vpc_id" { value = module.vpc.aws_vpc_id }
 
 # ##############################
 # AWS Dynamodb
@@ -32,9 +32,7 @@ module "dynamodb_bike_count" {
   dynamodb_attr_type = "N"
 }
 
-output "dynamodb_tb_arn" {
-  value = module.dynamodb_bike_count.dynamodb_tb_arn
-}
+# output "dynamodb_tb_arn" { value = module.dynamodb_bike_count.dynamodb_tb_arn }
 
 # ##############################
 # AWS Lambda
@@ -55,13 +53,9 @@ module "lambda" {
 
 }
 
-output "lambda_arn_list" {
-  value = module.lambda.lambda_arn_list
-}
+# output "lambda_arn_list" { value = module.lambda.lambda_arn_list }
 
-output "lambda_id_list" {
-  value = module.lambda.lambda_id_list
-}
+# output "lambda_id_list" { value = module.lambda.lambda_id_list }
 
 # ##############################
 # AWS API Gateway
@@ -80,6 +74,14 @@ module "api_gateway" {
   apigw_domain    = "test-api.arguswatcher.net"
 }
 
+output "apigw_id" {
+  value = module.api_gateway.apigw_id
+}
+
+output "apigw_stage" {
+  value = module.api_gateway.apigw_stage
+}
+
 # ##############################
 # AWS Cloudfront
 # ##############################
@@ -90,10 +92,17 @@ module "cloudfront" {
   env        = var.env
   aws_region = var.aws_region
 
+  dns_domain  = "test-api.arguswatcher.net"
   cert_domain = "*.arguswatcher.net"
-  cert_region = "us-east-1"
+  apigw_stage = module.api_gateway.apigw_stage
+  apigw_id    = module.api_gateway.apigw_id
 }
 
-output "acm_cert" {
-  value = module.cloudfront.acm_cert_id
+output "cf_domain" {
+  value = module.cloudfront.cf_domain
+}
+
+# Configure the cloudflare Provider
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
 }
