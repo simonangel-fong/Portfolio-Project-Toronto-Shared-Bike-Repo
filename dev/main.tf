@@ -18,8 +18,8 @@ module "dynamodb_bike_count" {
   env        = var.env
   aws_region = var.aws_region
 
-  s3_bucket          = var.s3_bucket
-  s3_bucket_key      = "data/mv_bike_count.csv"
+  csv_bucket         = var.csv_bucket
+  csv_prefix         = "data/mv_bike_count.csv"
   dynamodb_tb        = "bike-count"
   dynamodb_key       = "dim_year"
   dynamodb_attr      = "dim_year"

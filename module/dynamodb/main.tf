@@ -1,8 +1,8 @@
 # ########################################
 # S3 bucket stores csv file
 # ########################################
-data "aws_s3_bucket" "s3_bucket" {
-  bucket = var.s3_bucket
+data "aws_s3_bucket" "csv_bucket" {
+  bucket = var.csv_bucket
 }
 
 # ########################################
@@ -19,8 +19,8 @@ resource "aws_dynamodb_table" "dynamodb_table" {
     input_format           = "CSV"
     input_compression_type = "NONE"
     s3_bucket_source {
-      bucket     = data.aws_s3_bucket.s3_bucket.id
-      key_prefix = var.s3_bucket_key
+      bucket     = data.aws_s3_bucket.csv_bucket.id
+      key_prefix = var.csv_prefix
     }
   }
 

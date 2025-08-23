@@ -4,5 +4,5 @@ variable "env" { default = "dev" }
 
 variable "aws_region" { type = string }
 variable "vpc_cidr" { type = string }
-variable "s3_bucket" { type = string }
+variable "csv_bucket" { type = string }
 
