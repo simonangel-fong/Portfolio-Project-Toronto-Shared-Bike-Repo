@@ -76,4 +76,24 @@ module "api_gateway" {
   path_list       = ["bike-count"]
   lambda_arn_list = [module.lambda.lambda_arn_list]
   lambda_id_list  = [module.lambda.lambda_id_list]
+  cert_domain     = "*.arguswatcher.net"
+  apigw_domain    = "test-api.arguswatcher.net"
+}
+
+# ##############################
+# AWS Cloudfront
+# ##############################
+module "cloudfront" {
+  source     = "../module/cloudfront"
+  project    = var.project
+  app        = var.app
+  env        = var.env
+  aws_region = var.aws_region
+
+  cert_domain = "*.arguswatcher.net"
+  cert_region = "us-east-1"
+}
+
+output "acm_cert" {
+  value = module.cloudfront.acm_cert_id
 }
