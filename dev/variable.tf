@@ -1,17 +1,8 @@
-variable "project" {
-  type    = string
-  default = "Toronto-shared-bike"
-}
-
-variable "app" {
-  type    = string
-  default = "data-warehouse"
-}
-
-variable "env" {
-  type    = string
-  default = "dev"
-}
+variable "project" { default = "Toronto-shared-bike" }
+variable "app" { default = "data-warehouse" }
+variable "env" { default = "dev" }
 
 variable "aws_region" { type = string }
 variable "vpc_cidr" { type = string }
+variable "s3_bucket" { type = string }
+
