@@ -102,7 +102,14 @@ output "cf_domain" {
   value = module.cloudfront.cf_domain
 }
 
-# Configure the cloudflare Provider
-provider "cloudflare" {
-  api_token = var.cloudflare_api_token
+module "cloudflare_dns" {
+  source     = "../module/dns"
+  project    = var.project
+  app        = var.app
+  env        = var.env
+  aws_region = var.aws_region
+
+  cloudflare_zone_id = "ceed00499bed9aba313f36acf8100262"
+  dns_domain         = "test-api.arguswatcher.net"
+  cf_domain          = module.cloudfront.cf_domain
 }
