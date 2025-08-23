@@ -20,6 +20,7 @@ env:
   TF_WORKING_DIR: dev
   TF_VAR_aws_region: ${{ vars.AWS_REGION }}
   TF_VAR_vpc_cidr: ${{ vars.VPC_CIDR }}
+  TF_VAR_csv_bucket: ${{ vars.CSV_BUCKET }}
 
 permissions:
   id-token: write
