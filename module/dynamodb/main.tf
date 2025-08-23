@@ -13,7 +13,6 @@ resource "aws_dynamodb_table" "dynamodb_table" {
   # for_each = var.dynamodb_tb_list
   name         = var.dynamodb_tb
   billing_mode = "PAY_PER_REQUEST"
-  region       = var.aws_region
 
   import_table {
     input_format           = "CSV"

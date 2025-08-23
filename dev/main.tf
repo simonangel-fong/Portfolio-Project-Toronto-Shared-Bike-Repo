@@ -25,3 +25,23 @@ module "dynamodb_bike_count" {
   dynamodb_attr      = "dim_year"
   dynamodb_attr_type = "N"
 }
+
+output "dynamodb_tb_arn" {
+  value = module.dynamodb_bike_count.dynamodb_tb_arn
+}
+
+module "lambda" {
+  source     = "../module/lambda"
+  project    = var.project
+  app        = var.app
+  env        = var.env
+  aws_region = var.aws_region
+
+  archive_source_file = "${path.module}/../lambda/main.py"
+  archive_output_path = "${path.module}/../lambda/main.zip"
+  layer_runtimes      = ["python3.12"]
+  # function_name       = "${var.project}-${var.app}-lambda-function"
+  function_handler    = "main.lambda_handler"
+  dynamodb_table_arn  = module.dynamodb_bike_count.dynamodb_tb_arn
+
+}

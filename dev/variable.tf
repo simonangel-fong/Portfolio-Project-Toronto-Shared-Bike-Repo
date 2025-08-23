@@ -6,3 +6,4 @@ variable "aws_region" { type = string }
 variable "vpc_cidr" { type = string }
 variable "csv_bucket" { type = string }
 
+variable "dynamodb_table_arn" { type = string }  
