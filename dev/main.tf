@@ -52,26 +52,25 @@ module "lambda" {
   dynamodb_table_arn = module.dynamodb_tb.dynamodb_tb_arn
 }
 
-# # output "lambda_arn_list" { value = module.lambda.lambda_arn_list }
+output "lambda_arn" { value = module.lambda.lambda_arn }
+# output "lambda_id" { value = module.lambda.lambda_id }
 
-# # output "lambda_id_list" { value = module.lambda.lambda_id_list }
+# ##############################
+# AWS API Gateway
+# ##############################
+module "api_gateway" {
+  source     = "../module/apigw"
+  project    = var.project
+  app        = var.app
+  env        = var.env
+  aws_region = var.aws_region
 
-# # ##############################
-# # AWS API Gateway
-# # ##############################
-# module "api_gateway" {
-#   source     = "../module/apigw"
-#   project    = var.project
-#   app        = var.app
-#   env        = var.env
-#   aws_region = var.aws_region
-
-#   path_list       = ["bike-count"]
-#   lambda_arn_list = [module.lambda.lambda_arn_list]
-#   lambda_id_list  = [module.lambda.lambda_id_list]
-#   cert_domain     = "*.arguswatcher.net"
-#   apigw_domain    = "test-api.arguswatcher.net"
-# }
+  path_list       = ["mv_bike_count"]
+  lambda_arn_list = [module.lambda.lambda_arn]
+  lambda_id_list  = [module.lambda.lambda_id]
+  cert_domain     = var.cert_domain
+  apigw_domain    = var.apigw_domain
+}
 
 # output "apigw_id" {
 #   value = module.api_gateway.apigw_id

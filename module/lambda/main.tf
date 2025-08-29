@@ -113,7 +113,4 @@ resource "aws_lambda_function" "lambda_function" {
   # layer
   layers = [aws_lambda_layer_version.lambda_function_layer.arn]
 
-  tags = {
-    Name = "${var.project}-${var.app}-lambda-function"
-  }
 }

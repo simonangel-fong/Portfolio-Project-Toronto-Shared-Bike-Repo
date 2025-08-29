@@ -48,3 +48,6 @@ variable "dynamodb_tb" {
     }
   ]
 }
+
+variable "cert_domain" { default = "*.arguswatcher.net" }
+variable "apigw_domain" { default = "test-api.arguswatcher.net" }
