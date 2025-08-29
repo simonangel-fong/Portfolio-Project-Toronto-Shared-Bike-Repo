@@ -1,36 +1,29 @@
 # ########################################
-# S3 bucket stores csv file
-# ########################################
-data "aws_s3_bucket" "csv_bucket" {
-  bucket = var.csv_bucket
-}
-
-# ########################################
 # DynamoDB Table
 # ########################################
 
 resource "aws_dynamodb_table" "dynamodb_table" {
-  # for_each = var.dynamodb_tb_list
-  name         = var.dynamodb_tb
+  for_each = { for t in var.dynamodb_tb : t.tb_name => t }
+
+  name         = "${var.project}-${var.app}-${var.env}-${each.value.tb_name}"
   billing_mode = "PAY_PER_REQUEST"
 
+  # key and attribute
+  hash_key = each.value.hash_attr
+
+  attribute {
+    name = each.value.hash_attr
+    type = each.value.hash_attr_type
+  }
+
+  # import table
   import_table {
     input_format           = "CSV"
     input_compression_type = "NONE"
+
     s3_bucket_source {
-      bucket     = data.aws_s3_bucket.csv_bucket.id
-      key_prefix = var.csv_prefix
+      bucket     = each.value.csv_bucket_id
+      key_prefix = each.value.csv_key
     }
-  }
-
-  hash_key = var.dynamodb_key
-
-  attribute {
-    name = var.dynamodb_attr
-    type = var.dynamodb_attr_type
-  }
-
-  tags = {
-    Name = var.dynamodb_tb
   }
 }
