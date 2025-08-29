@@ -49,10 +49,12 @@ resource "aws_iam_policy" "lambda_dynamodb_policy" {
           "dynamodb:DescribeTable",
           "dynamodb:ListTables"
         ]
-        Resource = [
-          "${var.dynamodb_table_arn}",
-          "${var.dynamodb_table_arn}/*"
-        ]
+        Resource = flatten([
+          for arn in var.dynamodb_table_arn : [
+            arn,
+            "${arn}/*"
+          ]
+        ])
       },
       # logging
       {
