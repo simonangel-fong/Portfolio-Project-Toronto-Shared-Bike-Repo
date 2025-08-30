@@ -1,3 +1,6 @@
+# ##############################
+# App
+# ##############################
 variable "project" { default = "Toronto-shared-bike" }
 variable "app" { default = "data-warehouse" }
 variable "env" { default = "dev" }
@@ -9,6 +12,9 @@ variable "csv_bucket" { default = "trip.arguswatcher.net" }
 # variable "dynamodb_table_arn" { type = list(string) }
 variable "cloudflare_api_token" { type = string }
 
+# ##############################
+# DynamoDB Table
+# ##############################
 variable "dynamodb_tb" {
   default = [
     {

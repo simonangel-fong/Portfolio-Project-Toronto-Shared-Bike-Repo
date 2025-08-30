@@ -80,34 +80,34 @@ module "api_gateway" {
 #   value = module.api_gateway.apigw_stage
 # }
 
-# # ##############################
-# # AWS Cloudfront
-# # ##############################
-# module "cloudfront" {
-#   source     = "../module/cloudfront"
-#   project    = var.project
-#   app        = var.app
-#   env        = var.env
-#   aws_region = var.aws_region
+# ##############################
+# AWS Cloudfront
+# ##############################
+module "cloudfront" {
+  source     = "../module/cloudfront"
+  project    = var.project
+  app        = var.app
+  env        = var.env
+  aws_region = var.aws_region
 
-#   dns_domain  = "test-api.arguswatcher.net"
-#   cert_domain = "*.arguswatcher.net"
-#   apigw_stage = module.api_gateway.apigw_stage
-#   apigw_id    = module.api_gateway.apigw_id
-# }
+  dns_domain  = var.apigw_domain
+  cert_domain = var.cert_domain
+  apigw_stage = module.api_gateway.apigw_stage
+  apigw_id    = module.api_gateway.apigw_id
+}
 
 # output "cf_domain" {
 #   value = module.cloudfront.cf_domain
 # }
 
-# module "cloudflare_dns" {
-#   source     = "../module/dns"
-#   project    = var.project
-#   app        = var.app
-#   env        = var.env
-#   aws_region = var.aws_region
+module "cloudflare_dns" {
+  source     = "../module/dns"
+  project    = var.project
+  app        = var.app
+  env        = var.env
+  aws_region = var.aws_region
 
-#   cloudflare_zone_id = "ceed00499bed9aba313f36acf8100262"
-#   dns_domain         = "test-api.arguswatcher.net"
-#   cf_domain          = module.cloudfront.cf_domain
-# }
+  cloudflare_zone_id = "ceed00499bed9aba313f36acf8100262"
+  dns_domain         = "test-api.arguswatcher.net"
+  cf_domain          = module.cloudfront.cf_domain
+}

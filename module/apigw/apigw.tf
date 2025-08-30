@@ -1,4 +1,3 @@
-
 # ###############################
 # IAM role for API to invoke lambda service
 # ###############################
@@ -23,109 +22,105 @@ resource "aws_api_gateway_rest_api" "rest_api" {
   }
 }
 
-# # ###############################
-# # API Gateway Deployment: a snapshot of the REST API configuration
-# # ###############################
-# resource "aws_api_gateway_deployment" "rest_api_deployment" {
-#   rest_api_id = aws_api_gateway_rest_api.rest_api.id
+# ###############################
+# API Gateway Deployment: a snapshot of the REST API configuration
+# ###############################
+resource "aws_api_gateway_deployment" "rest_api_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
 
-#   # Redeploy when any method/integration changes
-#   triggers = {
-#     redeployment = sha1(jsonencode([
-#       # GET
-#       aws_api_gateway_method.apigw_method_get.id,
-#       aws_api_gateway_integration.apigw_integration_get.id,
-#       aws_api_gateway_method_response.apigw_method_response_get.id,
-#       aws_api_gateway_integration_response.apigw_integration_response_get.id,
+  # Redeploy when any method/integration changes
+  triggers = {
+    redeployment = sha1(jsonencode(
+      concat(
+        [for method_get in aws_api_gateway_method.apigw_method_get : method_get.id],
+        [for inte_get in aws_api_gateway_integration.apigw_integration_get : inte_get.id],
+        [for resp_get in aws_api_gateway_method_response.apigw_method_response_get : resp_get.id],
+        [for ir_get in aws_api_gateway_integration_response.apigw_integration_response_get : ir_get.id],
+        [for method_cors in aws_api_gateway_method.apigw_method_cors : method_cors.id],
+        [for inte_cors in aws_api_gateway_integration.apigw_integration_cors : inte_cors.id],
+        [for resp_cors in aws_api_gateway_method_response.apigw_method_response_get_cors : resp_cors.id],
+        [for ir_cors in aws_api_gateway_integration_response.apigw_integration_response_cors : ir_cors.id]
+      )
+    ))
+  }
 
-#       # OPTIONS /items
-#       aws_api_gateway_method.apigw_method_cors.id,
-#       aws_api_gateway_integration.apigw_integration_cors.id,
-#       aws_api_gateway_method_response.apigw_method_response_get_cors.id,
-#       aws_api_gateway_integration_response.apigw_integration_response_cors.id,
-#     ]))
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  depends_on = [
+    aws_api_gateway_method.apigw_method_get,
+    aws_api_gateway_integration.apigw_integration_get,
+    aws_api_gateway_method_response.apigw_method_response_get,
+    aws_api_gateway_integration_response.apigw_integration_response_get,
+    aws_api_gateway_method.apigw_method_cors,
+    aws_api_gateway_integration.apigw_integration_cors,
+    aws_api_gateway_method_response.apigw_method_response_get_cors,
+    aws_api_gateway_integration_response.apigw_integration_response_cors
+  ]
+}
+
+resource "aws_api_gateway_stage" "api_stage" {
+  stage_name    = "prod"
+  deployment_id = aws_api_gateway_deployment.rest_api_deployment.id
+  rest_api_id   = aws_api_gateway_rest_api.rest_api.id
+
+  variables = {
+    lambdaAlias = "live"
+  }
+
+  # access_log_settings {
+  #   destination_arn = aws_cloudwatch_log_group.api_gateway_logs.arn
+  #   format = jsonencode({
+  #     requestId      = "$context.requestId"
+  #     ip             = "$context.identity.sourceIp"
+  #     caller         = "$context.identity.caller"
+  #     user           = "$context.identity.user"
+  #     requestTime    = "$context.requestTime"
+  #     httpMethod     = "$context.httpMethod"
+  #     resourcePath   = "$context.resourcePath"
+  #     status         = "$context.status"
+  #     protocol       = "$context.protocol"
+  #     responseLength = "$context.responseLength"
+  #   })
+  # }
+
+  # xray_tracing_enabled  = true
+  # cache_cluster_enabled = false
+
+  # depends_on = [
+  #   aws_cloudwatch_log_group.api_gateway_logs,
+  #   aws_api_gateway_account.account_settings
+  # ]
+}
+
+# data "aws_acm_certificate" "acm_cert" {
+#   domain      = var.cert_domain
+#   types       = ["AMAZON_ISSUED"]
+#   most_recent = true
+# }
+
+# # Create API Gateway custom domain
+# resource "aws_api_gateway_domain_name" "api_domain" {
+#   domain_name              = var.apigw_domain
+#   regional_certificate_arn = data.aws_acm_certificate.acm_cert.arn
+#   security_policy          = "TLS_1_2"
+
+#   endpoint_configuration {
+#     types = ["REGIONAL"]
 #   }
 
-#   lifecycle {
-#     create_before_destroy = true
+#   tags = {
+#     Name = "${var.project}-${var.app}-api-domain"
 #   }
+# }
+
+# resource "aws_api_gateway_base_path_mapping" "root" {
+#   domain_name = aws_api_gateway_domain_name.api_domain.domain_name
+#   api_id      = aws_api_gateway_rest_api.rest_api.id
+#   stage_name  = aws_api_gateway_stage.api_stage.stage_name
 
 #   depends_on = [
-#     # GET
-#     aws_api_gateway_method.apigw_method_get,
-#     aws_api_gateway_integration.apigw_integration_get,
-#     aws_api_gateway_method_response.apigw_method_response_get,
-#     aws_api_gateway_integration_response.apigw_integration_response_get,
-
-#     # OPTIONS /items
-#     aws_api_gateway_method.apigw_method_cors,
-#     aws_api_gateway_integration.apigw_integration_cors,
-#     aws_api_gateway_method_response.apigw_method_response_get_cors,
-#     aws_api_gateway_integration_response.apigw_integration_response_cors,
+#     aws_api_gateway_stage.api_stage
 #   ]
 # }
-
-# resource "aws_api_gateway_stage" "api_stage" {
-#   stage_name    = "prod"
-#   deployment_id = aws_api_gateway_deployment.rest_api_deployment.id
-#   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
-
-#   variables = {
-#     lambdaAlias = "live"
-#   }
-
-#   # access_log_settings {
-#   #   destination_arn = aws_cloudwatch_log_group.api_gateway_logs.arn
-#   #   format = jsonencode({
-#   #     requestId      = "$context.requestId"
-#   #     ip             = "$context.identity.sourceIp"
-#   #     caller         = "$context.identity.caller"
-#   #     user           = "$context.identity.user"
-#   #     requestTime    = "$context.requestTime"
-#   #     httpMethod     = "$context.httpMethod"
-#   #     resourcePath   = "$context.resourcePath"
-#   #     status         = "$context.status"
-#   #     protocol       = "$context.protocol"
-#   #     responseLength = "$context.responseLength"
-#   #   })
-#   # }
-
-#   # xray_tracing_enabled  = true
-#   # cache_cluster_enabled = false
-
-#   # depends_on = [
-#   #   aws_cloudwatch_log_group.api_gateway_logs,
-#   #   aws_api_gateway_account.account_settings
-#   # ]
-# }
-
-# # data "aws_acm_certificate" "acm_cert" {
-# #   domain      = var.cert_domain
-# #   types       = ["AMAZON_ISSUED"]
-# #   most_recent = true
-# # }
-
-# # # Create API Gateway custom domain
-# # resource "aws_api_gateway_domain_name" "api_domain" {
-# #   domain_name              = var.apigw_domain
-# #   regional_certificate_arn = data.aws_acm_certificate.acm_cert.arn
-# #   security_policy          = "TLS_1_2"
-
-# #   endpoint_configuration {
-# #     types = ["REGIONAL"]
-# #   }
-
-# #   tags = {
-# #     Name = "${var.project}-${var.app}-api-domain"
-# #   }
-# # }
-
-# # resource "aws_api_gateway_base_path_mapping" "root" {
-# #   domain_name = aws_api_gateway_domain_name.api_domain.domain_name
-# #   api_id      = aws_api_gateway_rest_api.rest_api.id
-# #   stage_name  = aws_api_gateway_stage.api_stage.stage_name
-
-# #   depends_on = [
-# #     aws_api_gateway_stage.api_stage
-# #   ]
-# # }
