@@ -51,3 +51,8 @@ variable "dynamodb_tb" {
 
 variable "cert_domain" { default = "*.arguswatcher.net" }
 variable "apigw_domain" { default = "test-api.arguswatcher.net" }
+
+variable "path_list" {
+  type    = list(string)
+  default = ["mv-bike-count", "mv-station-count", "mv-user-year-hour-trip", "mv-user-year-month-trip", "mv-user-year-station"]
+}

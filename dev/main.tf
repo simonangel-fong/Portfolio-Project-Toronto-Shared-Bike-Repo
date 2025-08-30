@@ -65,11 +65,11 @@ module "api_gateway" {
   env        = var.env
   aws_region = var.aws_region
 
-  path_list       = ["mv_bike_count"]
-  lambda_arn_list = [module.lambda.lambda_arn]
-  lambda_id_list  = [module.lambda.lambda_id]
-  cert_domain     = var.cert_domain
-  apigw_domain    = var.apigw_domain
+  path_list    = var.path_list
+  lambda_arn   = module.lambda.lambda_arn
+  lambda_id    = module.lambda.lambda_id
+  cert_domain  = var.cert_domain
+  apigw_domain = var.apigw_domain
 }
 
 # output "apigw_id" {
