@@ -9,11 +9,11 @@ resource "aws_dynamodb_table" "dynamodb_table" {
   billing_mode = "PAY_PER_REQUEST"
 
   # key and attribute
-  hash_key = each.value.hash_attr
+  hash_key = "pk"
 
   attribute {
-    name = each.value.hash_attr
-    type = each.value.hash_attr_type
+    name = "pk"
+    type = "S"
   }
 
   # import table

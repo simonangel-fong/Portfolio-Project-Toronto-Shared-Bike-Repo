@@ -7,15 +7,20 @@ variable "env" { default = "dev" }
 variable "aws_region" { type = string }
 
 variable "csv_path" { default = "../csv" }
+variable "web_path" { default = "../web" }
 
 variable "vpc_cidr" { type = string }
 
 # ##############################
 # DynamoDB Table
 # ##############################
+locals {
+  bucket_name = "${var.project}-${var.app}-bucket"
+}
+
 variable "csv_bucket" { default = "trip.arguswatcher.net" }
-variable "dynamodb_tb" {
-  default = [
+locals {
+  dynamodb_tb = [
     {
       tb_name        = "mv_bike_count"
       hash_attr      = "pk"

@@ -30,8 +30,8 @@ module "csv_bucket" {
   app      = var.app
   env      = var.env
   csv_path = var.csv_path
+  web_path = var.web_path
 }
-
 
 # # ##############################
 # # AWS Dynamodb
