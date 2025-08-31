@@ -84,7 +84,7 @@ module "cloudfront" {
   env     = var.env
 
   # domain
-  dns_domain  = var.apigw_domain
+  dns_domain  = var.dns_domain
   cert_domain = var.cert_domain
   # api
   apigw_stage = module.api_gateway.stage
@@ -93,15 +93,17 @@ module "cloudfront" {
   website_endpoint = module.csv_bucket.website_endpoint
 }
 
-# module "cloudflare_dns" {
-#   source     = "../module/dns"
-#   project    = var.project
-#   app        = var.app
-#   env        = var.env
-#   aws_region = var.aws_region
-
-#   cloudflare_zone_id   = var.cloudflare_zone_id
-#   cloudflare_api_token = var.cloudflare_api_token
-#   dns_domain           = var.apigw_domain
-#   target_domain        = module.cloudfront.cf_domain
-# }
+# ##############################
+# Cloudflare DNS
+# ##############################
+module "cloudflare_dns" {
+  source  = "../module/dns"
+  project = var.project
+  app     = var.app
+  env     = var.env
+  # cloudflare config
+  cloudflare_zone_id   = var.cloudflare_zone_id
+  cloudflare_api_token = var.cloudflare_api_token
+  dns_domain           = var.dns_domain
+  target_domain        = module.cloudfront.domain
+}

@@ -5,8 +5,9 @@ variable "project" { default = "toronto-shared-bike" }
 variable "app" { default = "data-warehouse" }
 variable "env" { default = "dev" }
 variable "aws_region" { type = string }
+variable "dns_domain" { default = "test-api.arguswatcher.net" }
 
-variable "vpc_cidr" { type = string }
+# variable "vpc_cidr" { type = string }
 
 # ##############################
 # S3 bucket
@@ -77,7 +78,6 @@ variable "path_list" {
 # Cloudfront
 # ##############################
 variable "cert_domain" { default = "*.arguswatcher.net" }
-variable "apigw_domain" { default = "test-api.arguswatcher.net" }
 
 # ##############################
 # Cloudflare
