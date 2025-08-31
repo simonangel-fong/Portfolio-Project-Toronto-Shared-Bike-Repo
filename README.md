@@ -1,11 +1,12 @@
 # Portfolio-Project-Toronto-Shared-Bike
 
-| Path                       | Dynamodb Tb             |
-| -------------------------- | ----------------------- |
-| `/mv_bike_count`           | mv_bike_count           |
-| `/mv_station_count`        | mv_station_count        |
-| `/mv_user_year_hour_trip`  | mv_user_year_hour_trip  |
-| `/mv_user_year_month_trip` | mv_user_year_month_trip |
+| Path                     | Dynamodb Tb              |
+| ------------------------ | ------------------------ |
+| `/bike-year`             | mv_bike_year             |
+| `/station-year`          | mv_station_year          |
+| `/trip-user-year-hour`   | mv_trip_user_year_hour   |
+| `/trip-user-year-month`  | mv_trip_user_year_month  |
+| `/top-station-user-year` | mv_top_station_user_year |
 
 path: `/mv_bike_count`
 dynamodb: mv_bike_count

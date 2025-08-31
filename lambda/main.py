@@ -36,33 +36,28 @@ def lambda_handler(event, context):
 
     # GET request: path /mv-bike-count
     if method == 'GET' and path == '/mv-bike-count':
-        # get year parameter
         year = params.get('year') if params else None
         return _mv_bike_count(year)
 
     # GET request: path /mv-station-count
     if method == 'GET' and path == '/mv-station-count':
-        # get year parameter
         year = params.get('year') if params else None
         return _mv_station_count(year)
 
     # GET request: path /mv-user-year-hour-trip
     if method == 'GET' and path == '/mv-user-year-hour-trip':
-        # get year parameter
         year = params.get('year') if params else None
         user = params.get('user') if params else None
         return _mv_trip_user_hour(year, user)
 
     # GET request: path /mv-user-year-hour-trip
     if method == 'GET' and path == '/mv-user-year-month-trip':
-        # get year parameter
         year = params.get('year') if params else None
         user = params.get('user') if params else None
         return _mv_trip_user_month(year, user)
 
     # GET request: path /mv-user-year-station
     if method == 'GET' and path == '/mv-user-year-station':
-        # get year parameter
         year = params.get('year') if params else None
         user = params.get('user') if params else None
         return _mv_topstation_user_year(year)

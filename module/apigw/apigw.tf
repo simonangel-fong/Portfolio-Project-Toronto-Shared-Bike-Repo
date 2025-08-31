@@ -93,34 +93,3 @@ resource "aws_api_gateway_stage" "api_stage" {
   #   aws_api_gateway_account.account_settings
   # ]
 }
-
-# data "aws_acm_certificate" "acm_cert" {
-#   domain      = var.cert_domain
-#   types       = ["AMAZON_ISSUED"]
-#   most_recent = true
-# }
-
-# # Create API Gateway custom domain
-# resource "aws_api_gateway_domain_name" "api_domain" {
-#   domain_name              = var.apigw_domain
-#   regional_certificate_arn = data.aws_acm_certificate.acm_cert.arn
-#   security_policy          = "TLS_1_2"
-
-#   endpoint_configuration {
-#     types = ["REGIONAL"]
-#   }
-
-#   tags = {
-#     Name = "${var.project}-${var.app}-api-domain"
-#   }
-# }
-
-# resource "aws_api_gateway_base_path_mapping" "root" {
-#   domain_name = aws_api_gateway_domain_name.api_domain.domain_name
-#   api_id      = aws_api_gateway_rest_api.rest_api.id
-#   stage_name  = aws_api_gateway_stage.api_stage.stage_name
-
-#   depends_on = [
-#     aws_api_gateway_stage.api_stage
-#   ]
-# }

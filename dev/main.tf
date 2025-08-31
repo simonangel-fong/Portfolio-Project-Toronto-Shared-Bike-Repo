@@ -21,93 +21,90 @@
 # # output "vpc_id" { value = module.vpc.aws_vpc_id }
 
 # ##############################
-# AWS Dynamodb
+# AWS S3 bucket
 # ##############################
-module "dynamodb_tb" {
-  source = "../module/dynamodb"
+module "csv_bucket" {
+  source = "../module/s3"
 
-  project     = var.project
-  app         = var.app
-  env         = var.env
-  dynamodb_tb = var.dynamodb_tb
+  project  = var.project
+  app      = var.app
+  env      = var.env
+  csv_path = var.csv_path
 }
 
-output "dynamodb_tb_arn" { value = module.dynamodb_tb.dynamodb_tb_arn }
 
-# ##############################
-# AWS Lambda
-# ##############################
-module "lambda" {
-  source     = "../module/lambda"
-  project    = var.project
-  app        = var.app
-  env        = var.env
-  aws_region = var.aws_region
+# # ##############################
+# # AWS Dynamodb
+# # ##############################
+# module "dynamodb_tb" {
+#   source = "../module/dynamodb"
 
-  archive_source_file = "${path.module}/../lambda/main.py"
-  archive_output_path = "${path.module}/../lambda/main.zip"
-  layer_runtimes      = ["python3.12"]
-  # function_name       = "${var.project}-${var.app}-lambda-function"
-  function_handler   = "main.lambda_handler"
-  dynamodb_table_arn = module.dynamodb_tb.dynamodb_tb_arn
-}
-
-output "lambda_arn" { value = module.lambda.lambda_arn }
-# output "lambda_id" { value = module.lambda.lambda_id }
-
-# ##############################
-# AWS API Gateway
-# ##############################
-module "api_gateway" {
-  source     = "../module/apigw"
-  project    = var.project
-  app        = var.app
-  env        = var.env
-  aws_region = var.aws_region
-
-  path_list    = var.path_list
-  lambda_arn   = module.lambda.lambda_arn
-  lambda_id    = module.lambda.lambda_id
-  cert_domain  = var.cert_domain
-  apigw_domain = var.apigw_domain
-}
-
-# output "apigw_id" {
-#   value = module.api_gateway.apigw_id
+#   project     = var.project
+#   app         = var.app
+#   env         = var.env
+#   dynamodb_tb = var.dynamodb_tb
 # }
 
-# output "apigw_stage" {
-#   value = module.api_gateway.apigw_stage
+# # ##############################
+# # AWS Lambda
+# # ##############################
+# module "lambda" {
+#   source     = "../module/lambda"
+#   project    = var.project
+#   app        = var.app
+#   env        = var.env
+#   aws_region = var.aws_region
+
+#   archive_source_file = "${path.module}/../lambda/main.py"
+#   archive_output_path = "${path.module}/../lambda/main.zip"
+#   layer_runtimes      = ["python3.12"]
+#   dynamodb_table_arn  = module.dynamodb_tb.dynamodb_tb_arn
 # }
 
-# ##############################
-# AWS Cloudfront
-# ##############################
-module "cloudfront" {
-  source     = "../module/cloudfront"
-  project    = var.project
-  app        = var.app
-  env        = var.env
-  aws_region = var.aws_region
+# # ##############################
+# # AWS API Gateway
+# # ##############################
+# module "api_gateway" {
+#   source     = "../module/apigw"
+#   project    = var.project
+#   app        = var.app
+#   env        = var.env
+#   aws_region = var.aws_region
 
-  dns_domain  = var.apigw_domain
-  cert_domain = var.cert_domain
-  apigw_stage = module.api_gateway.apigw_stage
-  apigw_id    = module.api_gateway.apigw_id
-}
+#   path_list  = var.path_list
+#   lambda_arn = module.lambda.lambda_arn
+#   lambda_id  = module.lambda.lambda_id
+# }
 
-# output "cf_domain" {
+# # ##############################
+# # AWS Cloudfront
+# # ##############################
+# module "cloudfront" {
+#   source     = "../module/cloudfront"
+#   project    = var.project
+#   app        = var.app
+#   env        = var.env
+#   aws_region = var.aws_region
+
+#   dns_domain  = var.apigw_domain
+#   cert_domain = var.cert_domain
+#   apigw_stage = module.api_gateway.apigw_stage
+#   apigw_id    = module.api_gateway.apigw_id
+# }
+
+# output "name" {
 #   value = module.cloudfront.cf_domain
 # }
 
-module "cloudflare_dns" {
-  source     = "../module/dns"
-  project    = var.project
-  app        = var.app
-  env        = var.env
-  aws_region = var.aws_region
+# module "cloudflare_dns" {
+#   source     = "../module/dns"
+#   project    = var.project
+#   app        = var.app
+#   env        = var.env
+#   aws_region = var.aws_region
 
-  cloudflare_zone_id = "ceed00499bed9aba313f36acf8100262"
-  dns_domain         = "test-api.arguswatcher.net"
-  cf_domain          = module.cloudfront.cf_domain
-}
+#   cloudflare_zone_id   = var.cloudflare_zone_id
+#   cloudflare_api_token = var.cloudflare_api_token
+#   dns_domain           = var.apigw_domain
+#   target_domain        = module.cloudfront.cf_domain
+# }

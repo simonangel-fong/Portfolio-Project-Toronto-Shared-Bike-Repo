@@ -1,20 +1,19 @@
 # ##############################
 # App
 # ##############################
-variable "project" { default = "Toronto-shared-bike" }
+variable "project" { default = "toronto-shared-bike" }
 variable "app" { default = "data-warehouse" }
 variable "env" { default = "dev" }
 variable "aws_region" { type = string }
 
-variable "vpc_cidr" { type = string }
-variable "csv_bucket" { default = "trip.arguswatcher.net" }
+variable "csv_path" { default = "../csv" }
 
-# variable "dynamodb_table_arn" { type = list(string) }
-variable "cloudflare_api_token" { type = string }
+variable "vpc_cidr" { type = string }
 
 # ##############################
 # DynamoDB Table
 # ##############################
+variable "csv_bucket" { default = "trip.arguswatcher.net" }
 variable "dynamodb_tb" {
   default = [
     {
@@ -55,10 +54,29 @@ variable "dynamodb_tb" {
   ]
 }
 
+# ##############################
+# API Gateway
+# ##############################
+variable "path_list" {
+  type = list(string)
+  default = [
+    "mv-bike-count",
+    "mv-station-count",
+    "mv-user-year-hour-trip",
+    "mv-user-year-month-trip",
+    "mv-user-year-station"
+  ]
+}
+
+# ##############################
+# Cloudfront
+# ##############################
 variable "cert_domain" { default = "*.arguswatcher.net" }
 variable "apigw_domain" { default = "test-api.arguswatcher.net" }
 
-variable "path_list" {
-  type    = list(string)
-  default = ["mv-bike-count", "mv-station-count", "mv-user-year-hour-trip", "mv-user-year-month-trip", "mv-user-year-station"]
-}
+# ##############################
+# Cloudflare
+# ##############################
+variable "cloudflare_api_token" { type = string }
+variable "cloudflare_zone_id" { type = string }
+
