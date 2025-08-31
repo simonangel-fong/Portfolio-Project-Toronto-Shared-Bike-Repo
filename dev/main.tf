@@ -33,33 +33,34 @@ module "csv_bucket" {
   web_path = var.web_path
 }
 
-# # ##############################
-# # AWS Dynamodb
-# # ##############################
-# module "dynamodb_tb" {
-#   source = "../module/dynamodb"
+# ##############################
+# AWS Dynamodb
+# ##############################
+module "dynamodb_tb" {
+  source = "../module/dynamodb"
 
-#   project     = var.project
-#   app         = var.app
-#   env         = var.env
-#   dynamodb_tb = var.dynamodb_tb
-# }
+  project    = var.project
+  app        = var.app
+  env        = var.env
+  csv_bucket = local.bucket_name
+  csv_prefix = var.csv_prefix
+}
 
-# # ##############################
-# # AWS Lambda
-# # ##############################
-# module "lambda" {
-#   source     = "../module/lambda"
-#   project    = var.project
-#   app        = var.app
-#   env        = var.env
-#   aws_region = var.aws_region
+# ##############################
+# AWS Lambda
+# ##############################
+module "lambda" {
+  source     = "../module/lambda"
+  project    = var.project
+  app        = var.app
+  env        = var.env
+  aws_region = var.aws_region
 
-#   archive_source_file = "${path.module}/../lambda/main.py"
-#   archive_output_path = "${path.module}/../lambda/main.zip"
-#   layer_runtimes      = ["python3.12"]
-#   dynamodb_table_arn  = module.dynamodb_tb.dynamodb_tb_arn
-# }
+  archive_source_file = "${path.module}/../lambda/main.py"
+  archive_output_path = "${path.module}/../lambda/main.zip"
+  layer_runtimes      = ["python3.12"]
+  dynamodb_table_arn  = module.dynamodb_tb.dynamodb_tb_arn
+}
 
 # # ##############################
 # # AWS API Gateway

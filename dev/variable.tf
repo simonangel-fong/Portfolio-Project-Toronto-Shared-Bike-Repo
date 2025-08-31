@@ -18,7 +18,9 @@ locals {
   bucket_name = "${var.project}-${var.app}-bucket"
 }
 
+variable "csv_prefix" { default = "data" }
 variable "csv_bucket" { default = "trip.arguswatcher.net" }
+
 locals {
   dynamodb_tb = [
     {

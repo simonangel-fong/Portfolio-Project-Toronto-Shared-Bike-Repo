@@ -5,16 +5,16 @@ import datetime
 from boto3.dynamodb.conditions import Attr
 
 dynamodb = boto3.resource('dynamodb')
-MV_BIKE_COUNT_TABLE = os.environ.get(
-    'MV_BIKE_COUNT_TABLE', 'Toronto-shared-bike-data-warehouse-dev-mv_bike_count')
-MV_STATION_COUNT_TABLE = os.environ.get(
-    'MV_STATION_COUNT_TABLE', 'Toronto-shared-bike-data-warehouse-dev-mv_station_count')
-MV_USER_HOUR_TRIP_TABLE = os.environ.get(
-    'MV_USER_HOUR_TRIP_TABLE', 'Toronto-shared-bike-data-warehouse-dev-mv_user_year_hour_trip')
-MV_USER_MONTH_TRIP_TABLE = os.environ.get(
-    'MV_USER_MONTH_TRIP_TABLE', 'Toronto-shared-bike-data-warehouse-dev-mv_user_year_month_trip')
-MV_TOPSTATION_USER_YEAR_TABLE = os.environ.get(
-    'MV_TOPSTATION_USER_YEAR_TABLE', 'Toronto-shared-bike-data-warehouse-dev-mv_user_year_station')
+MV_BIKE_YEAR = os.environ.get(
+    'MV_BIKE_YEAR', 'toronto-shared-bike-data-warehouse-dev-mv_bike_year')
+MV_STATION_YEAR = os.environ.get(
+    'MV_STATION_YEAR', 'toronto-shared-bike-data-warehouse-dev-mv_station_year')
+MV_TRIP_USER_HOUR = os.environ.get(
+    'MV_TRIP_USER_HOUR', 'toronto-shared-bike-data-warehouse-dev-mv_trip_user_year_hour')
+MV_TRIP_USER_MONTH = os.environ.get(
+    'MV_TRIP_USER_MONTH', 'toronto-shared-bike-data-warehouse-dev-mv_trip_user_year_month')
+MV_TOPSTATION_USER_YEAR = os.environ.get(
+    'MV_TOPSTATION_USER_YEAR', 'toronto-shared-bike-data-warehouse-dev-mv_top_station_user_year')
 
 
 def lambda_handler(event, context):
@@ -34,33 +34,33 @@ def lambda_handler(event, context):
             "body": ""
         }
 
-    # GET request: path /mv-bike-count
-    if method == 'GET' and path == '/mv-bike-count':
+    # GET request: path /bike
+    if method == 'GET' and path == '/bike':
         year = params.get('year') if params else None
-        return _mv_bike_count(year)
+        return _bike_year(year)
 
-    # GET request: path /mv-station-count
-    if method == 'GET' and path == '/mv-station-count':
+    # GET request: path /station
+    if method == 'GET' and path == '/station':
         year = params.get('year') if params else None
-        return _mv_station_count(year)
+        return _station_year(year)
 
-    # GET request: path /mv-user-year-hour-trip
-    if method == 'GET' and path == '/mv-user-year-hour-trip':
+    # GET request: path /trip-hour
+    if method == 'GET' and path == '/trip-hour':
         year = params.get('year') if params else None
         user = params.get('user') if params else None
-        return _mv_trip_user_hour(year, user)
+        return _trip_hour(year, user)
 
-    # GET request: path /mv-user-year-hour-trip
-    if method == 'GET' and path == '/mv-user-year-month-trip':
+    # GET request: path /trip-month
+    if method == 'GET' and path == '/trip-month':
         year = params.get('year') if params else None
         user = params.get('user') if params else None
-        return _mv_trip_user_month(year, user)
+        return _trip_month(year, user)
 
-    # GET request: path /mv-user-year-station
-    if method == 'GET' and path == '/mv-user-year-station':
+    # GET request: path /top-station
+    if method == 'GET' and path == '/top-station':
         year = params.get('year') if params else None
         user = params.get('user') if params else None
-        return _mv_topstation_user_year(year)
+        return _top_station(year)
 
     # Default response: unsupported paths/methods
     return {
@@ -71,8 +71,8 @@ def lambda_handler(event, context):
 # helper function
 
 
-def _mv_bike_count(year=None):
-    table = dynamodb.Table(MV_BIKE_COUNT_TABLE)
+def _bike_year(year=None):
+    table = dynamodb.Table(MV_BIKE_YEAR)
     try:
         # filter year
         if year:
@@ -116,8 +116,8 @@ def _mv_bike_count(year=None):
         }
 
 
-def _mv_station_count(year=None):
-    table = dynamodb.Table(MV_STATION_COUNT_TABLE)
+def _station_year(year=None):
+    table = dynamodb.Table(MV_STATION_YEAR)
     try:
         # filter year
         if year:
@@ -163,8 +163,8 @@ def _mv_station_count(year=None):
         }
 
 
-def _mv_trip_user_hour(year=None, user=None):
-    table = dynamodb.Table(MV_USER_HOUR_TRIP_TABLE)
+def _trip_hour(year=None, user=None):
+    table = dynamodb.Table(MV_TRIP_USER_HOUR)
     try:
         # filter expression
         filter_expr = None
@@ -220,8 +220,8 @@ def _mv_trip_user_hour(year=None, user=None):
         }
 
 
-def _mv_trip_user_month(year=None, user=None):
-    table = dynamodb.Table(MV_USER_MONTH_TRIP_TABLE)
+def _trip_month(year=None, user=None):
+    table = dynamodb.Table(MV_TRIP_USER_MONTH)
     try:
         # filter expression
         filter_expr = None
@@ -277,8 +277,8 @@ def _mv_trip_user_month(year=None, user=None):
         }
 
 
-def _mv_topstation_user_year(year=None, user="all"):
-    table = dynamodb.Table(MV_TOPSTATION_USER_YEAR_TABLE)
+def _top_station(year=None, user="all"):
+    table = dynamodb.Table(MV_TOPSTATION_USER_YEAR)
     try:
         # filter expression
         filter_expr = None
