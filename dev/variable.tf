@@ -64,7 +64,6 @@ variable "csv_prefix" { default = "data" }
 # API Gateway
 # ##############################
 variable "path_list" {
-  type = list(string)
   default = [
     "trip-hour",
     "trip-month",

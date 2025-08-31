@@ -50,10 +50,10 @@ module "dynamodb_tb" {
 # AWS Lambda
 # ##############################
 module "lambda" {
-  source     = "../module/lambda"
-  project    = var.project
-  app        = var.app
-  env        = var.env
+  source  = "../module/lambda"
+  project = var.project
+  app     = var.app
+  env     = var.env
 
   archive_source_file = "${path.module}/../lambda/main.py"
   archive_output_path = "${path.module}/../lambda/main.zip"
@@ -64,35 +64,34 @@ module "lambda" {
 # AWS API Gateway
 # ##############################
 module "api_gateway" {
-  source     = "../module/apigw"
-  project    = var.project
-  app        = var.app
-  env        = var.env
+  source  = "../module/apigw"
+  project = var.project
+  app     = var.app
+  env     = var.env
 
   path_list  = var.path_list
   lambda_arn = module.lambda.arn
   lambda_id  = module.lambda.id
 }
 
-# # ##############################
-# # AWS Cloudfront
-# # ##############################
-# module "cloudfront" {
-#   source     = "../module/cloudfront"
-#   project    = var.project
-#   app        = var.app
-#   env        = var.env
-#   aws_region = var.aws_region
+# ##############################
+# AWS Cloudfront
+# ##############################
+module "cloudfront" {
+  source  = "../module/cloudfront"
+  project = var.project
+  app     = var.app
+  env     = var.env
 
-#   dns_domain  = var.apigw_domain
-#   cert_domain = var.cert_domain
-#   apigw_stage = module.api_gateway.apigw_stage
-#   apigw_id    = module.api_gateway.apigw_id
-# }
-
-# output "name" {
-#   value = module.cloudfront.cf_domain
-# }
+  # domain
+  dns_domain  = var.apigw_domain
+  cert_domain = var.cert_domain
+  # api
+  apigw_stage = module.api_gateway.stage
+  apigw_id    = module.api_gateway.id
+  # s3 web
+  website_endpoint = module.csv_bucket.website_endpoint
+}
 
 # module "cloudflare_dns" {
 #   source     = "../module/dns"

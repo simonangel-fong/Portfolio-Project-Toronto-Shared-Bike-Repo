@@ -15,10 +15,24 @@ data "aws_acm_certificate" "cf_certificate" {
 
 # cloudfront
 resource "aws_cloudfront_distribution" "api_cdn" {
+
+  # s3 web hosting
+  origin {
+    origin_id   = "s3-web"
+    domain_name = var.website_endpoint
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only" # S3 website endpoint supports HTTP only
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
+  # api gateway
   origin {
     origin_id   = "apigw"
     domain_name = "${var.apigw_id}.execute-api.${data.aws_region.current.region}.amazonaws.com"
-    origin_path = "/${var.apigw_stage}"
 
     custom_origin_config {
       http_port              = 80
@@ -28,18 +42,33 @@ resource "aws_cloudfront_distribution" "api_cdn" {
     }
   }
 
+  # default cache: s3 web
   default_cache_behavior {
+    target_origin_id       = "s3-web"
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD", "OPTIONS"]
+    compress               = true
+
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+  }
+
+  # ordered cache
+  ordered_cache_behavior {
+    path_pattern           = "/${var.apigw_stage}/*"
     target_origin_id       = "apigw"
     viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
     compress               = true
 
-    # Forwards CORS-related headers
     forwarded_values {
-      query_string = true # Enable query string forwarding
-
-      # Headers for CORS
+      query_string = true
       headers = [
         "Access-Control-Request-Headers",
         "Access-Control-Request-Method",
@@ -47,15 +76,12 @@ resource "aws_cloudfront_distribution" "api_cdn" {
         "Authorization",
         "Content-Type"
       ]
-
-      cookies {
-        forward = "none"
-      }
+      cookies { forward = "none" }
     }
   }
 
   enabled             = true
-  default_root_object = ""
+  default_root_object = "index.html"
   aliases             = ["${var.dns_domain}"]
   price_class         = "PriceClass_100"
 
@@ -71,5 +97,8 @@ resource "aws_cloudfront_distribution" "api_cdn" {
     }
   }
 
-  depends_on = [data.aws_acm_certificate.cf_certificate]
+  tags = {
+    Name = "${var.project}-${var.app}-${var.env}-cloudfront"
+  }
+
 }
