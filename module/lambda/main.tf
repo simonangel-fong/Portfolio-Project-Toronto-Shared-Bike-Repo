@@ -89,7 +89,7 @@ data "archive_file" "lambda_zip_file" {
 # Add dependencies layer
 resource "aws_lambda_layer_version" "lambda_function_layer" {
   layer_name               = "${var.project}-${var.app}-lambda-layer"
-  compatible_runtimes      = var.layer_runtimes
+  compatible_runtimes      = ["python3.12"]
   compatible_architectures = ["x86_64"]
 
   filename         = data.archive_file.lambda_zip_file.output_path
@@ -106,7 +106,7 @@ resource "aws_lambda_function" "lambda_function" {
   filename         = data.archive_file.lambda_zip_file.output_path
   source_code_hash = data.archive_file.lambda_zip_file.output_base64sha256
   handler          = "main.lambda_handler"
-  runtime          = var.layer_runtimes[0]
+  runtime          = "python3.12"
   role             = aws_iam_role.lambda_role.arn
   timeout          = 30
 

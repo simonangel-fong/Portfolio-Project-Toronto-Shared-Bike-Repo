@@ -6,60 +6,59 @@ variable "app" { default = "data-warehouse" }
 variable "env" { default = "dev" }
 variable "aws_region" { type = string }
 
+variable "vpc_cidr" { type = string }
+
+# ##############################
+# S3 bucket
+# ##############################
 variable "csv_path" { default = "../csv" }
 variable "web_path" { default = "../web" }
-
-variable "vpc_cidr" { type = string }
 
 # ##############################
 # DynamoDB Table
 # ##############################
-locals {
-  bucket_name = "${var.project}-${var.app}-bucket"
-}
-
 variable "csv_prefix" { default = "data" }
-variable "csv_bucket" { default = "trip.arguswatcher.net" }
 
-locals {
-  dynamodb_tb = [
-    {
-      tb_name        = "mv_bike_count"
-      hash_attr      = "pk"
-      hash_attr_type = "S"
-      csv_bucket_id  = "trip.arguswatcher.net"
-      csv_key        = "data/mv_bike_count.csv"
-    },
-    {
-      tb_name        = "mv_station_count"
-      hash_attr      = "pk"
-      hash_attr_type = "S"
-      csv_bucket_id  = "trip.arguswatcher.net"
-      csv_key        = "data/mv_station_count.csv"
-    },
-    {
-      tb_name        = "mv_user_year_hour_trip"
-      hash_attr      = "pk"
-      hash_attr_type = "S"
-      csv_bucket_id  = "trip.arguswatcher.net"
-      csv_key        = "data/mv_user_year_hour_trip.csv"
-    },
-    {
-      tb_name        = "mv_user_year_month_trip"
-      hash_attr      = "pk"
-      hash_attr_type = "S"
-      csv_bucket_id  = "trip.arguswatcher.net"
-      csv_key        = "data/mv_user_year_month_trip.csv"
-    },
-    {
-      tb_name        = "mv_user_year_station"
-      hash_attr      = "pk"
-      hash_attr_type = "S"
-      csv_bucket_id  = "trip.arguswatcher.net"
-      csv_key        = "data/mv_user_year_station.csv"
-    }
-  ]
-}
+
+# locals {
+#   dynamodb_tb = [
+#     {
+#       tb_name        = "mv_bike_count"
+#       hash_attr      = "pk"
+#       hash_attr_type = "S"
+#       csv_bucket_id  = "trip.arguswatcher.net"
+#       csv_key        = "data/mv_bike_count.csv"
+#     },
+#     {
+#       tb_name        = "mv_station_count"
+#       hash_attr      = "pk"
+#       hash_attr_type = "S"
+#       csv_bucket_id  = "trip.arguswatcher.net"
+#       csv_key        = "data/mv_station_count.csv"
+#     },
+#     {
+#       tb_name        = "mv_user_year_hour_trip"
+#       hash_attr      = "pk"
+#       hash_attr_type = "S"
+#       csv_bucket_id  = "trip.arguswatcher.net"
+#       csv_key        = "data/mv_user_year_hour_trip.csv"
+#     },
+#     {
+#       tb_name        = "mv_user_year_month_trip"
+#       hash_attr      = "pk"
+#       hash_attr_type = "S"
+#       csv_bucket_id  = "trip.arguswatcher.net"
+#       csv_key        = "data/mv_user_year_month_trip.csv"
+#     },
+#     {
+#       tb_name        = "mv_user_year_station"
+#       hash_attr      = "pk"
+#       hash_attr_type = "S"
+#       csv_bucket_id  = "trip.arguswatcher.net"
+#       csv_key        = "data/mv_user_year_station.csv"
+#     }
+#   ]
+# }
 
 # ##############################
 # API Gateway
@@ -67,11 +66,11 @@ locals {
 variable "path_list" {
   type = list(string)
   default = [
-    "mv-bike-count",
-    "mv-station-count",
-    "mv-user-year-hour-trip",
-    "mv-user-year-month-trip",
-    "mv-user-year-station"
+    "trip-hour",
+    "trip-month",
+    "top-station",
+    "bike",
+    "station"
   ]
 }
 

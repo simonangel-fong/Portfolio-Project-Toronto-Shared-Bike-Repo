@@ -277,7 +277,7 @@ def _trip_month(year=None, user=None):
         }
 
 
-def _top_station(year=None, user="all"):
+def _top_station(year=None, user=None):
     table = dynamodb.Table(MV_TOPSTATION_USER_YEAR)
     try:
         # filter expression

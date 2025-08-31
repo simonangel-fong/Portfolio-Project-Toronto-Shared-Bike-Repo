@@ -1,7 +1,7 @@
-output "apigw_id" {
+output "id" {
   value = aws_api_gateway_rest_api.rest_api.id
 }
 
-output "apigw_stage" {
+output "stage" {
   value = aws_api_gateway_stage.api_stage.stage_name
 }

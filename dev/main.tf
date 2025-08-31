@@ -42,7 +42,7 @@ module "dynamodb_tb" {
   project    = var.project
   app        = var.app
   env        = var.env
-  csv_bucket = local.bucket_name
+  csv_bucket = module.csv_bucket.id
   csv_prefix = var.csv_prefix
 }
 
@@ -54,28 +54,25 @@ module "lambda" {
   project    = var.project
   app        = var.app
   env        = var.env
-  aws_region = var.aws_region
 
   archive_source_file = "${path.module}/../lambda/main.py"
   archive_output_path = "${path.module}/../lambda/main.zip"
-  layer_runtimes      = ["python3.12"]
-  dynamodb_table_arn  = module.dynamodb_tb.dynamodb_tb_arn
+  dynamodb_table_arn  = module.dynamodb_tb.arn
 }
 
-# # ##############################
-# # AWS API Gateway
-# # ##############################
-# module "api_gateway" {
-#   source     = "../module/apigw"
-#   project    = var.project
-#   app        = var.app
-#   env        = var.env
-#   aws_region = var.aws_region
+# ##############################
+# AWS API Gateway
+# ##############################
+module "api_gateway" {
+  source     = "../module/apigw"
+  project    = var.project
+  app        = var.app
+  env        = var.env
 
-#   path_list  = var.path_list
-#   lambda_arn = module.lambda.lambda_arn
-#   lambda_id  = module.lambda.lambda_id
-# }
+  path_list  = var.path_list
+  lambda_arn = module.lambda.arn
+  lambda_id  = module.lambda.id
+}
 
 # # ##############################
 # # AWS Cloudfront
