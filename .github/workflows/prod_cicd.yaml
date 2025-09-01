@@ -3,15 +3,21 @@ name: Dev CI/CD
 on:
   pull_request:
     paths:
+      - "csv/**"
+      - "lambda/**"
       - "module/**"
-      - "dev/**"
+      - "prod/**"
+      - "web/**"
       - ".github/workflows/**"
   push:
     branches: ["master"]
     paths:
+      - "csv/**"
+      - "lambda/**"
       - "module/**"
-      - "dev/**"
-      - ".github/workflows/dev_cicd.yaml"
+      - "prod/**"
+      - "web/**"
+      - ".github/workflows/**"
   workflow_dispatch: {}
 
 env:
@@ -19,8 +25,8 @@ env:
   TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
   TF_WORKING_DIR: dev
   TF_VAR_aws_region: ${{ vars.AWS_REGION }}
-  TF_VAR_vpc_cidr: ${{ vars.VPC_CIDR }}
-  TF_VAR_csv_bucket: ${{ vars.CSV_BUCKET }}
+  TF_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
+  TF_cloudflare_zone_id: ${{secrets.CF_ZONE}}
 
 permissions:
   id-token: write
