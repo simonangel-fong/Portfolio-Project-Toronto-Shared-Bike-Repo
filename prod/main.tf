@@ -38,19 +38,19 @@ module "lambda" {
   dynamodb_table_arn  = module.dynamodb_tb.arn
 }
 
-# # ##############################
-# # AWS API Gateway
-# # ##############################
-# module "api_gateway" {
-#   source  = "../module/apigw"
-#   project = var.project
-#   app     = var.app
-#   env     = var.env
+# ##############################
+# AWS API Gateway
+# ##############################
+module "api_gateway" {
+  source  = "../module/apigw"
+  project = var.project
+  app     = var.app
+  env     = var.env
 
-#   path_list  = var.path_list
-#   lambda_arn = module.lambda.arn
-#   lambda_id  = module.lambda.id
-# }
+  path_list  = var.path_list
+  lambda_arn = module.lambda.arn
+  lambda_id  = module.lambda.id
+}
 
 # # ##############################
 # # AWS Cloudfront
