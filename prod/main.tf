@@ -11,32 +11,32 @@ module "csv_bucket" {
   web_path = var.web_path
 }
 
-# ##############################
-# AWS Dynamodb
-# ##############################
-module "dynamodb_tb" {
-  source  = "../module/dynamodb"
-  project = var.project
-  app     = var.app
-  env     = var.env
+# # ##############################
+# # AWS Dynamodb
+# # ##############################
+# module "dynamodb_tb" {
+#   source  = "../module/dynamodb"
+#   project = var.project
+#   app     = var.app
+#   env     = var.env
 
-  csv_bucket = module.csv_bucket.id
-  csv_prefix = var.csv_prefix
-}
+#   csv_bucket = module.csv_bucket.id
+#   csv_prefix = var.csv_prefix
+# }
 
-# ##############################
-# AWS Lambda
-# ##############################
-module "lambda" {
-  source  = "../module/lambda"
-  project = var.project
-  app     = var.app
-  env     = var.env
+# # ##############################
+# # AWS Lambda
+# # ##############################
+# module "lambda" {
+#   source  = "../module/lambda"
+#   project = var.project
+#   app     = var.app
+#   env     = var.env
 
-  archive_source_file = "${path.module}/../lambda/main.py"
-  archive_output_path = "${path.module}/../lambda/main.zip"
-  dynamodb_table_arn  = module.dynamodb_tb.arn
-}
+#   archive_source_file = "${path.module}/../lambda/main.py"
+#   archive_output_path = "${path.module}/../lambda/main.zip"
+#   dynamodb_table_arn  = module.dynamodb_tb.arn
+# }
 
 # # ##############################
 # # AWS API Gateway
