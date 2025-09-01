@@ -71,17 +71,17 @@ module "cloudfront" {
   website_endpoint = module.csv_bucket.website_endpoint
 }
 
-# # ##############################
-# # Cloudflare DNS
-# # ##############################
-# module "cloudflare_dns" {
-#   source  = "../module/dns"
-#   project = var.project
-#   app     = var.app
-#   env     = var.env
-#   # cloudflare config
-#   cloudflare_zone_id   = var.cloudflare_zone_id
-#   cloudflare_api_token = var.cloudflare_api_token
-#   dns_domain           = var.dns_domain
-#   target_domain        = module.cloudfront.domain
-# }
+# ##############################
+# Cloudflare DNS
+# ##############################
+module "cloudflare_dns" {
+  source  = "../module/dns"
+  project = var.project
+  app     = var.app
+  env     = var.env
+  # cloudflare config
+  cloudflare_zone_id   = var.cloudflare_zone_id
+  cloudflare_api_token = var.cloudflare_api_token
+  dns_domain           = var.dns_domain
+  target_domain        = module.cloudfront.domain
+}
