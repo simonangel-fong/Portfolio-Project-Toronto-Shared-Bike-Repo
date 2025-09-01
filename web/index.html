@@ -14,19 +14,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-
-        #chart-container {
-            position: relative;
-            height: 100vh;
-            overflow: hidden;
-        }
-    </style>
 </head>
 
 <!-- enable scroll spy -->
@@ -92,19 +79,6 @@
                     </div>
                 </div>
 
-                <!-- Dashboard -->
-                <div class="col">
-                    <div class="card h-100 overflow-hidden text-bg-dark rounded-4">
-                        <img src="./img/features/dashbaord.jpg" class="card-img" alt="dashbaord">
-                        <div class="card-img-overlay d-flex flex-column">
-                            <p class="card-title h2 text-white my-auto text-center align-middle">
-                                Dashboard
-                            </p>
-                            <a href="#dashboard" class="stretched-link"></a>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- tech -->
                 <div class="col">
                     <div class="card h-100 overflow-hidden text-bg-dark rounded-4">
@@ -118,18 +92,19 @@
                     </div>
                 </div>
 
-                <!-- Performance -->
-                <!-- <div class="col">
+                <!-- Dashboard -->
+                <div class="col">
                     <div class="card h-100 overflow-hidden text-bg-dark rounded-4">
-                        <img src="./img/features/performance.jpg" class="card-img" alt="performance">
+                        <img src="./img/features/dashbaord.jpg" class="card-img" alt="dashbaord">
                         <div class="card-img-overlay d-flex flex-column">
                             <p class="card-title h2 text-white my-auto text-center align-middle">
-                                Performance
+                                Dashboard
                             </p>
-                            <a href="#test" class="stretched-link"></a>
+                            <a href="#dashboard" class="stretched-link"></a>
                         </div>
                     </div>
-                </div> -->
+                </div>
+
             </div>
         </section>
 
@@ -361,24 +336,52 @@
         <!-- divider -->
         <hr class="col-8 mx-auto py-lg-4 py-sm-2">
 
-        <!-- Tableau Dashboard -->
+        <!-- Dashboard -->
         <section id="dashboard" class="container pb-5">
 
-            <!-- Title -->
+            <!-- Chart Title -->
             <div class="row">
                 <div class="px-5 py-5">
 
                     <!-- title text -->
                     <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
                         Dashboard
-                        <!-- sign -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor"
-                            class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
-                            <path
-                                d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z" />
-                        </svg>
                     </h1>
                     <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
+                    <p class="text-center lead pt-4">
+                        Select charts to visualize API data (https://test-api.arguswatcher.net/prod/bike).
+                    </p>
+                </div>
+            </div>
+
+            <!-- selector -->
+            <div class="row">
+                <!-- selector -->
+                <div class="col-sm-6 mx-auto">
+                    <select id="year-selector" class="form-select form-select-sm mb-3">
+                        <option value="trip-month-annual" selected>Monthly Pattern - Annual Member</option>
+                        <option value="trip-month-casual">Monthly Pattern - Casual Member</option>
+                        <option value="trip-hour-annual">Hourly Pattern - Annual Member</option>
+                        <option value="trip-hour-casual">Hourly Pattern - Casual Member</option>
+                        <option value="bike">Bike Count Over Years</option>
+                        <option value="station">Station Count Over Years</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- chart -->
+            <div class="row">
+                <div id="chart-container" class="p-4 mx-auto text-center" style="width: 800px;height: 450px;"></div>
+            </div>
+
+            <!-- divider -->
+            <hr class="col-8 mx-auto py-lg-4 py-sm-2">
+
+            <!-- Dashboard Title -->
+            <div class="row">
+                <div class="px-5 py-5">
+
+                    <!-- title text -->
                     <p class="text-center lead pt-4">
                         Explore year-to-year changes by selecting different years in the Tableau dashboard below.
                     </p>
@@ -386,7 +389,7 @@
             </div>
 
             <!-- Tableau dashboard -->
-            <!-- <div class="row text-center">
+            <div class="row text-center">
 
                 <div class='tableauPlaceholder mx-auto' id='viz1749863467121' style='position: relative'>
                     <noscript>
@@ -435,32 +438,13 @@
                     scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
                     vizElement.parentNode.insertBefore(scriptElement, vizElement); 
                 </script>
-            </div> -->
+            </div>
         </section>
 
         <!-- Echart -->
         <section id="echart" class="container pb-5">
-            <!-- selector -->
-            <div class="row">
-                <!-- selector -->
-                <div class="col-6 mx-auto">
-                    Select a chart:
-                    <select id="year-selector" class="form-select form-select-lg mb-3">
-                        <option value="bike">Bike Number Over Time</option>
-                        <option value="station">Station Number Over Time</option>
-                        <option value="trip-month" selected>Monthly Pattern</option>
-                        <option value="trip-hour">Hourly Pattern</option>
-                        <option value="top-annual">Annual Member Top 10 Station</option>
-                        <option value="top-casual">Casual Member Top 10 Station</option>
-                    </select>
-                </div>
-            </div>
-            <!-- chart -->
-            <div class="row">
-                <div class=" ">
-                    <div id="chart-container" style="width: 600px;height:400px;"></div>
-                </div>
-            </div>
+
+
         </section>
     </main>
 
@@ -490,32 +474,32 @@
             const handleChange = () => {
                 const value = sel.value;
 
+                // call function based on values
                 switch (value) {
                     case "station":
-                        genStationChart({ url: "https://test-api.arguswatcher.net/prod/station" });
+                        chartStation({ url: "https://test-api.arguswatcher.net/prod/station" });
                         break;
-                    case "trip-hour":
-                        genTripHourChart({ url: "https://test-api.arguswatcher.net/prod/trip-hour" });
+                    case "trip-month-annual":
+                        chartTripMonth({ url: "https://test-api.arguswatcher.net/prod/trip-month?user=annual", title: "Monthly Pattern - Annual Member" });
                         break;
-                    case "trip-month":
-                        genTripMonthChart({ url: "https://test-api.arguswatcher.net/prod/trip-month" });
+                    case "trip-month-casual":
+                        chartTripMonth({ url: "https://test-api.arguswatcher.net/prod/trip-month?user=casual", title: "Monthly Pattern - Casual Member" });
                         break;
-                    case "top-annual":
-                        genTopAnnualChart();
+                    case "trip-hour-annual":
+                        chartTripHour({ url: "https://test-api.arguswatcher.net/prod/trip-hour?user=annual", title: "Hourly Pattern - Annual Member" });
                         break;
-                    case "top-casual":
-                        genTopCasualChart();
+                    case "trip-hour-casual":
+                        chartTripHour({ url: "https://test-api.arguswatcher.net/prod/trip-hour?user=casual", title: "Hourly Pattern - Casual Member" });
                         break;
                     default:
-                        genBikeChart({ url: "https://test-api.arguswatcher.net/prod/bike" });
+                        // bike
+                        chartBike({ url: "https://test-api.arguswatcher.net/prod/bike" });
                 }
             }
 
             sel.addEventListener('change', handleChange);
             handleChange();
         });
-
-
     </script>
 </body>
 

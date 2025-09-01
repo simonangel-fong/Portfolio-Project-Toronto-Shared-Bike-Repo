@@ -1,33 +1,33 @@
+/**
+ * Retrieves selected chart from a <select> element.
+ *
+ * @returns {string|null} The selected chart value, or null if the select element is not found.
+ */
 function getSelectedChart() {
   const sel = document.getElementById("year-selector");
+
+  // Ensure element
   if (!(sel instanceof HTMLSelectElement)) {
     console.warn("Select element #year-selector not found");
-    return null;
+    return null; // Return null if the element is missing or not a select
   }
+
   const value = sel.value;
   console.log("Selected chart:", value);
   return value;
 }
 
-function genTripHourChart() {
-  console.log("trip hour chart");
-}
-
-function genTripMonthChart() {
-  console.log("trip month chart");
-}
-
-function genTopAnnualChart() {
-  console.log("top annual chart");
-}
-
-function genTopCasualChart() {
-  console.log("top casual chart");
-}
-
-// ===============================
-
-async function genBikeChart({
+/**
+ * Render a line chart for bike
+ *
+ * @param {Object} params
+ * @param {string} params.url - API endpoint to fetch chart data from.
+ * @param {string} [params.containerId="chart-container"] - DOM chart container ID.
+ * @param {string} [params.title="Bike Count Over Years"] - Chart title.
+ *
+ * @returns {Promise<echarts.ECharts|null>} The chart instance, or null if container not found.
+ */
+async function chartBike({
   url,
   containerId = "chart-container",
   title = "Bike Count Over Years",
@@ -63,7 +63,7 @@ async function genBikeChart({
 
     // gen option
     const option = {
-      title: { text: title },
+      title: { text: title, subtext: "API: " + url },
       tooltip: { trigger: "axis" },
       xAxis: {
         type: "category",
@@ -88,7 +88,9 @@ async function genBikeChart({
       ],
     };
 
+    // load chart option
     chart.setOption(option);
+    window.addEventListener("resize", chart.resize);
   } catch (err) {
     console.error("Failed to render chart:", err);
     chart.setOption({
@@ -111,7 +113,17 @@ async function genBikeChart({
   return chart;
 }
 
-async function genStationChart({
+/**
+ * Render a line chart of station
+ *
+ * @param {Object} params
+ * @param {string} params.url - API endpoint to fetch chart data from.
+ * @param {string} [params.containerId="chart-container"] - DOM container ID for rendering the chart.
+ * @param {string} [params.title="Station Count Over Years"] - Chart title.
+ *
+ * @returns {Promise<void|null>} No return value, or null if container not found.
+ */
+async function chartStation({
   url,
   containerId = "chart-container",
   title = "Station Count Over Years",
@@ -147,7 +159,7 @@ async function genStationChart({
 
     // gen option
     const option = {
-      title: { text: title },
+      title: { text: title, subtext: "API: " + url },
       tooltip: { trigger: "axis" },
       xAxis: {
         type: "category",
@@ -187,7 +199,17 @@ async function genStationChart({
   }
 }
 
-async function genTripMonthChart({
+/**
+ * Render a multi-line chart showing monthly trip patterns
+ *
+ * @param {Object} params
+ * @param {string} params.url - API endpoint to fetch chart data from.
+ * @param {string} [params.containerId="chart-container"] - DOM container ID for rendering the chart.
+ * @param {string} [params.title="Hourly Pattern - Annual Member"] - Chart title.
+ *
+ * @returns {Promise<void|null>} No return value, or null if container not found.
+ */
+async function chartTripMonth({
   url,
   containerId = "chart-container",
   title = "Monthly Pattern - Annual Member",
@@ -240,25 +262,41 @@ async function genTripMonthChart({
       symbolSize: 6,
       data: months.map((m) => {
         const v = byYearMonth.get(y).get(m);
-        return Number.isFinite(v) ? v : fill;
+        return Number.isFinite(v) ? v : 0;
       }),
     }));
 
     const option = {
-      title: { text: title },
+      title: { text: title, subtext: "API: " + url },
       tooltip: { trigger: "axis" },
-      legend: { right: 24, data: years.map((y) => String(y)) },
+      legend: { bottom: 30, data: years.map((y) => String(y)) },
       xAxis: {
         type: "category",
         name: "Month",
-        data: months,
-        // boundaryGap: false,
-        // axisLabel: { interval: 0, showMaxLabel: true, showMinLabel: true },
+        axisTick: {
+          alignWithLabel: true,
+        },
+        axisLabel: {
+          rotate: 30,
+        },
+        data: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sept",
+          "Oct",
+          "Nov",
+          "Dec",
+        ],
       },
       yAxis: { type: "value", name: "Trips" },
       series,
     };
-    console.log(option);
 
     chart.setOption(option);
     window.addEventListener("resize", chart.resize);
@@ -275,7 +313,17 @@ async function genTripMonthChart({
   }
 }
 
-async function genTripHourChart({
+/**
+ * Render a multi-line chart showing hourly trip patterns
+ *
+ * @param {Object} params
+ * @param {string} params.url - API endpoint to fetch chart data from.
+ * @param {string} [params.containerId="chart-container"] - DOM container ID for rendering the chart.
+ * @param {string} [params.title="Hourly Pattern - Annual Member"] - Chart title.
+ *
+ * @returns {Promise<void|null>} No return value, or null if container not found.
+ */
+async function chartTripHour({
   url,
   containerId = "chart-container",
   title = "Hourly Pattern - Annual Member",
@@ -303,20 +351,20 @@ async function genTripHourChart({
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     const raw = Array.isArray(json?.data) ? json.data : [];
-    const months = Array.from({ length: 12 }, (_, i) => i + 1);
+    const hours = Array.from({ length: 24 }, (_, i) => i);
 
     // Collect years present
     const years = Array.from(new Set(raw.map((d) => d.dim_year))).sort(
       (a, b) => a - b
     );
 
-    const byYearMonth = new Map();
-    for (const y of years) byYearMonth.set(y, new Map());
+    const byYearHour = new Map();
+    for (const y of years) byYearHour.set(y, new Map());
     for (const r of raw) {
       const y = r.dim_year,
-        m = r.dim_month;
-      if (byYearMonth.has(y))
-        byYearMonth.get(y).set(m, Number(r["trip_count"]) || 0);
+        m = r.dim_hour;
+      if (byYearHour.has(y))
+        byYearHour.get(y).set(m, Number(r["trip_count"]) || 0);
     }
 
     // Series per year, ordered by year
@@ -326,27 +374,27 @@ async function genTripHourChart({
       smooth: true,
       symbol: "circle",
       symbolSize: 6,
-      data: months.map((m) => {
-        const v = byYearMonth.get(y).get(m);
-        return Number.isFinite(v) ? v : fill;
+      data: hours.map((m) => {
+        const v = byYearHour.get(y).get(m);
+        return Number.isFinite(v) ? v : 0;
       }),
     }));
 
     const option = {
-      title: { text: title },
+      title: { text: title, subtext: "API: " + url },
       tooltip: { trigger: "axis" },
       legend: { right: 24, data: years.map((y) => String(y)) },
       xAxis: {
         type: "category",
-        name: "Month",
-        data: months,
-        // boundaryGap: false,
-        // axisLabel: { interval: 0, showMaxLabel: true, showMinLabel: true },
+        name: "Hour",
+        axisTick: {
+          alignWithLabel: true,
+        },
+        data: hours,
       },
       yAxis: { type: "value", name: "Trips" },
       series,
     };
-    console.log(option);
 
     chart.setOption(option);
     window.addEventListener("resize", chart.resize);
