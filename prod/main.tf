@@ -2,10 +2,10 @@
 # AWS S3 bucket
 # ##############################
 module "csv_bucket" {
-  source = "../module/s3"
-  project  = var.project
-  app      = var.app
-  env      = var.env
+  source  = "../module/s3"
+  project = var.project
+  app     = var.app
+  env     = var.env
 
   csv_path = var.csv_path
   web_path = var.web_path
