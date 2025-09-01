@@ -25,8 +25,8 @@ env:
   TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
   TF_WORKING_DIR: prod
   TF_VAR_aws_region: ${{ vars.AWS_REGION }}
-  TF_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
-  TF_cloudflare_zone_id: ${{secrets.CF_ZONE}}
+  TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
+  TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
 
 permissions:
   id-token: write
