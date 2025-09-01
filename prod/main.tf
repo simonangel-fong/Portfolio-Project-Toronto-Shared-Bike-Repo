@@ -15,7 +15,7 @@ module "csv_bucket" {
 # AWS Dynamodb
 # ##############################
 module "dynamodb_tb" {
-  source = "../module/dynamodb"
+  source  = "../module/dynamodb"
   project = var.project
   app     = var.app
   env     = var.env
