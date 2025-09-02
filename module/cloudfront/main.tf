@@ -13,7 +13,9 @@ data "aws_acm_certificate" "cf_certificate" {
   most_recent = true
 }
 
-# cloudfront
+# ###############################
+# CloudFront
+# ###############################
 resource "aws_cloudfront_distribution" "api_cdn" {
 
   # s3 web hosting
@@ -100,5 +102,4 @@ resource "aws_cloudfront_distribution" "api_cdn" {
   tags = {
     Name = "${var.project}-${var.app}-${var.env}-cloudfront"
   }
-
 }

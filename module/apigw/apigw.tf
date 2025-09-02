@@ -22,6 +22,10 @@ resource "aws_api_gateway_rest_api" "rest_api" {
   }
 }
 
+resource "aws_api_gateway_account" "apigw_account" {
+  cloudwatch_role_arn = aws_iam_role.apigw_cloudwatch_role.arn
+}
+
 # ###############################
 # API Gateway Deployment: a snapshot of the REST API configuration
 # ###############################
@@ -69,27 +73,28 @@ resource "aws_api_gateway_stage" "api_stage" {
     lambdaAlias = "live"
   }
 
-  # access_log_settings {
-  #   destination_arn = aws_cloudwatch_log_group.api_gateway_logs.arn
-  #   format = jsonencode({
-  #     requestId      = "$context.requestId"
-  #     ip             = "$context.identity.sourceIp"
-  #     caller         = "$context.identity.caller"
-  #     user           = "$context.identity.user"
-  #     requestTime    = "$context.requestTime"
-  #     httpMethod     = "$context.httpMethod"
-  #     resourcePath   = "$context.resourcePath"
-  #     status         = "$context.status"
-  #     protocol       = "$context.protocol"
-  #     responseLength = "$context.responseLength"
-  #   })
-  # }
+  # assign log group and format
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.api_gateway_logs.arn
+    format = jsonencode({
+      requestId      = "$context.requestId"
+      ip             = "$context.identity.sourceIp"
+      caller         = "$context.identity.caller"
+      user           = "$context.identity.user"
+      requestTime    = "$context.requestTime"
+      httpMethod     = "$context.httpMethod"
+      resourcePath   = "$context.resourcePath"
+      status         = "$context.status"
+      protocol       = "$context.protocol"
+      responseLength = "$context.responseLength"
+    })
+  }
 
-  # xray_tracing_enabled  = true
-  # cache_cluster_enabled = false
+  xray_tracing_enabled  = true
+  cache_cluster_enabled = false
 
-  # depends_on = [
-  #   aws_cloudwatch_log_group.api_gateway_logs,
-  #   aws_api_gateway_account.account_settings
-  # ]
+  depends_on = [
+    aws_cloudwatch_log_group.api_gateway_logs,
+    aws_api_gateway_account.apigw_account
+  ]
 }
