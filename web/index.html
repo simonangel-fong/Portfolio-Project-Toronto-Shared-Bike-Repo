@@ -357,7 +357,7 @@
                     </h1>
                     <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
                     <p class="text-center lead pt-4">
-                        Select charts to visualize API data (https://test-api.arguswatcher.net/prod/bike).
+                        Select charts to visualize API data (https://trip.arguswatcher.net/prod/bike).
                     </p>
                 </div>
             </div>
@@ -485,23 +485,23 @@
                 // call function based on values
                 switch (value) {
                     case "station":
-                        chartStation({ url: "https://test-api.arguswatcher.net/prod/station" });
+                        chartStation({ url: "https://trip.arguswatcher.net/prod/station" });
                         break;
                     case "trip-month-annual":
-                        chartTripMonth({ url: "https://test-api.arguswatcher.net/prod/trip-month?user=annual", title: "Monthly Pattern - Annual Member" });
+                        chartTripMonth({ url: "https://trip.arguswatcher.net/prod/trip-month?user=annual", title: "Monthly Pattern - Annual Member" });
                         break;
                     case "trip-month-casual":
-                        chartTripMonth({ url: "https://test-api.arguswatcher.net/prod/trip-month?user=casual", title: "Monthly Pattern - Casual Member" });
+                        chartTripMonth({ url: "https://trip.arguswatcher.net/prod/trip-month?user=casual", title: "Monthly Pattern - Casual Member" });
                         break;
                     case "trip-hour-annual":
-                        chartTripHour({ url: "https://test-api.arguswatcher.net/prod/trip-hour?user=annual", title: "Hourly Pattern - Annual Member" });
+                        chartTripHour({ url: "https://trip.arguswatcher.net/prod/trip-hour?user=annual", title: "Hourly Pattern - Annual Member" });
                         break;
                     case "trip-hour-casual":
-                        chartTripHour({ url: "https://test-api.arguswatcher.net/prod/trip-hour?user=casual", title: "Hourly Pattern - Casual Member" });
+                        chartTripHour({ url: "https://trip.arguswatcher.net/prod/trip-hour?user=casual", title: "Hourly Pattern - Casual Member" });
                         break;
                     default:
                         // bike
-                        chartBike({ url: "https://test-api.arguswatcher.net/prod/bike" });
+                        chartBike({ url: "https://trip.arguswatcher.net/prod/bike" });
                 }
             }
 
