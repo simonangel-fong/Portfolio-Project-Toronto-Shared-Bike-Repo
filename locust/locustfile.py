@@ -9,7 +9,7 @@ API_URLS = {
     "trip_hour": "https://trip.arguswatcher.net/prod/trip-hour",
 }
 
-class WebsiteUser(HttpUser):
+class APIUser(HttpUser):
     wait_time = between(5, 9)
 
     @task

@@ -15,14 +15,14 @@ services:
       - ./:/mnt/locust
     command: -f /mnt/locust/locustfile.py --worker --master-host master
 
-  worker02:
-    image: locustio/locust
-    volumes:
-      - ./:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --worker --master-host master
+  # worker02:
+  #   image: locustio/locust
+  #   volumes:
+  #     - ./:/mnt/locust
+  #   command: -f /mnt/locust/locustfile.py --worker --master-host master
 
-  worker03:
-    image: locustio/locust
-    volumes:
-      - ./:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --worker --master-host master
+  # worker03:
+  #   image: locustio/locust
+  #   volumes:
+  #     - ./:/mnt/locust
+  #   command: -f /mnt/locust/locustfile.py --worker --master-host master
