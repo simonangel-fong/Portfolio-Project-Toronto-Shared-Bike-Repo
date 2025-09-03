@@ -106,7 +106,7 @@ resource "aws_api_gateway_stage" "api_stage" {
 resource "aws_api_gateway_method_settings" "cached_gets" {
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
   stage_name  = aws_api_gateway_stage.api_stage.stage_name
-  method_path = "prod/GET/prod/*" # format: {resourcePath}/{httpMethod}; use "*" or specific paths
+  method_path = "*/*" # format: {resourcePath}/{httpMethod}; use "*" or specific paths
 
   settings {
     caching_enabled        = true
