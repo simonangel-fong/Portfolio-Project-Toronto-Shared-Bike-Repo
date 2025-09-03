@@ -5,6 +5,12 @@
   - [Website](#website)
   - [API Gateway](#api-gateway)
   - [Testing](#testing)
+    - [Locust](#locust)
+    - [Smoke Testing](#smoke-testing)
+    - [Baseline Testing](#baseline-testing)
+    - [Load Testing](#load-testing)
+    - [Stress Testing](#stress-testing)
+    - [Soak Testing](#soak-testing)
 
 ---
 
@@ -42,28 +48,78 @@
 | `Stress Testing`   | Non-Functional Testing | Performance Testing | Identify breaking points and recovery under extreme conditions. |
 | `Soak Testing`     | Non-Functional Testing | Performance Testing | Ensure long-term stability under sustained typical loads.       |
 
+### Locust
+
 ```sh
 cd locust
 docker compose down && docker compose up -d --scale worker=2
+```
 
+---
+
+### Smoke Testing
+
+```sh
 # smoke Testing
 docker compose exec -it master locust -f /mnt/locust/locustfile.py --headless --expect-workers 2 -u 2 -r 2 --host https://trip.arguswatcher.net --run-time 2m --html /mnt/locust/html/smoke.html --csv /mnt/locust/csv/smoke
+```
 
+![pic](./web/img/test/smoking.png)
+
+---
+
+### Baseline Testing
+
+```sh
 # baseline Testing
 docker compose exec -it master locust -f /mnt/locust/locustfile.py --headless --expect-workers 2 -u 50 -r 1 --host https://trip.arguswatcher.net --run-time 2m --html /mnt/locust/html/baseline.html --csv /mnt/locust/csv/baseline
+```
 
-# load Testing
+![pic](./web/img/test/baseline.png)
+
+---
+
+### Load Testing
+
+```sh
+# load Testing - VU 100
 docker compose exec -it master locust -f /mnt/locust/locustfile.py --headless --expect-workers 2 -u 100 -r 5 --host https://trip.arguswatcher.net --run-time 5m --html /mnt/locust/html/load_100.html --csv /mnt/locust/csv/load_100
+```
 
-# load Testing
+![pic](./web/img/test/load_100.png)
+
+```sh
+# load Testing - VU 300
 docker compose exec -it master locust -f /mnt/locust/locustfile.py --headless --expect-workers 2 -u 300 -r 5 --host https://trip.arguswatcher.net --run-time 5m --html /mnt/locust/html/load_300.html --csv /mnt/locust/csv/load_300
+```
 
-# load Testing
+![pic](./web/img/test/load_300.png)
+
+```sh
+# load Testing - VU 500
 docker compose exec -it master locust -f /mnt/locust/locustfile.py --headless --expect-workers 2 -u 500 -r 5 --host https://trip.arguswatcher.net --run-time 5m --html /mnt/locust/html/load_500.html --csv /mnt/locust/csv/load_500
+```
 
-# Stress Testing
+![pic](./web/img/test/load_500.png)
+
+---
+
+### Stress Testing
+
+```sh
+# Stress Testing - VU 1000
 docker compose exec -it master locust -f /mnt/locust/locustfile.py --headless --expect-workers 2 -u 1000 -r 20 --host https://trip.arguswatcher.net --run-time 5m --html /mnt/locust/html/load_1000.html --csv /mnt/locust/csv/load_1000
+```
 
+![pic](./web/img/test/stress.png)
+
+---
+
+### Soak Testing
+
+```sh
 # Soak Testing
 docker compose exec -it master locust -f /mnt/locust/locustfile.py --headless --expect-workers 2 -u 200 -r 20 --host https://trip.arguswatcher.net --run-time 10m --html /mnt/locust/html/soak_200_10m.html --csv /mnt/locust/csv/soak_200_10m
 ```
+
+![pic](./web/img/test/soak.png)
