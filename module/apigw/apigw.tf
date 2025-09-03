@@ -102,19 +102,19 @@ resource "aws_api_gateway_stage" "api_stage" {
   ]
 }
 
-#  turn on caching for specific GET methods at stage level
-resource "aws_api_gateway_method_settings" "cached_gets" {
-  rest_api_id = aws_api_gateway_rest_api.rest_api.id
-  stage_name  = aws_api_gateway_stage.api_stage.stage_name
-  method_path = "*/*" # format: {resourcePath}/{httpMethod}; use "*" or specific paths
+# #  turn on caching for specific GET methods at stage level
+# resource "aws_api_gateway_method_settings" "cached_gets" {
+#   rest_api_id = aws_api_gateway_rest_api.rest_api.id
+#   stage_name  = aws_api_gateway_stage.api_stage.stage_name
+#   method_path = "*/*" # format: {resourcePath}/{httpMethod}; use "*" or specific paths
 
-  settings {
-    caching_enabled        = true
-    cache_ttl_in_seconds   = 60     # start with 60s; tune per endpoint
-    cache_data_encrypted   = true
-    metrics_enabled        = true   # keep on for tuning; you can disable later
-    logging_level          = "ERROR" # cut down on overhead vs "INFO"
-    throttling_burst_limit = 1000
-    throttling_rate_limit  = 500
-  }
-}
+#   settings {
+#     caching_enabled        = true
+#     cache_ttl_in_seconds   = 60     # start with 60s; tune per endpoint
+#     cache_data_encrypted   = true
+#     metrics_enabled        = true   # keep on for tuning; you can disable later
+#     logging_level          = "ERROR" # cut down on overhead vs "INFO"
+#     throttling_burst_limit = 1000
+#     throttling_rate_limit  = 500
+#   }
+# }
