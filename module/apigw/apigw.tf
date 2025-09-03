@@ -21,7 +21,7 @@ resource "aws_api_gateway_rest_api" "rest_api" {
     types = ["REGIONAL"]
   }
 
-  minimum_compression_size = 1024
+  minimum_compression_size = 2048
 }
 
 resource "aws_api_gateway_account" "apigw_account" {

@@ -49,9 +49,9 @@ docker compose down && docker compose up -d --scale worker=2
 docker compose exec -it master locust -f /mnt/locust/locustfile.py --headless --expect-workers 2 -u 2 -r 2 --host https://trip.arguswatcher.net --run-time 2m --html /mnt/locust/html/smoke.html --csv /mnt/locust/csv/smoke
 
 # baseline Testing
-docker compose exec -it master locust -f /mnt/locust/locustfile.py --headless --expect-workers 2 -u 50 -r 1 --host https://trip.arguswatcher.net --run-time 2m --html /mnt/locust/html/baseline_compress.html --csv /mnt/locust/csv/baseline
+docker compose exec -it master locust -f /mnt/locust/locustfile.py --headless --expect-workers 2 -u 50 -r 1 --host https://trip.arguswatcher.net --run-time 2m --html /mnt/locust/html/baseline_stage_cache.html --csv /mnt/locust/csv/baseline
 
 # load Testing
-docker compose exec -it master locust -f /mnt/locust/locustfile.py --headless --expect-workers 2 -u 100 -r 1 --host https://trip.arguswatcher.net --run-time 2m --html /mnt/locust/html/load.html --csv /mnt/locust/csv/load
+docker compose exec -it master locust -f /mnt/locust/locustfile.py --headless --expect-workers 2 -u 100 -r 1 --host https://trip.arguswatcher.net --run-time 2m --html /mnt/locust/html/load_stage_cache.html --csv /mnt/locust/csv/load
 
 ```
