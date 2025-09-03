@@ -92,8 +92,9 @@ resource "aws_api_gateway_stage" "api_stage" {
     })
   }
 
-  xray_tracing_enabled  = true
-  cache_cluster_enabled = false
+# Enable cache
+  cache_cluster_enabled = true
+  cache_cluster_size    = "0.5"
 
   depends_on = [
     aws_cloudwatch_log_group.api_gateway_logs,
