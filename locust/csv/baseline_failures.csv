@@ -1,0 +1,3 @@
+Method,Name,Error,Occurrences
+GET,/prod/bike,HTTPError('500 Server Error: Internal Server Error for url: /prod/bike'),67
+GET,/prod/top-station,HTTPError('500 Server Error: Internal Server Error for url: /prod/top-station'),40

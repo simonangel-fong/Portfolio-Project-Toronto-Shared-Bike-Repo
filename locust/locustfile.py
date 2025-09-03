@@ -1,4 +1,5 @@
 from locust import HttpUser, task, between
+import os
 
 API_URLS = {
     "home": "https://trip.arguswatcher.net/",
@@ -9,8 +10,10 @@ API_URLS = {
     "trip_hour": "https://trip.arguswatcher.net/prod/trip-hour",
 }
 
+
 class APIUser(HttpUser):
-    wait_time = between(5, 9)
+    host = os.getenv("TARGET_HOST", "https://trip.arguswatcher.net")
+    wait_time = between(0.5, 1.5)
 
     @task
     def home(self):

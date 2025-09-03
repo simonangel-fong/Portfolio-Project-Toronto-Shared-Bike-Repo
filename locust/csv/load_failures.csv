@@ -1,0 +1,6 @@
+Method,Name,Error,Occurrences
+GET,/prod/trip-hour,HTTPError('500 Server Error: Internal Server Error for url: /prod/trip-hour'),232
+GET,/prod/station,HTTPError('500 Server Error: Internal Server Error for url: /prod/station'),333
+GET,/prod/bike,HTTPError('500 Server Error: Internal Server Error for url: /prod/bike'),398
+GET,/prod/trip-month,HTTPError('500 Server Error: Internal Server Error for url: /prod/trip-month'),360
+GET,/prod/top-station,HTTPError('500 Server Error: Internal Server Error for url: /prod/top-station'),347

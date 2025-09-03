@@ -20,6 +20,8 @@ resource "aws_api_gateway_rest_api" "rest_api" {
   endpoint_configuration {
     types = ["REGIONAL"]
   }
+
+  minimum_compression_size = 1024
 }
 
 resource "aws_api_gateway_account" "apigw_account" {
