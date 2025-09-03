@@ -1,0 +1,11 @@
+Method,Name,Error,Occurrences
+GET,/prod/trip-hour,HTTPError('500 Server Error: Internal Server Error for url: /prod/trip-hour'),641
+GET,/prod/station,"gaierror(-5, 'No address associated with hostname')",1
+GET,/prod/bike,"gaierror(-5, 'No address associated with hostname')",3
+GET,/prod/station,HTTPError('500 Server Error: Internal Server Error for url: /prod/station'),151
+GET,/prod/trip-month,"gaierror(-5, 'No address associated with hostname')",2
+GET,/prod/bike,HTTPError('500 Server Error: Internal Server Error for url: /prod/bike'),242
+GET,/prod/trip-hour,"gaierror(-5, 'No address associated with hostname')",1
+GET,/prod/trip-month,HTTPError('500 Server Error: Internal Server Error for url: /prod/trip-month'),715
+GET,/prod/top-station,HTTPError('500 Server Error: Internal Server Error for url: /prod/top-station'),236
+GET,/,"gaierror(-5, 'No address associated with hostname')",3

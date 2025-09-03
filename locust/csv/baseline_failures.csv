@@ -1,5 +1,2 @@
 Method,Name,Error,Occurrences
-GET,/prod/trip-hour,HTTPError('500 Server Error: Internal Server Error for url: /prod/trip-hour'),18
-GET,/prod/bike,HTTPError('500 Server Error: Internal Server Error for url: /prod/bike'),81
-GET,/prod/trip-month,HTTPError('500 Server Error: Internal Server Error for url: /prod/trip-month'),56
-GET,/prod/top-station,HTTPError('500 Server Error: Internal Server Error for url: /prod/top-station'),10
+GET,/prod/station,RemoteDisconnected('Remote end closed connection without response'),1
