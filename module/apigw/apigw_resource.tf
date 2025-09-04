@@ -34,16 +34,9 @@ resource "aws_api_gateway_integration" "apigw_integration_get" {
   type                    = "AWS_PROXY"
   uri                     = var.lambda_arn
 
-  # request_parameters = {
-  #   "integration.request.querystring.year" = "method.request.querystring.year"
-  #   "integration.request.querystring.user" = "method.request.querystring.user"
-  # }
-
   cache_key_parameters = [
     "method.request.querystring.year",
     "method.request.querystring.user",
-    # "integration.request.querystring.year",
-    # "integration.request.querystring.user"
   ]
 
   cache_namespace = each.value.id
