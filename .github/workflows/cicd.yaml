@@ -210,11 +210,11 @@ jobs:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
         with:
-          path: k6/script/cloud_load_20.js
+          path: k6/script/cloud_load.js
 
   dev_test_stress:
     name: Dev Stress Testing
-    needs: dev_test_load
+    needs: dev_test_smoke
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -230,3 +230,57 @@ jobs:
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
         with:
           path: k6/script/cloud_stress.js
+
+  dev_send_email:
+    name: Send Email Notification
+    needs: [dev_test_load] # only depend on load test
+    if: ${{ always() }} # run even if load test failed (so we can send failure email)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send SUCCESS email
+        if: ${{ needs.dev_test_load.result == 'success' }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          from: "CI Pipeline <ci@example.com>"
+          to: admin@example.com
+          subject: "✅ Dev Load Test Passed — ${{ github.repository }}@${{ github.ref_name }}"
+          body: |
+            Hello Admin,
+
+            ✅ The Dev Load Test has PASSED.
+
+            Workflow: ${{ github.workflow }}
+            Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Commit: ${{ github.sha }}
+
+            Regards,
+            GitHub Actions
+
+      - name: Send FAILURE email
+        if: ${{ needs.dev_test_load.result != 'success' }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          from: "CI Pipeline <ci@example.com>"
+          to: admin@example.com
+          subject: "❌ Dev Load Test FAILED — ${{ github.repository }}@${{ github.ref_name }}"
+          body: |
+            Hello Admin,
+
+            ❌ The Dev Load Test has FAILED (result: ${{ needs.dev_test_load.result }}).
+
+            Workflow: ${{ github.workflow }}
+            Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Commit: ${{ github.sha }}
+
+            Please review the run logs above.
+
+            Regards,
+            GitHub Actions

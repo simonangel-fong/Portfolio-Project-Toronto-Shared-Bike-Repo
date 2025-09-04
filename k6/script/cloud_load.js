@@ -13,15 +13,29 @@ export const options = {
     http_req_failed: ["rate<0.01"], // SLA: http errors < 1%
     http_req_duration: ["p(99)<1000"], // SLA: http 99% of requests < 1s
   },
-  // scenarios
   scenarios: {
-    // name of scenario
     average_load: {
       executor: "ramping-vus",
       stages: [
-        { duration: "10s", target: 20 },
-        { duration: "1m", target: 20 },
-        { duration: "10s", target: 0 },
+        { duration: "30s", target: 10 },
+        { duration: "30s", target: 10 },
+        { duration: "30s", target: 20 },
+        { duration: "30s", target: 20 },
+        { duration: "30s", target: 30 },
+        { duration: "30s", target: 30 },
+        { duration: "30s", target: 40 },
+        { duration: "30s", target: 40 },
+        { duration: "30s", target: 50 },
+        { duration: "30s", target: 50 },
+        { duration: "30s", target: 40 },
+        { duration: "30s", target: 40 },
+        { duration: "30s", target: 30 },
+        { duration: "30s", target: 30 },
+        { duration: "30s", target: 20 },
+        { duration: "30s", target: 20 },
+        { duration: "30s", target: 10 },
+        { duration: "30s", target: 10 },
+        { duration: "30s", target: 0 },
       ],
     },
   },
