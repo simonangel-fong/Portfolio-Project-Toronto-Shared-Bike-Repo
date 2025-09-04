@@ -127,11 +127,6 @@ jobs:
       - name: Terraform apply
         run: terraform apply -auto-approve -input=false -no-color tfplan
 
-  dev_apply_email:
-    name: Dev-Apply Terraform Email
-    needs: [dev_apply]
-    runs-on: ubuntu-latest
-    steps:
       # Notify: send email
       - name: Send email notification on success
         if: success()
@@ -198,13 +193,8 @@ jobs:
         with:
           path: k6/script/cloud_smoke.js
 
-  dev_test_smoke_email:
-    name: Dev-Smoke Testing Email
-    needs: [dev_test_smoke]
-    runs-on: ubuntu-latest
-    steps:
       - name: Send SUCCESS email
-        if: ${{ needs.dev_test_smoke.result == 'success' }}
+        if: success()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -227,7 +217,7 @@ jobs:
             GitHub Actions
 
       - name: Send FAILURE email
-        if: ${{ needs.dev_test_smoke.result != 'success' }}
+        if: failure()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -240,7 +230,7 @@ jobs:
           body: |
             Hello Admin,
 
-            ❌ The Dev Smoke Test has FAILED (result: ${{ needs.dev_test_smoke.result }}).
+            ❌ The Dev Smoke Test has FAILED.
 
             Workflow: ${{ github.workflow }}
             Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -270,13 +260,8 @@ jobs:
         with:
           path: k6/script/cloud_load.js
 
-  dev_test_load_email:
-    name: Dev-Load Testing Email
-    needs: [dev_test_load]
-    runs-on: ubuntu-latest
-    steps:
       - name: Send SUCCESS email
-        if: ${{ needs.dev_test_load.result == 'success' }}
+        if: success()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -299,7 +284,7 @@ jobs:
             GitHub Actions
 
       - name: Send FAILURE email
-        if: ${{ needs.dev_test_load.result != 'success' }}
+        if: failure()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -312,7 +297,7 @@ jobs:
           body: |
             Hello Admin,
 
-            ❌ The Dev Load Test has FAILED (result: ${{ needs.dev_test_load.result }}).
+            ❌ The Dev Load Test has FAILED.
 
             Workflow: ${{ github.workflow }}
             Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -342,13 +327,8 @@ jobs:
         with:
           path: k6/script/cloud_stress.js
 
-  dev_test_stress_email:
-    name: Dev-Stress Testing Email
-    needs: [dev_test_stress]
-    runs-on: ubuntu-latest
-    steps:
       - name: Send SUCCESS email
-        if: ${{ needs.dev_test_stress.result == 'success' }}
+        if: success()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -371,7 +351,7 @@ jobs:
             GitHub Actions
 
       - name: Send FAILURE email
-        if: ${{ needs.dev_test_stress.result != 'success' }}
+        if: failure()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -384,7 +364,7 @@ jobs:
           body: |
             Hello Admin,
 
-            ❌ The Dev Stress Test has FAILED (result: ${{ needs.dev_test_stress.result }}).
+            ❌ The Dev Stress Test has FAILED.
 
             Workflow: ${{ github.workflow }}
             Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
