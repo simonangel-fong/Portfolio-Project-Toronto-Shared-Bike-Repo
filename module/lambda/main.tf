@@ -129,3 +129,9 @@ resource "aws_lambda_function" "lambda_function" {
 
   depends_on = [aws_cloudwatch_log_group.lambda_log_group]
 }
+
+resource "aws_lambda_provisioned_concurrency_config" "example_provisioned_concurrency" {
+  function_name                     = aws_lambda_function.lambda_function.function_name
+  qualifier                         = "LATEST"
+  provisioned_concurrent_executions = 10
+}
