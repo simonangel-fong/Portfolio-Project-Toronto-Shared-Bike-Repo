@@ -88,7 +88,7 @@ jobs:
           path: ${{ env.TF_WORKING_DIR }}/tfplan
 
   dev_apply:
-    name: Apply (master only, with approval)
+    name: Dev Apply
     needs: dev_validate_and_plan
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
@@ -175,9 +175,12 @@ jobs:
             <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
 
   run-cloud-test:
-    name: Apply (master only, with approval)
+    name: K6 Stress Testing
     needs: dev_apply
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "k6"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -191,4 +194,4 @@ jobs:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
         with:
-          path: k6/cloud_stress.js
+          path: cloud_stress.js
