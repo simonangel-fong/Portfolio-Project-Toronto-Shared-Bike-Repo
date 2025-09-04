@@ -8,7 +8,7 @@ export const options = {
     // Project: Default project
     projectID: 4205576,
     // Test runs with the same name groups test runs together.
-    name: "Demo K6 with Grafana",
+    name: "Load Testing",
   },
 };
 

@@ -25,6 +25,12 @@ export const options = {
       ],
     },
   },
+  cloud: {
+    // Project: Default project
+    projectID: 4205576,
+    // Test runs with the same name groups test runs together.
+    name: "Load Testing",
+  },
 };
 
 export default function () {
