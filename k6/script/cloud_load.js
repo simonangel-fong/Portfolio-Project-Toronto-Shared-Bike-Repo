@@ -8,7 +8,7 @@ const TRIP_HOUR_URL = "https://trip.arguswatcher.net/prod/trip-hour";
 const TRIP_MONTH_URL = "https://trip.arguswatcher.net/prod/trip-month";
 const TOP_STATION_URL = "https://trip.arguswatcher.net/prod/top-station";
 
-const TARGET = 50;
+const TARGET = 30;
 
 export const options = {
   thresholds: {
