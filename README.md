@@ -149,5 +149,4 @@ docker run --rm -i grafana/k6  cloud login --token a5a29b6faf34b69d8af34681621a7
 
 docker run --rm -i -e K6_WEB_DASHBOARD=true -e K6_WEB_DASHBOARD_EXPORT=/html/report.html -v ./html:/html grafana/k6 run - <grafana.js
 
- K6_WEB_DASHBOARD_EXPORT=html-report.html k6 run script.js
 ```

@@ -38,14 +38,14 @@ resource "aws_api_gateway_deployment" "rest_api_deployment" {
   triggers = {
     redeployment = sha1(jsonencode(
       concat(
-        [for method_get in aws_api_gateway_method.apigw_method_get : method_get.id],
-        [for inte_get in aws_api_gateway_integration.apigw_integration_get : inte_get.id],
-        [for resp_get in aws_api_gateway_method_response.apigw_method_response_get : resp_get.id],
-        [for ir_get in aws_api_gateway_integration_response.apigw_integration_response_get : ir_get.id],
-        [for method_cors in aws_api_gateway_method.apigw_method_cors : method_cors.id],
-        [for inte_cors in aws_api_gateway_integration.apigw_integration_cors : inte_cors.id],
-        [for resp_cors in aws_api_gateway_method_response.apigw_method_response_get_cors : resp_cors.id],
-        [for ir_cors in aws_api_gateway_integration_response.apigw_integration_response_cors : ir_cors.id]
+        [for method_get in aws_api_gateway_method.apigw_method_get : method_get],
+        [for inte_get in aws_api_gateway_integration.apigw_integration_get : inte_get],
+        [for resp_get in aws_api_gateway_method_response.apigw_method_response_get : resp_get],
+        [for ir_get in aws_api_gateway_integration_response.apigw_integration_response_get : ir_get],
+        [for method_cors in aws_api_gateway_method.apigw_method_cors : method_cors],
+        [for inte_cors in aws_api_gateway_integration.apigw_integration_cors : inte_cors],
+        [for resp_cors in aws_api_gateway_method_response.apigw_method_response_get_cors : resp_cors],
+        [for ir_cors in aws_api_gateway_integration_response.apigw_integration_response_cors : ir_cors]
       )
     ))
   }
@@ -92,7 +92,7 @@ resource "aws_api_gateway_stage" "api_stage" {
     })
   }
 
-# Enable cache
+  # Enable cache
   cache_cluster_enabled = true
   cache_cluster_size    = "1.6"
 
@@ -102,19 +102,20 @@ resource "aws_api_gateway_stage" "api_stage" {
   ]
 }
 
-# #  turn on caching for specific GET methods at stage level
-# resource "aws_api_gateway_method_settings" "cached_gets" {
-#   rest_api_id = aws_api_gateway_rest_api.rest_api.id
-#   stage_name  = aws_api_gateway_stage.api_stage.stage_name
-#   method_path = "*/*" # format: {resourcePath}/{httpMethod}; use "*" or specific paths
+#  enable Method-level caching
+resource "aws_api_gateway_method_settings" "cached_gets" {
+  for_each    = toset(var.path_list)
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  stage_name  = aws_api_gateway_stage.api_stage.stage_name
+  method_path = "${each.value}/GET"
 
-#   settings {
-#     caching_enabled        = true
-#     cache_ttl_in_seconds   = 60     # start with 60s; tune per endpoint
-#     cache_data_encrypted   = true
-#     metrics_enabled        = true   # keep on for tuning; you can disable later
-#     logging_level          = "ERROR" # cut down on overhead vs "INFO"
-#     throttling_burst_limit = 1000
-#     throttling_rate_limit  = 500
-#   }
-# }
+  settings {
+    caching_enabled        = true
+    cache_ttl_in_seconds   = 60 # start with 60s; tune per endpoint
+    cache_data_encrypted   = true
+    metrics_enabled        = true    # keep on for tuning; you can disable later
+    logging_level          = "ERROR" # cut down on overhead vs "INFO"
+    throttling_burst_limit = 1000
+    throttling_rate_limit  = 500
+  }
+}

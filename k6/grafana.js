@@ -12,7 +12,16 @@ export const options = {
   },
 };
 
+// export default function () {
+//   // First API call
+//   const res1 = http.get("https://trip.arguswatcher.net/prod/bike");
+//   check(res1, {
+//     "endpoint1 status is 200": (r) => r.status === 200,
+//   });
+//   sleep(1);
+// }
+
 export default function () {
-  http.get("https://quickpizza.grafana.com");
-  sleep(1);
+  http.get("https://test.k6.io"); // Make an HTTP GET request to the specified URL
+  sleep(1); // Pause for 1 second between iterations
 }
