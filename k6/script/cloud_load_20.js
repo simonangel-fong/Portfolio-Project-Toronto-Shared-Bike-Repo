@@ -26,7 +26,7 @@ export const options = {
     },
   },
   cloud: {
-    name: "Average Load Testing",
+    name: "Load Testing",
   },
 };
 
