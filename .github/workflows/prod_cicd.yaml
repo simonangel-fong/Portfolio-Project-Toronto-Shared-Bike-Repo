@@ -178,9 +178,6 @@ jobs:
     name: K6 Stress Testing
     needs: dev_apply
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: "k6"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -194,4 +191,4 @@ jobs:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
         with:
-          path: script/cloud_stress.js
+          path: k6/script/cloud_stress.js
