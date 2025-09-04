@@ -214,7 +214,7 @@ jobs:
 
   dev_test_stress:
     name: Dev Stress Testing
-    needs: dev_test_smoke
+    needs: dev_test_load
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

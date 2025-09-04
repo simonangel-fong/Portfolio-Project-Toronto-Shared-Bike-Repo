@@ -8,6 +8,8 @@ const TRIP_HOUR_URL = "https://trip.arguswatcher.net/prod/trip-hour";
 const TRIP_MONTH_URL = "https://trip.arguswatcher.net/prod/trip-month";
 const TOP_STATION_URL = "https://trip.arguswatcher.net/prod/top-station";
 
+const TARGET = 50;
+
 export const options = {
   thresholds: {
     http_req_failed: ["rate<0.01"], // SLA: http errors < 1%
@@ -17,30 +19,14 @@ export const options = {
     average_load: {
       executor: "ramping-vus",
       stages: [
-        { duration: "30s", target: 10 },
-        { duration: "30s", target: 10 },
-        { duration: "30s", target: 20 },
-        { duration: "30s", target: 20 },
-        { duration: "30s", target: 30 },
-        { duration: "30s", target: 30 },
-        { duration: "30s", target: 40 },
-        { duration: "30s", target: 40 },
-        { duration: "30s", target: 50 },
-        { duration: "30s", target: 50 },
-        { duration: "30s", target: 40 },
-        { duration: "30s", target: 40 },
-        { duration: "30s", target: 30 },
-        { duration: "30s", target: 30 },
-        { duration: "30s", target: 20 },
-        { duration: "30s", target: 20 },
-        { duration: "30s", target: 10 },
-        { duration: "30s", target: 10 },
-        { duration: "30s", target: 0 },
+        { duration: "1m", target: TARGET },
+        { duration: "1m", target: TARGET },
+        { duration: "1m", target: 0 },
       ],
     },
   },
   cloud: {
-    name: "Load Testing",
+    name: "Load Testing " + TARGET,
   },
 };
 
