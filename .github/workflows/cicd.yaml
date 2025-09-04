@@ -127,11 +127,9 @@ jobs:
       - name: Terraform apply
         run: terraform apply -auto-approve -input=false -no-color tfplan
 
-        
   dev_apply_email:
     name: Dev-Apply Terraform Email
     needs: [dev_apply]
-    if: ${{ always() }} # run even if load test failed (so we can send failure email)
     runs-on: ubuntu-latest
     steps:
       # Notify: send email
@@ -203,7 +201,6 @@ jobs:
   dev_test_smoke_email:
     name: Dev-Smoke Testing Email
     needs: [dev_test_smoke]
-    if: ${{ always() }} # run even if load test failed (so we can send failure email)
     runs-on: ubuntu-latest
     steps:
       - name: Send SUCCESS email
@@ -276,7 +273,6 @@ jobs:
   dev_test_load_email:
     name: Dev-Load Testing Email
     needs: [dev_test_load]
-    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
       - name: Send SUCCESS email
@@ -349,7 +345,6 @@ jobs:
   dev_test_stress_email:
     name: Dev-Stress Testing Email
     needs: [dev_test_stress]
-    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
       - name: Send SUCCESS email
