@@ -11,6 +11,7 @@
     - [Load Testing](#load-testing)
     - [Stress Testing](#stress-testing)
     - [Soak Testing](#soak-testing)
+  - [K6](#k6)
 
 ---
 
@@ -123,3 +124,30 @@ docker compose exec -it master locust -f /mnt/locust/locustfile.py --headless --
 ```
 
 ![pic](./web/img/test/soak.png)
+
+---
+
+## K6
+
+```sh
+docker run --rm -i grafana/k6 run --vus 10 --duration 30s - <demo.js
+
+docker run --rm -i grafana/k6 run  --iterations=100 --vus=10 --summary-trend-stats="med,p(95),p(99.9)" - < demo.js
+
+docker run --rm -i grafana/k6 run - <demo_rampup.js
+docker run --rm -i grafana/k6 --version && k6 run - <demo_rampup.js
+```
+
+- Visualize with Grafana
+
+```sh
+docker run --rm -i grafana/k6 run - <grafana.js
+docker run --rm -i grafana/k6  cloud login --token a5a29b6faf34b69d8af34681621a71676a0dfaf2fbb118a307c81fbac13fccd3
+
+ cloud login --token a5a29b6faf34b69d8af34681621a71676a0dfaf2fbb118a307c81fbac13fccd3
+
+
+docker run --rm -i -e K6_WEB_DASHBOARD=true -e K6_WEB_DASHBOARD_EXPORT=/html/report.html -v ./html:/html grafana/k6 run - <grafana.js
+
+ K6_WEB_DASHBOARD_EXPORT=html-report.html k6 run script.js
+```
