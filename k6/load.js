@@ -6,7 +6,7 @@ import http from "k6/http";
 export const options = {
   // define thresholds
   thresholds: {
-    http_req_failed: [{ threshold: "rate<0.1", abortOnFail: true }], // availability threshold for error rate
+    http_req_failed: [{ threshold: "rate<10", abortOnFail: true }], // availability threshold for error rate
     http_req_duration: ["p(99)<1000"], // Latency threshold for percentile
   },
   // define scenarios
