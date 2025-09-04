@@ -26,7 +26,7 @@ export const options = {
     },
   },
   cloud: {
-    name: "Load Testing " + TARGET,
+    name: "Load Testing",
   },
 };
 

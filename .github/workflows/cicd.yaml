@@ -245,8 +245,8 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          from: "CI Pipeline <ci@example.com>"
-          to: admin@example.com
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
           subject: "✅ Dev Load Test Passed — ${{ github.repository }}@${{ github.ref_name }}"
           body: |
             Hello Admin,
@@ -268,8 +268,8 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          from: "CI Pipeline <ci@example.com>"
-          to: admin@example.com
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
           subject: "❌ Dev Load Test FAILED — ${{ github.repository }}@${{ github.ref_name }}"
           body: |
             Hello Admin,
