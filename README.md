@@ -148,5 +148,27 @@ docker run --rm -i grafana/k6  cloud login --token a5a29b6faf34b69d8af34681621a7
 
 
 docker run --rm -i -e K6_WEB_DASHBOARD=true -e K6_WEB_DASHBOARD_EXPORT=/html/report.html -v ./html:/html grafana/k6 run - <grafana.js
+```
 
+```sh
+cd k6
+docker build -t k6 .
+
+# smoke testing
+docker run --rm --name k6_con --env-file ./.env -v ./script:/app k6 cloud run cloud_smoke.js
+
+# load testing: 20
+docker run --rm --name k6_con --env-file ./.env -v ./script:/app k6 cloud run cloud_load_20.js
+
+# stress testing: 100 vu
+docker run --rm --name k6_con --env-file ./.env -v ./script:/app k6 cloud run cloud_stress.js
+
+# stress testing: 200 vu
+docker run --rm --name k6_con -e K6_WEB_DASHBOARD=true -e K6_WEB_DASHBOARD_EXPORT=stress_200.html -v ./script:/app k6 run local_stress_200.js
+
+# spike testing: 2000vu
+docker run --rm --name k6_con -e K6_WEB_DASHBOARD=true -e K6_WEB_DASHBOARD_EXPORT=spike_2000.html -v ./script:/app k6 run local_spike_2000.js
+
+# breakpoint testing: 2000vu
+docker run --rm --name k6_con -e K6_WEB_DASHBOARD=true -e K6_WEB_DASHBOARD_EXPORT=breakpoint.html -v ./script:/app k6 run local_breakpoint_2000.js
 ```
