@@ -6,7 +6,7 @@ import http from "k6/http";
 export const options = {
   // define thresholds
   thresholds: {
-    http_req_failed: [{ threshold: "rate<10", abortOnFail: true }], // availability threshold for error rate
+    http_req_failed: [{ threshold: "rate<0.1", abortOnFail: true }], // availability threshold for error rate
     http_req_duration: ["p(99)<1000"], // Latency threshold for percentile
   },
   // define scenarios
@@ -14,14 +14,14 @@ export const options = {
     breaking: {
       executor: "ramping-vus",
       stages: [
-        { duration: "10s", target: 20 },
+        { duration: "10s", target: 10 },
         { duration: "50s", target: 20 },
+        { duration: "50s", target: 30 },
         { duration: "50s", target: 40 },
+        { duration: "50s", target: 50 },
         { duration: "50s", target: 60 },
+        { duration: "50s", target: 70 },
         { duration: "50s", target: 80 },
-        { duration: "50s", target: 100 },
-        { duration: "50s", target: 100 },
-        { duration: "50s", target: 100 },
       ],
     },
   },
