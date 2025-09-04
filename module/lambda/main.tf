@@ -123,7 +123,7 @@ resource "aws_lambda_function" "lambda_function" {
   runtime                        = "python3.12"
   role                           = aws_iam_role.lambda_role.arn
   timeout                        = 30
-  reserved_concurrent_executions = 9
+  reserved_concurrent_executions = 11
   # layer
   layers = [aws_lambda_layer_version.lambda_function_layer.arn]
 
