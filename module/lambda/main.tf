@@ -116,22 +116,16 @@ resource "aws_lambda_layer_version" "lambda_function_layer" {
 
 resource "aws_lambda_function" "lambda_function" {
 
-  function_name    = local.lambda_function_name
-  filename         = data.archive_file.lambda_zip_file.output_path
-  source_code_hash = data.archive_file.lambda_zip_file.output_base64sha256
-  handler          = "main.lambda_handler"
-  runtime          = "python3.12"
-  role             = aws_iam_role.lambda_role.arn
-  timeout          = 30
-
+  function_name                  = local.lambda_function_name
+  filename                       = data.archive_file.lambda_zip_file.output_path
+  source_code_hash               = data.archive_file.lambda_zip_file.output_base64sha256
+  handler                        = "main.lambda_handler"
+  runtime                        = "python3.12"
+  role                           = aws_iam_role.lambda_role.arn
+  timeout                        = 30
+  reserved_concurrent_executions = 50
   # layer
   layers = [aws_lambda_layer_version.lambda_function_layer.arn]
 
   depends_on = [aws_cloudwatch_log_group.lambda_log_group]
-}
-
-resource "aws_lambda_provisioned_concurrency_config" "example_provisioned_concurrency" {
-  function_name                     = aws_lambda_function.lambda_function.function_name
-  qualifier                         = "LATEST"
-  provisioned_concurrent_executions = 10
 }
