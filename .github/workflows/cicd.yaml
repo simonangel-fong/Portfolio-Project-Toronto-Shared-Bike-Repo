@@ -34,7 +34,7 @@ permissions:
 
 jobs:
   dev_validate_and_plan:
-    name: Dev Validate & Plan
+    name: Dev-Validate & Plan Terraform
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -88,7 +88,7 @@ jobs:
           path: ${{ env.TF_WORKING_DIR }}/tfplan
 
   dev_apply:
-    name: Dev Apply
+    name: Dev-Apply Terraform
     needs: dev_validate_and_plan
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
@@ -127,6 +127,13 @@ jobs:
       - name: Terraform apply
         run: terraform apply -auto-approve -input=false -no-color tfplan
 
+        
+  dev_apply_email:
+    name: Dev-Apply Terraform Email
+    needs: [dev_apply]
+    if: ${{ always() }} # run even if load test failed (so we can send failure email)
+    runs-on: ubuntu-latest
+    steps:
       # Notify: send email
       - name: Send email notification on success
         if: success()
@@ -175,7 +182,7 @@ jobs:
             <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
 
   dev_test_smoke:
-    name: Dev Smoke Testing
+    name: Dev-Smoke Testing
     needs: dev_apply
     runs-on: ubuntu-latest
     steps:
@@ -194,7 +201,7 @@ jobs:
           path: k6/script/cloud_smoke.js
 
   dev_test_smoke_email:
-    name: Dev Smoke Testing Email
+    name: Dev-Smoke Testing Email
     needs: [dev_test_smoke]
     if: ${{ always() }} # run even if load test failed (so we can send failure email)
     runs-on: ubuntu-latest
@@ -248,7 +255,7 @@ jobs:
             GitHub Actions
 
   dev_test_load:
-    name: Dev Load Testing
+    name: Dev-Load Testing
     needs: dev_test_smoke
     runs-on: ubuntu-latest
     steps:
@@ -267,7 +274,7 @@ jobs:
           path: k6/script/cloud_load.js
 
   dev_test_load_email:
-    name: Dev Load Testing Email
+    name: Dev-Load Testing Email
     needs: [dev_test_load]
     if: ${{ always() }}
     runs-on: ubuntu-latest
@@ -321,7 +328,7 @@ jobs:
             GitHub Actions
 
   dev_test_stress:
-    name: Dev Stress Testing
+    name: Dev-Stress Testing
     needs: dev_test_load
     runs-on: ubuntu-latest
     steps:
@@ -340,7 +347,7 @@ jobs:
           path: k6/script/cloud_stress.js
 
   dev_test_stress_email:
-    name: Dev Stress Testing Email
+    name: Dev-Stress Testing Email
     needs: [dev_test_stress]
     if: ${{ always() }}
     runs-on: ubuntu-latest
