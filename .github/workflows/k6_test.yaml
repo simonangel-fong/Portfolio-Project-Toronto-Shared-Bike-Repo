@@ -14,10 +14,11 @@ jobs:
 
       - name: Setup K6
         uses: grafana/setup-k6-action@v1
+
       - name: Run local k6 test
         uses: grafana/run-k6-action@v1
         env:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
         with:
-          path: k6/demo.js
+          path: k6/demo_rampup.js
