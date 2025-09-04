@@ -174,9 +174,47 @@ jobs:
             <p>Commit: <b>${{ github.sha }}</b></p>
             <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
 
-  run-cloud-test:
-    name: K6 Stress Testing
+  dev_test_smoke:
+    name: Dev Smoke Testing
     needs: dev_apply
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run local k6 test
+        uses: grafana/run-k6-action@v1
+        env:
+          K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
+          K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+        with:
+          path: k6/script/cloud_smoke.js
+
+  dev_test_load:
+    name: Dev Load Testing
+    needs: dev_test_smoke
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run local k6 test
+        uses: grafana/run-k6-action@v1
+        env:
+          K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
+          K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+        with:
+          path: k6/script/cloud_load_20.js
+
+  dev_test_stress:
+    name: Dev Stress Testing
+    needs: dev_test_load
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
