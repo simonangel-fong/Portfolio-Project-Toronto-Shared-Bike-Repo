@@ -374,3 +374,70 @@ jobs:
 
             Regards,
             GitHub Actions
+
+  dev_test_spike:
+    name: Dev-Spike Testing
+    needs: dev_test_stress
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run local k6 test
+        uses: grafana/run-k6-action@v1
+        env:
+          K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
+          K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+        with:
+          path: k6/script/cloud_spike.js
+
+      - name: Send SUCCESS email
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          subject: "✅ Dev Spike Test Passed — ${{ github.repository }}@${{ github.ref_name }}"
+          body: |
+            Hello Admin,
+
+            ✅ The Spike Load Test has PASSED.
+
+            Workflow: ${{ github.workflow }}
+            Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Commit: ${{ github.sha }}
+
+            Regards,
+            GitHub Actions
+
+      - name: Send FAILURE email
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          subject: "❌ Dev Spike Test FAILED — ${{ github.repository }}@${{ github.ref_name }}"
+          body: |
+            Hello Admin,
+
+            ❌ The Dev Spike Test has FAILED.
+
+            Workflow: ${{ github.workflow }}
+            Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Commit: ${{ github.sha }}
+
+            Please review the run logs above.
+
+            Regards,
+            GitHub Actions
