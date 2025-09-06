@@ -1,3 +1,0 @@
-Method,Name,Error,Occurrences
-GET,/prod/bike,RemoteDisconnected('Remote end closed connection without response'),1
-GET,/prod/trip-hour,"gaierror(-5, 'No address associated with hostname')",1
