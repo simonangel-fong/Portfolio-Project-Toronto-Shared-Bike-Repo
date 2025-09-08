@@ -4,13 +4,17 @@ import { check, sleep } from "k6";
 const API_STAGE = __ENV.API_STAGE;
 const HOME_URL = __ENV.HOME_URL;
 
-const BIKE_URL = `${HOME_URL}/${API_STAGE}/bike`;
-const STATION_URL = `${HOME_URL}/${API_STAGE}/station`;
-const TRIP_HOUR_URL = `${HOME_URL}/${API_STAGE}/trip-hour`;
-const TRIP_MONTH_URL = `${HOME_URL}/${API_STAGE}/trip-month`;
-const TOP_STATION_URL = `${HOME_URL}/${API_STAGE}/top-station`;
+const BIKE_URL = `https://${HOME_URL}/${API_STAGE}/bike`;
+const STATION_URL = `https://${HOME_URL}/${API_STAGE}/station`;
+const TRIP_HOUR_URL = `https://${HOME_URL}/${API_STAGE}/trip-hour`;
+const TRIP_MONTH_URL = `https://${HOME_URL}/${API_STAGE}/trip-month`;
+const TOP_STATION_URL = `https://${HOME_URL}/${API_STAGE}/top-station`;
 
 export const options = {
+  thresholds: {
+    http_req_failed: ["rate<0.01"], // SLA: http errors < 1%
+    http_req_duration: ["p(99)<1000"], // SLA: http 99% of requests < 1s
+  },
   vus: 2,
   duration: "10s",
   cloud: {

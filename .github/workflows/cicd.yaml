@@ -30,6 +30,8 @@ env:
   TF_VAR_aws_region: ${{ vars.AWS_REGION }}
   TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
   TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
+  K6_DEV_DNS: ${{ vars.K6_DEV_DNS }}
+  K6_PROD_DNS: ${{ vars.K6_PROD_DNS }}
 
 permissions:
   id-token: write
@@ -195,8 +197,8 @@ jobs:
         env:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+          HOME_URL: ${{env.K6_DEV_DNS}}
           API_STAGE: "dev"
-          HOME_URL: "https://trip-dev.arguswatcher.net"
         with:
           path: k6/script/cloud_smoke.js
 
