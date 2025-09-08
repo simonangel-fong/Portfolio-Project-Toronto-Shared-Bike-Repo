@@ -196,7 +196,7 @@ jobs:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
           API_STAGE: "dev"
-          HOME_URL: "https://trip.arguswatcher.net"
+          HOME_URL: "https://trip-dev.arguswatcher.net"
         with:
           path: k6/script/cloud_smoke.js
 
@@ -452,7 +452,7 @@ jobs:
   # Prod ENV
   prod_validate_plan:
     name: Prod-Terraform-Validate-Plan
-    needs: dev_terraform_apply
+    needs: dev_smoke_test
     runs-on: ubuntu-latest
     defaults:
       run:
