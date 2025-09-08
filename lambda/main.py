@@ -2,7 +2,13 @@ import boto3
 import os
 import json
 import datetime
+import logging
 from boto3.dynamodb.conditions import Attr
+
+# logging
+logger = logging.getLogger()
+log_level = os.environ.get('LOG_LEVEL', 'INFO').upper()
+logger.setLevel(getattr(logging, log_level))
 
 dynamodb = boto3.resource('dynamodb')
 MV_BIKE_YEAR = os.environ.get(
@@ -18,6 +24,9 @@ MV_TOPSTATION_USER_YEAR = os.environ.get(
 
 
 def lambda_handler(event, context):
+    logger.info("Lambda function invoked.")
+    logger.debug(f"Event received: {event}")
+
     method = event.get('httpMethod', '')
     path = event.get('path', '')
     params = event.get('queryStringParameters', {})
@@ -91,13 +100,14 @@ def _bike_year(year=None):
                 "bike_count": int(item.get("bike_count"))
             }
             for item in items]
-
+        
         result = {
             "datetime": datetime.datetime.utcnow().isoformat() + "Z",
             "count": len(filtered_items),
             "data": filtered_items
         }
 
+        logger.info(f"Call _bike_year function success.")
         return {
             "statusCode": 200,
             "headers": {
@@ -107,6 +117,7 @@ def _bike_year(year=None):
         }
     except Exception as e:
         # Error handling: return 500 with error message
+        logger.error(f"Error during execution: {e}", exc_info=True)
         return {
             "statusCode": 500,
             "headers": {
@@ -154,6 +165,7 @@ def _station_year(year=None):
         }
     except Exception as e:
         # Error handling: return 500 with error message
+        logger.error(f"Error during execution: {e}", exc_info=True)
         return {
             "statusCode": 500,
             "headers": {
@@ -211,6 +223,7 @@ def _trip_hour(year=None, user=None):
         }
     except Exception as e:
         # Error handling: return 500 with error message
+        logger.error(f"Error during execution: {e}", exc_info=True)
         return {
             "statusCode": 500,
             "headers": {
@@ -268,6 +281,7 @@ def _trip_month(year=None, user=None):
         }
     except Exception as e:
         # Error handling: return 500 with error message
+        logger.error(f"Error during execution: {e}", exc_info=True)
         return {
             "statusCode": 500,
             "headers": {
@@ -324,6 +338,7 @@ def _top_station(year=None, user=None):
         }
     except Exception as e:
         # Error handling: return 500 with error message
+        logger.error(f"Error during execution: {e}", exc_info=True)
         return {
             "statusCode": 500,
             "headers": {

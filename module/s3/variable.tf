@@ -6,5 +6,5 @@ variable "csv_path" { type = string }
 variable "web_path" { type = string }
 
 locals {
-  bucket_name = "${var.project}-${var.app}-bucket"
+  bucket_name = "${var.project}-${var.app}-${var.env}-bucket"
 }

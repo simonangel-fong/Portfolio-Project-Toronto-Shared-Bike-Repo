@@ -1,6 +1,6 @@
 # local variable
 locals {
-  lambda_function_name = "${var.project}-${var.app}-lambda-function"
+  lambda_function_name = "${var.project}-${var.app}-${var.env}-lambda-function"
 }
 
 # ########################################
@@ -17,7 +17,7 @@ resource "aws_cloudwatch_log_group" "lambda_log_group" {
 # ########################################
 
 resource "aws_iam_role" "lambda_role" {
-  name = "${var.project}-${var.app}-lambda-role"
+  name = "${var.project}-${var.app}-${var.env}-lambda-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -38,7 +38,7 @@ resource "aws_iam_role" "lambda_role" {
 # ##############################################
 
 resource "aws_iam_policy" "lambda_dynamodb_policy" {
-  name        = "${var.project}-${var.app}-lambda-access-dynamodb-policy"
+  name        = "${var.project}-${var.app}-${var.env}-lambda-access-dynamodb-policy"
   description = "Policy for Lambda to access DynamoDB"
 
   policy = jsonencode({
@@ -102,7 +102,7 @@ data "archive_file" "lambda_zip_file" {
 
 # Add dependencies layer
 resource "aws_lambda_layer_version" "lambda_function_layer" {
-  layer_name               = "${var.project}-${var.app}-lambda-layer"
+  layer_name               = "${var.project}-${var.app}-${var.env}-lambda-layer"
   compatible_runtimes      = ["python3.12"]
   compatible_architectures = ["x86_64"]
 

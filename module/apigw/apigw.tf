@@ -15,7 +15,7 @@ resource "aws_lambda_permission" "api_gateway_invoke_get" {
 # ###############################
 
 resource "aws_api_gateway_rest_api" "rest_api" {
-  name = "${var.project}-${var.app}-api-gateway"
+  name = "${var.project}-${var.app}-${var.env}-api-gateway"
 
   endpoint_configuration {
     types = ["REGIONAL"]
@@ -26,6 +26,7 @@ resource "aws_api_gateway_rest_api" "rest_api" {
 
 resource "aws_api_gateway_account" "apigw_account" {
   cloudwatch_role_arn = aws_iam_role.apigw_cloudwatch_role.arn
+  depends_on          = [aws_iam_role_policy_attachment.apigw_push_logs]
 }
 
 # ###############################
@@ -67,7 +68,7 @@ resource "aws_api_gateway_deployment" "rest_api_deployment" {
 }
 
 resource "aws_api_gateway_stage" "api_stage" {
-  stage_name    = "prod"
+  stage_name    = var.env
   deployment_id = aws_api_gateway_deployment.rest_api_deployment.id
   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
 
@@ -94,7 +95,7 @@ resource "aws_api_gateway_stage" "api_stage" {
 
   # Enable cache
   cache_cluster_enabled = true
-  cache_cluster_size    = "1.6"
+  cache_cluster_size    = "0.5"
 
   depends_on = [
     aws_cloudwatch_log_group.api_gateway_logs,
