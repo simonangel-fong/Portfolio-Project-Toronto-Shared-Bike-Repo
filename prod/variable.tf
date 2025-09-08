@@ -3,7 +3,7 @@
 # ##############################
 variable "project" { default = "toronto-shared-bike" }
 variable "app" { default = "data-warehouse" }
-variable "env" { default = "dev" }
+variable "env" { default = "prod" }
 variable "aws_region" { type = string }
 variable "dns_domain" { default = "trip.arguswatcher.net" }
 

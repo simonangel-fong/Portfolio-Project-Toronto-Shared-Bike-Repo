@@ -13,6 +13,11 @@ data "aws_acm_certificate" "cf_certificate" {
   most_recent = true
 }
 
+locals {
+  s3_web = "${var.project}-${var.app}-${var.env}-s3-web"
+  api_gw = "${var.project}-${var.app}-${var.env}-apigw"
+}
+
 # ###############################
 # CloudFront
 # ###############################
@@ -20,7 +25,7 @@ resource "aws_cloudfront_distribution" "api_cdn" {
 
   # s3 web hosting
   origin {
-    origin_id   = "s3-web"
+    origin_id   = local.s3_web
     domain_name = var.website_endpoint
 
     custom_origin_config {
@@ -33,7 +38,7 @@ resource "aws_cloudfront_distribution" "api_cdn" {
 
   # api gateway
   origin {
-    origin_id   = "apigw"
+    origin_id   = local.api_gw
     domain_name = "${var.apigw_id}.execute-api.${data.aws_region.current.region}.amazonaws.com"
 
     custom_origin_config {
@@ -46,7 +51,7 @@ resource "aws_cloudfront_distribution" "api_cdn" {
 
   # default cache: s3 web
   default_cache_behavior {
-    target_origin_id       = "s3-web"
+    target_origin_id       = local.s3_web
     viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
@@ -63,7 +68,7 @@ resource "aws_cloudfront_distribution" "api_cdn" {
   # ordered cache
   ordered_cache_behavior {
     path_pattern           = "/${var.apigw_stage}/*"
-    target_origin_id       = "apigw"
+    target_origin_id       = local.api_gw
     viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
