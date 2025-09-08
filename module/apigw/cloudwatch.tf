@@ -28,32 +28,3 @@ resource "aws_iam_role_policy_attachment" "apigw_push_logs" {
   role       = aws_iam_role.apigw_cloudwatch_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
 }
-
-# # Role policy
-# resource "aws_iam_role_policy" "apigw_cloudwatch_policy" {
-#   name = "${var.project}-${var.app}-${var.env}-apigw-cloudwatch-role-policy"
-#   role = aws_iam_role.apigw_cloudwatch_role.id
-#   policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [
-#       {
-#         Effect   = "Allow",
-#         Action   = ["logs:CreateLogGroup"],
-#         Resource = "*"
-#       },
-#       {
-#         Action = [
-#           "logs:CreateLogGroup",
-#           "logs:CreateLogStream",
-#           "logs:DescribeLogGroups",
-#           "logs:DescribeLogStreams",
-#           "logs:PutLogEvents",
-#           "logs:GetLogEvents",
-#           "logs:FilterLogEvents",
-#         ]
-#         Effect   = "Allow"
-#         Resource = "${aws_cloudwatch_log_group.api_gateway_logs.arn}:*"
-#       }
-#     ]
-#   })
-# }
