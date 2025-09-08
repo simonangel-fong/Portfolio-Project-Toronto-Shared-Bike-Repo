@@ -5,10 +5,10 @@ const API_STAGE = __ENV.API_STAGE;
 const HOME_URL = __ENV.HOME_URL;
 
 const BIKE_URL = `${HOME_URL}/${API_STAGE}/bike`;
-const STATION_URL = `${HOME_URL}/${API_STAGE}/bike/station`;
-const TRIP_HOUR_URL = `${HOME_URL}/${API_STAGE}/bike/trip-hour`;
-const TRIP_MONTH_URL = `${HOME_URL}/${API_STAGE}/bike/trip-month`;
-const TOP_STATION_URL = `${HOME_URL}/${API_STAGE}/bike/top-station`;
+const STATION_URL = `${HOME_URL}/${API_STAGE}/station`;
+const TRIP_HOUR_URL = `${HOME_URL}/${API_STAGE}/trip-hour`;
+const TRIP_MONTH_URL = `${HOME_URL}/${API_STAGE}/trip-month`;
+const TOP_STATION_URL = `${HOME_URL}/${API_STAGE}/top-station`;
 
 export const options = {
   vus: 2,
