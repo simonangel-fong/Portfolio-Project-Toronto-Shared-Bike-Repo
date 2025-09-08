@@ -116,7 +116,7 @@ jobs:
       - name: Download plan artifact
         uses: actions/download-artifact@v4
         with:
-          name: tfplan
+          name: dev-tfplan
           path: ${{ env.TF_DEV_WORKING_DIR }}
 
       - name: Terraform init (S3 backend)
