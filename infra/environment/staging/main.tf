@@ -11,18 +11,18 @@ module "stage_csv_bucket" {
   web_path = var.web_path
 }
 
-# # ##############################
-# # AWS Dynamodb
-# # ##############################
-# module "stage_dynamodb_tb" {
-#   source  = "../../module/dynamodb"
-#   project = var.project
-#   app     = var.app
-#   env     = var.env
+# ##############################
+# AWS Dynamodb
+# ##############################
+module "stage_dynamodb_tb" {
+  source  = "../../module/dynamodb"
+  project = var.project
+  app     = var.app
+  env     = var.env
 
-#   csv_bucket = module.stage_csv_bucket.id
-#   csv_prefix = var.csv_prefix
-# }
+  csv_bucket = module.stage_csv_bucket.id
+  csv_prefix = var.csv_prefix
+}
 
 # # ##############################
 # # AWS Lambda
