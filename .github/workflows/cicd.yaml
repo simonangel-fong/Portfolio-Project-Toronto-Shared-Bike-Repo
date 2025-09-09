@@ -201,6 +201,7 @@ jobs:
           API_STAGE: "dev"
         with:
           path: k6/script/cloud_smoke.js
+          cloud-run-locally: false
 
       - name: Send SUCCESS email
         if: success()
@@ -479,7 +480,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dev-tfplan
-          path: ${{ env.TF_PROD_WORKING_DIR }}
+          path: ${{ env.TF_DEV_WORKING_DIR }}
 
       - name: Terraform init (S3 backend)
         run: |
