@@ -7,7 +7,8 @@ locals {
 # ########################################
 
 resource "aws_dynamodb_table" "dynamodb_table" {
-  for_each = local.csv_file
+  # for_each = local.csv_file
+  for_each = { for idx, f in var.csv_list : idx => f }
 
   name         = "${var.project}-${var.app}-${var.env}-${split(".", split("/", each.value)[1])[0]}"
   billing_mode = "PAY_PER_REQUEST"
