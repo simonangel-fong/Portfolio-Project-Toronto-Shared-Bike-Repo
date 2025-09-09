@@ -9,7 +9,7 @@ env:
   ENV: staging
   TF_VERSION: 1.9.8
   TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
-  TF_WORKING_DIR: staging
+  TF_WORKING_DIR: infra/environment/staging
   TF_VAR_aws_region: ${{ vars.AWS_REGION }}
 #   TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
 #   TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
