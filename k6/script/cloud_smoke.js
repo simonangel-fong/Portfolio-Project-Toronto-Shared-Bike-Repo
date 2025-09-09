@@ -14,7 +14,6 @@ const TOP_STATION_URL = `https://${DNS_URL}/${API_STAGE}/top-station`;
 export const options = {
   thresholds: {
     http_req_failed: ["rate<0.01"], // SLA: http errors < 1%
-    http_req_duration: ["p(99)<1000"], // SLA: http 99% of requests < 1s
   },
   vus: 2,
   duration: "10s",

@@ -452,7 +452,7 @@ jobs:
   # #           GitHub Actions
 
   # Prod ENV
-  prod_validate_plan:
+  prod_terraform_validate_plan:
     name: Prod-Terraform-Validate-Plan
     needs: dev_smoke_test
     if: ${{ needs.dev_smoke_test.result == 'success' && github.ref == 'refs/heads/master' }}
@@ -508,9 +508,9 @@ jobs:
           name: prod-tfplan
           path: ${{ env.TF_PROD_WORKING_DIR }}/tfplan
 
-  prod_apply:
+  prod_terraform_apply:
     name: Prod-Terraform-Apply
-    needs: prod_validate_plan
+    needs: prod_terraform_validate_plan
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     defaults:
@@ -548,116 +548,116 @@ jobs:
       - name: Terraform apply
         run: terraform apply -auto-approve -input=false -no-color tfplan
 
-  #     # Notify: send email
-  #     - name: Send email notification on success
-  #       if: success()
-  #       uses: dawidd6/action-send-mail@v3
-  #       with:
-  #         server_address: smtp.gmail.com
-  #         server_port: 587
-  #         # secure: true
-  #         username: ${{ secrets.EMAIL_USERNAME }}
-  #         password: ${{ secrets.EMAIL_PASSWORD }}
-  #         subject: "✅ Project - Toronto shared bike: Infrastructures update successed"
-  #         to: ${{ secrets.EMAIL_USERNAME }}
-  #         from: ${{ secrets.EMAIL_USERNAME }}
-  #         html_body: |
-  #           <h2>GitHub Actions CI/CD Notification</h2>
-  #           <p><b>Project</b>: Toronto shared bike</p>
-  #           <p><b>Repository</b>: ${{ github.repository }}</p>
-  #           <p><b>Action</b>: Infrastructures update</p>
-  #           <p><b>Status</b>: success</p>
-  #           <p>Branch: <b>${{ github.base_ref }}</b></p>
-  #           <p>Workflow: <b>${{ github.workflow }}</b></p>
-  #           <p>Commit: <b>${{ github.sha }}</b></p>
-  #           <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
+      # Notify: send email
+      - name: Send email notification on success
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          # secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "✅ Project - Toronto shared bike: Infrastructures update successed"
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          html_body: |
+            <h2>GitHub Actions CI/CD Notification</h2>
+            <p><b>Project</b>: Toronto shared bike</p>
+            <p><b>Repository</b>: ${{ github.repository }}</p>
+            <p><b>Action</b>: Infrastructures update</p>
+            <p><b>Status</b>: success</p>
+            <p>Branch: <b>${{ github.base_ref }}</b></p>
+            <p>Workflow: <b>${{ github.workflow }}</b></p>
+            <p>Commit: <b>${{ github.sha }}</b></p>
+            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
 
-  #     - name: Send email notification on failure
-  #       if: failure()
-  #       uses: dawidd6/action-send-mail@v3
-  #       with:
-  #         server_address: smtp.gmail.com
-  #         server_port: 587
-  #         # secure: true
-  #         username: ${{ secrets.EMAIL_USERNAME }}
-  #         password: ${{ secrets.EMAIL_PASSWORD }}
-  #         subject: "❌ Project - Toronto shared bike: Infrastructures update failed"
-  #         to: ${{ secrets.EMAIL_USERNAME }}
-  #         from: ${{ secrets.EMAIL_USERNAME }}
-  #         html_body: |
-  #           <h2>GitHub Actions CI/CD Notification</h2>
-  #           <p><b>Project</b>: Toronto shared bike</p>
-  #           <p><b>Repository</b>: ${{ github.repository }}</p>
-  #           <p><b>Action</b>: Infrastructures update</p>
-  #           <p><b>Status</b>: fail</p>
-  #           <p>Branch: <b>${{ github.base_ref }}</b></p>
-  #           <p>Workflow: <b>${{ github.workflow }}</b></p>
-  #           <p>Commit: <b>${{ github.sha }}</b></p>
-  #           <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
+      - name: Send email notification on failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          # secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "❌ Project - Toronto shared bike: Infrastructures update failed"
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          html_body: |
+            <h2>GitHub Actions CI/CD Notification</h2>
+            <p><b>Project</b>: Toronto shared bike</p>
+            <p><b>Repository</b>: ${{ github.repository }}</p>
+            <p><b>Action</b>: Infrastructures update</p>
+            <p><b>Status</b>: fail</p>
+            <p>Branch: <b>${{ github.base_ref }}</b></p>
+            <p>Workflow: <b>${{ github.workflow }}</b></p>
+            <p>Commit: <b>${{ github.sha }}</b></p>
+            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
 
-  # prod_test_smoke:
-  #   name: Dev-Smoke Testing
-  #   needs: dev_terraform_apply
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+  prod_smoke_testing:
+    name: Prod-Smoke Testing
+    needs: prod_terraform_apply
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Setup K6
-  #       uses: grafana/setup-k6-action@v1
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
 
-  #     - name: Run local k6 test
-  #       uses: grafana/run-k6-action@v1
-  #       env:
-  #         K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
-  #         K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
-  #       with:
-  #         path: k6/script/cloud_smoke.js
+      - name: Run local k6 test
+        uses: grafana/run-k6-action@v1
+        env:
+          K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
+          K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+        with:
+          path: k6/script/cloud_smoke.js
 
-  #     - name: Send SUCCESS email
-  #       if: success()
-  #       uses: dawidd6/action-send-mail@v3
-  #       with:
-  #         server_address: smtp.gmail.com
-  #         server_port: 465
-  #         username: ${{ secrets.EMAIL_USERNAME }}
-  #         password: ${{ secrets.EMAIL_PASSWORD }}
-  #         to: ${{ secrets.EMAIL_USERNAME }}
-  #         from: ${{ secrets.EMAIL_USERNAME }}
-  #         subject: "✅ Dev Smoke Test Passed — ${{ github.repository }}@${{ github.ref_name }}"
-  #         body: |
-  #           Hello Admin,
+      - name: Send SUCCESS email
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          subject: "✅ Dev Smoke Test Passed — ${{ github.repository }}@${{ github.ref_name }}"
+          body: |
+            Hello Admin,
 
-  #           ✅ The Dev Smoke Test has PASSED.
+            ✅ The Dev Smoke Test has PASSED.
 
-  #           Workflow: ${{ github.workflow }}
-  #           Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-  #           Commit: ${{ github.sha }}
+            Workflow: ${{ github.workflow }}
+            Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Commit: ${{ github.sha }}
 
-  #           Regards,
-  #           GitHub Actions
+            Regards,
+            GitHub Actions
 
-  #     - name: Send FAILURE email
-  #       if: failure()
-  #       uses: dawidd6/action-send-mail@v3
-  #       with:
-  #         server_address: smtp.gmail.com
-  #         server_port: 465
-  #         username: ${{ secrets.EMAIL_USERNAME }}
-  #         password: ${{ secrets.EMAIL_PASSWORD }}
-  #         to: ${{ secrets.EMAIL_USERNAME }}
-  #         from: ${{ secrets.EMAIL_USERNAME }}
-  #         subject: "❌ Dev Smoke Test FAILED — ${{ github.repository }}@${{ github.ref_name }}"
-  #         body: |
-  #           Hello Admin,
+      - name: Send FAILURE email
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          subject: "❌ Dev Smoke Test FAILED — ${{ github.repository }}@${{ github.ref_name }}"
+          body: |
+            Hello Admin,
 
-  #           ❌ The Dev Smoke Test has FAILED.
+            ❌ The Dev Smoke Test has FAILED.
 
-  #           Workflow: ${{ github.workflow }}
-  #           Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-  #           Commit: ${{ github.sha }}
+            Workflow: ${{ github.workflow }}
+            Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Commit: ${{ github.sha }}
 
-  #           Please review the run logs above.
+            Please review the run logs above.
 
-  #           Regards,
-  #           GitHub Actions
+            Regards,
+            GitHub Actions
