@@ -1,4 +1,4 @@
-name: "Pipeline: Production Deployment"
+name: "Production Pipeline"
 
 on:
   push:
