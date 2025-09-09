@@ -65,7 +65,7 @@ jobs:
           terraform init -reconfigure -input=false \
             -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
             -backend-config="region=${{ secrets.AWS_REGION }}" \
-            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.ENV }}/terraform.tfstae" \
+            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.ENV }}/terraform.tfstate" \
             -backend-config="encrypt=true"
 
       - name: Terraform fmt
