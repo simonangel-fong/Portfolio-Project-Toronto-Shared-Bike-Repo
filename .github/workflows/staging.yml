@@ -82,6 +82,7 @@ jobs:
         with:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}/tfplan
+
   staging_terraform_apply:
     name: Staging - Terraform Apply
     needs: staging_terraform_plan
@@ -121,7 +122,6 @@ jobs:
 
       - name: Terraform apply
         run: terraform apply -auto-approve -input=false -no-color tfplan
-
 #       # Notify: send email
 #       - name: Send email notification on success
 #         if: success()
