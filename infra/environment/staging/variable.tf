@@ -5,7 +5,7 @@ variable "project" { default = "toronto-shared-bike" }
 variable "app" { default = "data-warehouse" }
 variable "env" { default = "staging" }
 variable "aws_region" { type = string }
-variable "dns_domain" { default = "trip-dev.arguswatcher.net" }
+variable "dns_domain" { default = "trip-staging.arguswatcher.net" }
 
 # ##############################
 # S3 bucket
