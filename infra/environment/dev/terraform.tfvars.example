@@ -1,0 +1,3 @@
+aws_region           = "region_name"
+cloudflare_api_token = "cf_token"
+cloudflare_zone_id   = "cf_zone"
