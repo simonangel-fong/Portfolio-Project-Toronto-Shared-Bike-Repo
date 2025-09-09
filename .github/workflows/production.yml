@@ -1,4 +1,4 @@
-name: "GitHub Actions Pipeline: Update Staging Environment"
+name: "DevOps Pipeline: Deploy Production Environment"
 
 on:
   push:
