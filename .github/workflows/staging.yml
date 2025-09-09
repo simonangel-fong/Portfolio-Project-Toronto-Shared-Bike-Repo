@@ -82,45 +82,45 @@ jobs:
         with:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}/tfplan
-#   dev_terraform_apply:
-#     name: Dev-Terraform-Apply
-#     needs: dev_terraform_val_plan
-#     if: github.ref == 'refs/heads/master'
-#     runs-on: ubuntu-latest
-#     defaults:
-#       run:
-#         working-directory: ${{ env.TF_DEV_WORKING_DIR }}
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
+  staging_terraform_apply:
+    name: Staging - Terraform Apply
+    needs: staging_terraform_plan
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-#       - name: Setup Terraform
-#         uses: hashicorp/setup-terraform@v3
-#         with:
-#           terraform_version: ${{ env.TF_VERSION }}
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
 
-#       - name: Configure AWS credentials (OIDC)
-#         uses: aws-actions/configure-aws-credentials@v4
-#         with:
-#           role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
-#           aws-region: ${{ env.TF_VAR_aws_region }}
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
+          aws-region: ${{ env.TF_VAR_aws_region }}
 
-#       - name: Download plan artifact
-#         uses: actions/download-artifact@v4
-#         with:
-#           name: dev-tfplan
-#           path: ${{ env.TF_DEV_WORKING_DIR }}
+      - name: Download plan artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dev-tfplan
+          path: ${{ env.TF_WORKING_DIR }}
 
-#       - name: Terraform init (S3 backend)
-#         run: |
-#           terraform init -reconfigure -input=false \
-#             -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
-#             -backend-config="region=${{ vars.AWS_REGION }}" \
-#             -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY_DEV }}" \
-#             -backend-config="encrypt=true"
+      - name: Terraform init (S3 backend)
+        run: |
+          terraform init -reconfigure -input=false \
+            -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
+            -backend-config="region=${{ vars.AWS_REGION }}" \
+            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY_DEV }}" \
+            -backend-config="encrypt=true"
 
-#       - name: Terraform apply
-#         run: terraform apply -auto-approve -input=false -no-color tfplan
+      - name: Terraform apply
+        run: terraform apply -auto-approve -input=false -no-color tfplan
 
 #       # Notify: send email
 #       - name: Send email notification on success
