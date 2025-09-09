@@ -3,8 +3,8 @@
 # ########################################
 
 resource "aws_s3_bucket" "app_bucket" {
-  bucket = local.bucket_name
-
+  bucket        = local.bucket_name
+  force_destroy = true
   tags = {
     Name = local.bucket_name
   }
