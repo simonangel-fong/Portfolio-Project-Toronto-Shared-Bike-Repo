@@ -1,4 +1,4 @@
-name: "DevOps Pipeline: Deploy Production Environment"
+name: "Pipeline: Production Deployment"
 
 on:
   push:
