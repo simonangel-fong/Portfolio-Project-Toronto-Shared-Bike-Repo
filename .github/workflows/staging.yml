@@ -65,7 +65,7 @@ jobs:
           terraform init -reconfigure -input=false \
             -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
             -backend-config="region=${{ secrets.AWS_REGION }}" \
-            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.ENV }}" \
+            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.ENV }}/terraform.tfstae" \
             -backend-config="encrypt=true"
 
       - name: Terraform fmt
@@ -109,7 +109,7 @@ jobs:
       - name: Download plan artifact
         uses: actions/download-artifact@v4
         with:
-          name: dev-tfplan
+          name: tfplan
           path: ${{ env.TF_WORKING_DIR }}
 
       - name: Terraform init (S3 backend)
@@ -117,7 +117,7 @@ jobs:
           terraform init -reconfigure -input=false \
             -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
             -backend-config="region=${{ vars.AWS_REGION }}" \
-            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY_DEV }}" \
+            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.ENV }}/terraform.tfstae" \
             -backend-config="encrypt=true"
 
       - name: Terraform apply
