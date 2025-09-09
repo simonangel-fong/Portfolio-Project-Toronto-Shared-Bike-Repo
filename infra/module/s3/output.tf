@@ -9,3 +9,7 @@ output "website_endpoint" {
 output "csv_list" {
   value = [for f in data.aws_s3_objects.csv_file.keys : f]
 }
+
+# output "csv_list" {
+#   value = { for idx, f in data.aws_s3_objects.csv_file.keys : idx => f }
+# }

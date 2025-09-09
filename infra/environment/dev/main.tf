@@ -11,6 +11,10 @@ module "csv_bucket" {
   web_path = var.web_path
 }
 
+output "csv" {
+  value = module.csv_bucket.csv_list
+}
+
 # ##############################
 # AWS Dynamodb
 # ##############################
