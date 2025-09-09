@@ -1,8 +1,8 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
 
-const API_STAGE = __ENV.API_STAGE;
 const HOME_URL = __ENV.HOME_URL;
+const API_STAGE = __ENV.API_STAGE;
 
 const BIKE_URL = `https://${HOME_URL}/${API_STAGE}/bike`;
 const STATION_URL = `https://${HOME_URL}/${API_STAGE}/station`;
