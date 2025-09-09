@@ -42,16 +42,6 @@ jobs:
           role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
           aws-region: ${{ env.TF_VAR_aws_region }}
 
-      - name: Cache .terraform
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.terraform.d/plugin-cache
-            ${{ env.TF_WORKING_DIR }}/.terraform
-          key: ${{ runner.os }}-tf-${{ hashFiles('**/.terraform.lock.hcl') }}
-          restore-keys: |
-            ${{ runner.os }}-tf-
-
       - name: Terraform init (S3 backend)
         run: |
           terraform init -reconfigure -input=false \
