@@ -1,12 +1,15 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
 
-const HOME_URL = "https://trip.arguswatcher.net";
-const BIKE_URL = "https://trip.arguswatcher.net/prod/bike";
-const STATION_URL = "https://trip.arguswatcher.net/prod/station";
-const TRIP_HOUR_URL = "https://trip.arguswatcher.net/prod/trip-hour";
-const TRIP_MONTH_URL = "https://trip.arguswatcher.net/prod/trip-month";
-const TOP_STATION_URL = "https://trip.arguswatcher.net/prod/top-station";
+const DNS_URL = __ENV.DNS_URL;
+const API_STAGE = __ENV.API_STAGE;
+
+const HOME_URL = `https://${DNS_URL}`;
+const BIKE_URL = `https://${DNS_URL}/${API_STAGE}/bike`;
+const STATION_URL = `https://${DNS_URL}/${API_STAGE}/station`;
+const TRIP_HOUR_URL = `https://${DNS_URL}/${API_STAGE}/trip-hour`;
+const TRIP_MONTH_URL = `https://${DNS_URL}/${API_STAGE}/trip-month`;
+const TOP_STATION_URL = `https://${DNS_URL}/${API_STAGE}/top-station`;
 
 const TARGET = 30;
 
