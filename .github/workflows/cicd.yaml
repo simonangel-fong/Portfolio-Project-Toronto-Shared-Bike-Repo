@@ -201,7 +201,7 @@ jobs:
           API_STAGE: "dev"
         with:
           path: k6/script/cloud_smoke.js
-          cloud-run-locally: false
+          # cloud-run-locally: false
 
       - name: Send SUCCESS email
         if: success()
