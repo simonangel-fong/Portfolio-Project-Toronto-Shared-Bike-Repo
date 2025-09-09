@@ -2,10 +2,10 @@ locals {
   csv_file = { for idx, f in var.csv_list : f => f }
 }
 
-data "aws_s3_bucket_objects" "csv_files" {
-  bucket = var.csv_bucket
-  prefix = "data"
-}
+# data "aws_s3_bucket_objects" "csv_files" {
+#   bucket = var.csv_bucket
+#   prefix = "data"
+# }
 
 # ########################################
 # DynamoDB Table
