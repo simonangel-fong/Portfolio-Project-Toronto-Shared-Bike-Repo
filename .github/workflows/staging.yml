@@ -42,17 +42,26 @@ jobs:
           role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
           aws-region: ${{ env.TF_VAR_aws_region }}
 
-      - name: Cache .terraform
+      - name: Configure TF plugin cache dir
+        run: |
+          echo "TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache" >> "$GITHUB_ENV"
+          mkdir -p "$HOME/.terraform.d/plugin-cache"
+
+      - name: Cache Terraform providers and modules
         uses: actions/cache@v4
         with:
           path: |
-            ~/.terraform.d/plugin-cache
-            ${{ env.TF_WORKING_DIR }}/.terraform
-          key: ${{ runner.os }}-tf-${{ hashFiles('**/.terraform.lock.hcl') }}
+            ${{ env.TF_PLUGIN_CACHE_DIR }}
+            ${{ env.TF_WORKING_DIR }}/.terraform/modules
+          # Keyed by OS + TF version + lockfile hash (provider versions)
+          key: ${{ runner.os }}-tf-${{ env.TF_VERSION }}-${{ hashFiles(format('{0}/**/.terraform.lock.hcl', env.TF_WORKING_DIR)) }}
           restore-keys: |
+            ${{ runner.os }}-tf-${{ env.TF_VERSION }}-
             ${{ runner.os }}-tf-
 
       - name: Terraform init (S3 backend)
+        env:
+          TF_PLUGIN_CACHE_DIR: ${{ env.TF_PLUGIN_CACHE_DIR }}
         run: |
           terraform init -reconfigure -input=false \
             -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
