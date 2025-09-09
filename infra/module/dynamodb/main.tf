@@ -37,6 +37,4 @@ resource "aws_dynamodb_table" "dynamodb_table" {
       key_prefix = each.value
     }
   }
-
-  depends_on = [data.aws_s3_bucket_objects.csv_files]
 }
