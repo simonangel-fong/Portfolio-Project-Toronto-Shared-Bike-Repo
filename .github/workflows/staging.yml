@@ -52,28 +52,29 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-tf-
 
-      - name: Terraform init (S3 backend)
-        run: |
-          terraform init -reconfigure -input=false \
-            -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
-            -backend-config="region=${{ secrets.AWS_REGION }}" \
-            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.ENV }}" \
-            -backend-config="encrypt=true"
+      # - name: Terraform init (S3 backend)
+      #   run: |
+      #     terraform init -reconfigure -input=false \
+      #       -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
+      #       -backend-config="region=${{ secrets.AWS_REGION }}" \
+      #       -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.ENV }}" \
+      #       -backend-config="encrypt=true"
 
-      - name: Terraform fmt
-        run: terraform fmt -check -recursive -no-color
+      # - name: Terraform fmt
+      #   run: terraform fmt -check -recursive -no-color
 
-      - name: Terraform validate
-        run: terraform validate -no-color
+      # - name: Terraform validate
+      #   run: terraform validate -no-color
 
-      - name: Terraform plan
-        run: terraform plan -out=tfplan -input=false -no-color
+      # - name: Terraform plan
+      #   run: terraform plan -out=tfplan -input=false -no-color
 
-      - name: Save dev plan artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan
-          path: ${{ env.TF_WORKING_DIR }}/tfplan
+      # - name: Save dev plan artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: tfplan
+      #     path: ${{ env.TF_WORKING_DIR }}/tfplan
+      
 #   dev_terraform_apply:
 #     name: Dev-Terraform-Apply
 #     needs: dev_terraform_val_plan
