@@ -10,8 +10,8 @@ variable "dns_domain" { default = "trip-dev.arguswatcher.net" }
 # ##############################
 # S3 bucket
 # ##############################
-variable "csv_path" { default = "../csv" }
-variable "web_path" { default = "../web" }
+variable "csv_path" { default = "../../../data/csv" }
+variable "web_path" { default = "../../../src/web" }
 
 # ##############################
 # DynamoDB Table

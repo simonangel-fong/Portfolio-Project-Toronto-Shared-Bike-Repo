@@ -138,3 +138,11 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 
   depends_on = [aws_s3_bucket_public_access_block.bucket_public_access]
 }
+
+
+data "aws_s3_objects" "csv_file" {
+  bucket = aws_s3_bucket.app_bucket.id
+  prefix = "data"
+
+  depends_on = [aws_s3_bucket.app_bucket]
+}
