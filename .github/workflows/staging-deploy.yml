@@ -15,7 +15,9 @@ env:
   TF_VAR_aws_region: ${{ vars.AWS_REGION }}
   TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
   TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
-
+  # threshold
+  SLA_FAIL: 0.01
+  SLA_DUR_99: 1000
 permissions:
   id-token: write
   contents: read
@@ -210,9 +212,9 @@ jobs:
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
           DNS_DOMAIN: ${{ env.TF_VAR_dns_domain }}
           API_ENV: ${{ env.TF_VAR_env }}
-          # threshold
-          SLA_FAIL: 0.01
-          SLA_DUR_99: 1000
+          SLA_FAIL: ${{ env.SLA_FAIL }}
+          SLA_DUR_99: ${{ env.SLA_DUR_99 }}
+
         with:
           debug: true
           # parallel: true # run tests in parallel
