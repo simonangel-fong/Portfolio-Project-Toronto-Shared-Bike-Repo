@@ -116,7 +116,9 @@ jobs:
 
       - name: Configure TF plugin cache dir
         run: |
-          mkdir -p "$HOME/.terraform.d/plugin-cache"
+          pwd  
+          ls ~/.terraform.d/plugin-cache
+          mkdir -pv "$HOME/.terraform.d/plugin-cache"
 
       - name: Terraform init (S3 backend)
         env:
