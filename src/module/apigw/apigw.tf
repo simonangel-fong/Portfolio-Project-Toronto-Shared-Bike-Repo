@@ -67,7 +67,7 @@ resource "aws_api_gateway_deployment" "rest_api_deployment" {
   ]
 }
 
-resource "aws_api_gateway_stage" "api_stage" {
+resource "aws_api_gateway_stage" "API_ENV" {
   stage_name    = var.env
   deployment_id = aws_api_gateway_deployment.rest_api_deployment.id
   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
@@ -107,7 +107,7 @@ resource "aws_api_gateway_stage" "api_stage" {
 resource "aws_api_gateway_method_settings" "cached_gets" {
   for_each    = toset(var.path_list)
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
-  stage_name  = aws_api_gateway_stage.api_stage.stage_name
+  stage_name  = aws_api_gateway_stage.API_ENV.stage_name
   method_path = "${each.value}/GET"
 
   settings {

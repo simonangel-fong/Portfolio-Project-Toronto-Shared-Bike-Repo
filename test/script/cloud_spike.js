@@ -1,14 +1,14 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
 
-const API_STAGE = __ENV.API_STAGE;
+const API_ENV = __ENV.API_ENV;
 const HOME_URL = __ENV.HOME_URL;
 
-const BIKE_URL = `${HOME_URL}/${API_STAGE}/bike`;
-const STATION_URL = `${HOME_URL}/${API_STAGE}/station`;
-const TRIP_HOUR_URL = `${HOME_URL}/${API_STAGE}/trip-hour`;
-const TRIP_MONTH_URL = `${HOME_URL}/${API_STAGE}/trip-month`;
-const TOP_STATION_URL = `${HOME_URL}/${API_STAGE}/top-station`;
+const BIKE_URL = `${HOME_URL}/${API_ENV}/bike`;
+const STATION_URL = `${HOME_URL}/${API_ENV}/station`;
+const TRIP_HOUR_URL = `${HOME_URL}/${API_ENV}/trip-hour`;
+const TRIP_MONTH_URL = `${HOME_URL}/${API_ENV}/trip-month`;
+const TOP_STATION_URL = `${HOME_URL}/${API_ENV}/top-station`;
 
 const TARGET = 100;
 

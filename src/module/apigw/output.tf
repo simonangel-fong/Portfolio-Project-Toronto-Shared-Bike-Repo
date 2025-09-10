@@ -3,5 +3,5 @@ output "id" {
 }
 
 output "stage" {
-  value = aws_api_gateway_stage.api_stage.stage_name
+  value = aws_api_gateway_stage.API_ENV.stage_name
 }
