@@ -11,12 +11,15 @@ const TRIP_HOUR_URL = `https://${DNS_DOMAIN}/${API_ENV}/trip-hour`;
 const TRIP_MONTH_URL = `https://${DNS_DOMAIN}/${API_ENV}/trip-month`;
 const TOP_STATION_URL = `https://${DNS_DOMAIN}/${API_ENV}/top-station`;
 
+const SLA_FAIL = 0.01;
+const SLA_DUR_99 = 1000;
+
 const TARGET = 30;
 
 export const options = {
   thresholds: {
-    http_req_failed: ["rate<0.01"], // SLA: http errors < 1%
-    http_req_duration: ["p(99)<1000"], // SLA: http 99% of requests < 1s
+    http_req_failed: [`rate<${SLA_FAIL}`], // SLA: http errors < 1%
+    http_req_duration: [`p(99)<${SLA_DUR_99}`], // SLA: http 99% of requests < 1s
   },
   scenarios: {
     average_load: {

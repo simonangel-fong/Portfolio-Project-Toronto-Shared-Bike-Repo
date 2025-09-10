@@ -11,8 +11,8 @@ const TRIP_HOUR_URL = `https://${DNS_DOMAIN}/${API_ENV}/trip-hour`;
 const TRIP_MONTH_URL = `https://${DNS_DOMAIN}/${API_ENV}/trip-month`;
 const TOP_STATION_URL = `https://${DNS_DOMAIN}/${API_ENV}/top-station`;
 
-const SLA_FAIL = __ENV.SLA_FAIL;
-const SLA_DUR_99 = __ENV.SLA_DUR_99;
+const SLA_FAIL = 0.01;
+const SLA_DUR_99 = 1000;
 
 const LOW = 20;
 const AVG = 50;
