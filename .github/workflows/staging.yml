@@ -124,7 +124,7 @@ jobs:
             -backend-config="encrypt=true"
 
       - name: Terraform apply
-        run: terraform destroy -auto-approve -input=false -no-color tfplan
+        run: terraform apply -destroy -auto-approve -input=false -no-color tfplan
 #       # Notify: send email
 #       - name: Send email notification on success
 #         if: success()
