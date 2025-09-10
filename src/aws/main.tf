@@ -11,18 +11,18 @@ module "csv_bucket" {
   web_path = var.web_path
 }
 
-# ##############################
-# AWS Dynamodb
-# ##############################
-module "dynamodb_tb" {
-  source  = "../module/dynamodb"
-  project = var.project
-  app     = var.app
-  env     = var.env
+# # ##############################
+# # AWS Dynamodb
+# # ##############################
+# module "dynamodb_tb" {
+#   source  = "../module/dynamodb"
+#   project = var.project
+#   app     = var.app
+#   env     = var.env
 
-  csv_bucket = module.csv_bucket.id
-  csv_list   = module.csv_bucket.csv_list
-}
+#   csv_bucket = module.csv_bucket.id
+#   csv_list   = module.csv_bucket.csv_list
+# }
 
 # # ##############################
 # # AWS Lambda
