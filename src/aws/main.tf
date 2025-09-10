@@ -21,7 +21,7 @@ module "dynamodb_tb" {
   env     = var.env
 
   csv_bucket = module.csv_bucket.id
-  csv_list   = module.csv_bucket.csv_list
+  # csv_list   = module.csv_bucket.csv_list
 }
 
 # ##############################

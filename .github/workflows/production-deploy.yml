@@ -131,30 +131,40 @@ jobs:
 
       - name: Terraform apply
         run: terraform apply -auto-approve -input=false -no-color tfplan
-#       # Notify: send email
-#       - name: Send email notification on success
-#         if: success()
-#         uses: dawidd6/action-send-mail@v3
-#         with:
-#           server_address: smtp.gmail.com
-#           server_port: 587
-#           # secure: true
-#           username: ${{ secrets.EMAIL_USERNAME }}
-#           password: ${{ secrets.EMAIL_PASSWORD }}
-#           subject: "✅ Project - Toronto shared bike(Dev): Terraform Apply Success"
-#           to: ${{ secrets.EMAIL_USERNAME }}
-#           from: ${{ secrets.EMAIL_USERNAME }}
-#           html_body: |
-#             <h2>GitHub Actions CI/CD Notification</h2>
-#             <p><b>Project</b>: Toronto shared bike</p>
-#             <p><b>Repository</b>: ${{ github.repository }}</p>
-#             <p><b>Action</b>: Infrastructures update</p>
-#             <p><b>Env</b>: DEV</p>
-#             <p><b>Status</b>: success</p>
-#             <p>Branch: <b>${{ github.base_ref }}</b></p>
-#             <p>Workflow: <b>${{ github.workflow }}</b></p>
-#             <p>Commit: <b>${{ github.sha }}</b></p>
-#             <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
+
+  prod_send_email:
+    name: Prod - Send Email
+    needs: prod_terraform_apply
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+    steps:
+      # Notify: send email
+      - name: Send email notification on success
+        if: ${{ needs.prod_terraform_apply.result == 'success' }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "✅ Toronto shared bike - Production Deployment Success"
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          html_body: |
+            <h2>GitHub Actions CI/CD Notification</h2>
+            <p><b>Project</b>: Toronto shared bike</p>
+            <p><b>Repository</b>: ${{ github.repository }}</p>
+            <p><b>Action</b>: Infrastructures update</p>
+            <p><b>Env</b>: DEV</p>
+            <p><b>Status</b>: success</p>
+            <p>Branch: <b>${{ github.base_ref }}</b></p>
+            <p>Workflow: <b>${{ github.workflow }}</b></p>
+            <p>Commit: <b>${{ github.sha }}</b></p>
+            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
 
 #       - name: Send email notification on failure
 #         if: failure()

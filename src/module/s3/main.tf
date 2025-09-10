@@ -140,9 +140,9 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 }
 
 
-data "aws_s3_objects" "csv_file" {
-  bucket = aws_s3_bucket.app_bucket.id
-  prefix = "data"
+# data "aws_s3_objects" "csv_file" {
+#   bucket = aws_s3_bucket.app_bucket.id
+#   prefix = "data"
 
-  depends_on = [aws_s3_bucket.app_bucket]
-}
+#   depends_on = [aws_s3_bucket.app_bucket]
+# }
