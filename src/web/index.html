@@ -475,8 +475,9 @@
     <script src="https://echarts.apache.org/en/js/vendors/echarts/dist/echarts.min.js"></script>
     <script src="./js/charts.js"></script>
     <script>
-        
-        
+        const DOMAIN = "trip.arguswatcher.net";
+        const STAG = "prod";
+
         document.addEventListener('DOMContentLoaded', () => {
             const sel = document.getElementById('year-selector');
             if (!sel) return;
@@ -487,23 +488,23 @@
                 // call function based on values
                 switch (value) {
                     case "station":
-                        chartStation({ url: "https://trip.arguswatcher.net/prod/station" });
+                        chartStation({ url: `https://${DOMAIN}/${STAG}/station` });
                         break;
                     case "trip-month-annual":
-                        chartTripMonth({ url: "https://trip.arguswatcher.net/prod/trip-month?user=annual", title: "Monthly Pattern - Annual Member" });
+                        chartTripMonth({ url: `https://${DOMAIN}/${STAG}/trip-month?user=annual`, title: "Monthly Pattern - Annual Member" });
                         break;
                     case "trip-month-casual":
-                        chartTripMonth({ url: "https://trip.arguswatcher.net/prod/trip-month?user=casual", title: "Monthly Pattern - Casual Member" });
+                        chartTripMonth({ url: `https://${DOMAIN}/${STAG}/trip-month?user=casual`, title: "Monthly Pattern - Casual Member" });
                         break;
                     case "trip-hour-annual":
-                        chartTripHour({ url: "https://trip.arguswatcher.net/prod/trip-hour?user=annual", title: "Hourly Pattern - Annual Member" });
+                        chartTripHour({ url: `https://${DOMAIN}/${STAG}/trip-hour?user=annual`, title: "Hourly Pattern - Annual Member" });
                         break;
                     case "trip-hour-casual":
-                        chartTripHour({ url: "https://trip.arguswatcher.net/prod/trip-hour?user=casual", title: "Hourly Pattern - Casual Member" });
+                        chartTripHour({ url: `https://${DOMAIN}/${STAG}/trip-hour?user=casual`, title: "Hourly Pattern - Casual Member" });
                         break;
                     default:
                         // bike
-                        chartBike({ url: "https://trip.arguswatcher.net/prod/bike" });
+                        chartBike({ url: `https://${DOMAIN}/${STAG}/bike` });
                 }
             }
 
