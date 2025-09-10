@@ -124,6 +124,14 @@ resource "aws_lambda_function" "lambda_function" {
   role             = aws_iam_role.lambda_role.arn
   timeout          = 30
 
+  environment {
+    variables = {
+      PROJECT = var.project
+      APP     = var.app
+      ENV     = var.env
+    }
+  }
+
   # layer
   layers = [aws_lambda_layer_version.lambda_function_layer.arn]
 

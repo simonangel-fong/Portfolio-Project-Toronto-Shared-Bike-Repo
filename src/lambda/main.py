@@ -10,17 +10,17 @@ logger = logging.getLogger()
 log_level = os.environ.get('LOG_LEVEL', 'INFO').upper()
 logger.setLevel(getattr(logging, log_level))
 
+# get env var
+PROJECT = os.environ.get('PROJECT', 'toronto-shared-bike')
+APP = os.environ.get('APP', 'data-warehouse')
+ENV = os.environ.get('ENV', 'dev')
+
 dynamodb = boto3.resource('dynamodb')
-MV_BIKE_YEAR = os.environ.get(
-    'MV_BIKE_YEAR', 'toronto-shared-bike-data-warehouse-dev-mv_bike_year')
-MV_STATION_YEAR = os.environ.get(
-    'MV_STATION_YEAR', 'toronto-shared-bike-data-warehouse-dev-mv_station_year')
-MV_TRIP_USER_HOUR = os.environ.get(
-    'MV_TRIP_USER_HOUR', 'toronto-shared-bike-data-warehouse-dev-mv_trip_user_year_hour')
-MV_TRIP_USER_MONTH = os.environ.get(
-    'MV_TRIP_USER_MONTH', 'toronto-shared-bike-data-warehouse-dev-mv_trip_user_year_month')
-MV_TOPSTATION_USER_YEAR = os.environ.get(
-    'MV_TOPSTATION_USER_YEAR', 'toronto-shared-bike-data-warehouse-dev-mv_top_station_user_year')
+MV_BIKE_YEAR = f"{PROJECT}-{APP}-{ENV}-mv_bike_year"
+MV_STATION_YEAR = f"{PROJECT}-{APP}-{ENV}-mv_station_year"
+MV_TRIP_USER_HOUR = f"{PROJECT}-{APP}-{ENV}-mv_trip_user_year_hour"
+MV_TRIP_USER_MONTH = f"{PROJECT}-{APP}-{ENV}-mv_trip_user_year_month"
+MV_TOPSTATION_USER_YEAR = f"{PROJECT}-{APP}-{ENV}-mv_top_station_user_year"
 
 
 def lambda_handler(event, context):
@@ -100,7 +100,7 @@ def _bike_year(year=None):
                 "bike_count": int(item.get("bike_count"))
             }
             for item in items]
-        
+
         result = {
             "datetime": datetime.datetime.utcnow().isoformat() + "Z",
             "count": len(filtered_items),

@@ -3,15 +3,15 @@
 # ##############################
 variable "project" { default = "toronto-shared-bike" }
 variable "app" { default = "data-warehouse" }
-variable "env" { default = "staging" }
+variable "env" { default = "dev" }
 variable "aws_region" { type = string }
-variable "dns_domain" { default = "trip-staging.arguswatcher.net" }
+variable "dns_domain" { default = "trip-dev.arguswatcher.net" }
 
 # ##############################
 # S3 bucket
 # ##############################
-variable "csv_path" { default = "../../../data/csv" }
-variable "web_path" { default = "../../../src/web" }
+variable "csv_path" { default = "../../data/csv" }
+variable "web_path" { default = "../../src/web" }
 
 # ##############################
 # DynamoDB Table
