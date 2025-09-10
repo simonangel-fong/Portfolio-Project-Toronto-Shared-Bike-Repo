@@ -7,11 +7,14 @@ on:
 
 env:
   TF_VERSION: 1.9.8
+
+  TF_VAR_project: "toronto-shared-bike"
+  TF_VAR_app: "data-warehouse"
+  TF_VAR_env: staging
+  TF_VAR_dns_domain: "trip-staging.arguswatcher.net"
   TF_VAR_aws_region: ${{ vars.AWS_REGION }}
   TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
   TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
-  TF_VAR_env: staging
-  TF_VAR_dns_domain: "trip-staging.arguswatcher.net"
 
 permissions:
   id-token: write
@@ -82,20 +85,21 @@ jobs:
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
-          server_port: 465
+          server_port: 465`
           secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "❌ Toronto shared bike (Staging): Terraform Plan Fails"
+          subject: "✉️ ${{ env.TF_VAR_project}}-${{env.TF_VAR_app}}-${{env.TF_VAR_env}}: ${{ github.job }} ${{ job.status }}"
           to: ${{ secrets.EMAIL_USERNAME }}
           from: ${{ secrets.EMAIL_USERNAME }}
           html_body: |
             <h2>GitHub Actions CI/CD Notification</h2>
-            <p><b>Project</b>: Toronto shared bike</p>
+            <p><b>Project</b>: ${{ env.TF_VAR_project}}</p>
+            <p><b>Application</b>: ${{ env.TF_VAR_app}}</p>
             <p><b>Repository</b>: ${{ github.repository }}</p>
-            <p><b>Action</b>: Terraform plan</p>
             <p><b>Env</b>: ${{ env.TF_VAR_env }}</p>
-            <p><b>Status</b>: failure</p>
+            <p><b>Job</b>: ${{ github.job }}</p>
+            <p><b>Status</b>: ${{ job.status }}</p>
             <p>Branch: <b>${{ github.ref }}</b></p>
             <p>Workflow: <b>${{ github.workflow }}</b></p>
             <p>Commit: <b>${{ github.sha }}</b></p>
@@ -155,49 +159,26 @@ jobs:
       - name: Terraform apply
         run: terraform apply -auto-approve -input=false -no-color tfplan
 
-      - name: Send email notification on success
-        if: success()
+      - name: Send email notification
+        if: always()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
-          server_port: 465
+          server_port: 465`
           secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "✅ Toronto shared bike (Staging): Terraform Apply Success"
+          subject: "✉️ ${{ env.TF_VAR_project}}-${{env.TF_VAR_app}}-${{env.TF_VAR_env}}: ${{ github.job }} ${{ job.status }}"
           to: ${{ secrets.EMAIL_USERNAME }}
           from: ${{ secrets.EMAIL_USERNAME }}
           html_body: |
             <h2>GitHub Actions CI/CD Notification</h2>
-            <p><b>Project</b>: Toronto shared bike</p>
+            <p><b>Project</b>: ${{ env.TF_VAR_project}}</p>
+            <p><b>Application</b>: ${{ env.TF_VAR_app}}</p>
             <p><b>Repository</b>: ${{ github.repository }}</p>
-            <p><b>Action</b>: Terraform Apply</p>
             <p><b>Env</b>: ${{ env.TF_VAR_env }}</p>
-            <p><b>Status</b>: success</p>
-            <p>Branch: <b>${{ github.ref }}</b></p>
-            <p>Workflow: <b>${{ github.workflow }}</b></p>
-            <p>Commit: <b>${{ github.sha }}</b></p>
-            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
-
-      - name: Send email notification on failure
-        if: failure()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          secure: true
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "❌ Toronto shared bike (Staging): Terraform Apply Fails"
-          to: ${{ secrets.EMAIL_USERNAME }}
-          from: ${{ secrets.EMAIL_USERNAME }}
-          html_body: |
-            <h2>GitHub Actions CI/CD Notification</h2>
-            <p><b>Project</b>: Toronto shared bike</p>
-            <p><b>Repository</b>: ${{ github.repository }}</p>
-            <p><b>Action</b>: Terraform apply</p>
-            <p><b>Env</b>: ${{ env.TF_VAR_env }}</p>
-            <p><b>Status</b>: failure</p>
+            <p><b>Job</b>: ${{ github.job }}</p>
+            <p><b>Status</b>: ${{ job.status }}</p>
             <p>Branch: <b>${{ github.ref }}</b></p>
             <p>Workflow: <b>${{ github.workflow }}</b></p>
             <p>Commit: <b>${{ github.sha }}</b></p>
