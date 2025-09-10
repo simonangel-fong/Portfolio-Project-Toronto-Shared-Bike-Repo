@@ -11,9 +11,12 @@ const TRIP_HOUR_URL = `https://${DNS_DOMAIN}/${API_ENV}/trip-hour`;
 const TRIP_MONTH_URL = `https://${DNS_DOMAIN}/${API_ENV}/trip-month`;
 const TOP_STATION_URL = `https://${DNS_DOMAIN}/${API_ENV}/top-station`;
 
+const SLA_FAIL = __ENV.SLA_FAIL;
+const SLA_DUR_99 = __ENV.SLA_DUR_99;
+
 export const options = {
   thresholds: {
-    http_req_failed: ["rate<0.01"], // SLA: http errors < 1%
+    http_req_failed: [`rate<${SLA_FAIL}`], // SLA: http errors < 1%
   },
   vus: 2,
   duration: "10s",
