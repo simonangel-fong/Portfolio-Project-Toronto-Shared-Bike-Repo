@@ -24,19 +24,19 @@ module "dynamodb_tb" {
   csv_list   = module.csv_bucket.csv_list
 }
 
-# # ##############################
-# # AWS Lambda
-# # ##############################
-# module "lambda" {
-#   source  = "../module/lambda"
-#   project = var.project
-#   app     = var.app
-#   env     = var.env
+# ##############################
+# AWS Lambda
+# ##############################
+module "lambda" {
+  source  = "../module/lambda"
+  project = var.project
+  app     = var.app
+  env     = var.env
 
-#   archive_source_file = "${path.module}/../../src/lambda/main.py"
-#   archive_output_path = "${path.module}/../../src/lambda/main.zip"
-#   dynamodb_table_arn  = module.dynamodb_tb.arn
-# }
+  archive_source_file = "${path.module}/../../src/lambda/main.py"
+  archive_output_path = "${path.module}/../../src/lambda/main.zip"
+  dynamodb_table_arn  = module.dynamodb_tb.arn
+}
 
 # # ##############################
 # # AWS API Gateway
