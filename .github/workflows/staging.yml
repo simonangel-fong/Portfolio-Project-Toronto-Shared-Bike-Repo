@@ -113,6 +113,10 @@ jobs:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}
 
+      - name: Configure TF plugin cache dir
+        run: |
+          mkdir -p "$HOME/.terraform.d/plugin-cache"
+
       - name: Terraform init (S3 backend)
         env:
           TF_PLUGIN_CACHE_DIR: ${{ env.TF_PLUGIN_CACHE_DIR }}
