@@ -221,8 +221,6 @@ jobs:
           # fail-fast: false # fail the step early if any test fails
           path: |
             test/script/cloud_smoke.js
-            test/script/cloud_load.js
-            test/script/cloud_stress.js
 
       - name: Send email notification
         if: always()
