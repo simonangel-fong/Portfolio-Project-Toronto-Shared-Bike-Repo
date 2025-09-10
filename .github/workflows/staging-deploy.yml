@@ -7,7 +7,6 @@ on:
 
 env:
   TF_VERSION: 1.9.8
-
   TF_VAR_project: "toronto-shared-bike"
   TF_VAR_app: "data-warehouse"
   TF_VAR_env: staging
@@ -212,8 +211,8 @@ jobs:
           API_ENV: ${{ env.TF_VAR_env }}
         with:
           debug: true
-          parallel: true # run tests in parallel
-          fail-fast: false # fail the step early if any test fails
+          # parallel: true # run tests in parallel
+          # fail-fast: false # fail the step early if any test fails
           path: |
             test/script/cloud_smoke.js
             test/script/cloud_load.js
