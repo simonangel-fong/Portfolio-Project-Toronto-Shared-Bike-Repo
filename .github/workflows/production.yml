@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   prod_terraform_plan:
-    name: Staging - Terraform Plan
+    name: Prod - Terraform Plan
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -85,7 +85,7 @@ jobs:
           path: ${{ env.TF_WORKING_DIR }}/tfplan
 
   prod_terraform_apply:
-    name: Staging - Terraform Apply
+    name: Prod - Terraform Apply
     needs: prod_terraform_plan
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
