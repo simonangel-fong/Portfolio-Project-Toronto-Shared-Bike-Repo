@@ -112,7 +112,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TF_WORKING_DIR: src/aws
-      TF_PLUGIN_CACHE_DIR: ${{ runner.home }}/.terraform.d/plugin-cache
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
     defaults:
       run:
         working-directory: ${{ env.TF_WORKING_DIR }}
