@@ -113,18 +113,9 @@ jobs:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}
 
-      - name: Cache Terraform providers and modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{ env.TF_PLUGIN_CACHE_DIR }}
-            ${{ env.TF_WORKING_DIR }}/.terraform/modules
-          key: ${{ runner.os }}-tf-${{ env.TF_VERSION }}-${{ hashFiles(format('{0}/**/.terraform.lock.hcl', env.TF_WORKING_DIR)) }}
-          restore-keys: |
-            ${{ runner.os }}-tf-${{ env.TF_VERSION }}-
-            ${{ runner.os }}-tf-
-
       - name: Terraform init (S3 backend)
+        env:
+          TF_PLUGIN_CACHE_DIR: ${{ env.TF_PLUGIN_CACHE_DIR }}
         run: |
           terraform init -reconfigure -input=false \
             -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
