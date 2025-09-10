@@ -16,8 +16,8 @@ env:
   TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
   TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
   # threshold
-  SLA_FAIL: 0.01
-  SLA_DUR_99: 1000
+  SLA_FAIL: "0.01"
+  SLA_DUR_99: "1000"
 permissions:
   id-token: write
   contents: read
