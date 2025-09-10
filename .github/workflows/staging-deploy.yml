@@ -8,15 +8,11 @@ on:
 env:
   ENV: staging
   TF_VERSION: 1.9.8
-  TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
-  TF_WORKING_DIR: src/aws
   TF_VAR_aws_region: ${{ vars.AWS_REGION }}
   TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
   TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
   TF_VAR_env: staging
   TF_VAR_dns_domain: "trip-staging.arguswatcher.net"
-#   K6_DEV_DNS: ${{ vars.K6_DEV_DNS }}
-#   K6_PROD_DNS: ${{ vars.K6_PROD_DNS }}
 
 permissions:
   id-token: write
@@ -26,6 +22,9 @@ jobs:
   staging_terraform_plan:
     name: Staging - Terraform Plan
     runs-on: ubuntu-latest
+    env:
+      TF_WORKING_DIR: src/aws
+      TF_PLUGIN_CACHE_DIR: ${{ runner.home }}/.terraform.d/plugin-cache
     defaults:
       run:
         working-directory: ${{ env.TF_WORKING_DIR }}
@@ -44,11 +43,6 @@ jobs:
           role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
           aws-region: ${{ env.TF_VAR_aws_region }}
 
-      - name: Configure TF plugin cache dir
-        run: |
-          echo "TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache" >> "$GITHUB_ENV"
-          mkdir -p "$HOME/.terraform.d/plugin-cache"
-
       - name: Cache Terraform providers and modules
         uses: actions/cache@v4
         with:
@@ -61,8 +55,6 @@ jobs:
             ${{ runner.os }}-tf-
 
       - name: Terraform init (S3 backend)
-        env:
-          TF_PLUGIN_CACHE_DIR: ${{ env.TF_PLUGIN_CACHE_DIR }}
         run: |
           terraform init -reconfigure -input=false \
             -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
@@ -79,12 +71,13 @@ jobs:
       - name: Terraform plan
         run: terraform plan -out=tfplan -input=false -no-color
 
-      - name: Save dev plan artifact
+      - name: Save plan artifact
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}/tfplan
-
+          retention-days: 1
+          
       - name: Send email notification on failure
         if: failure()
         uses: dawidd6/action-send-mail@v3
@@ -102,69 +95,68 @@ jobs:
             <p><b>Project</b>: Toronto shared bike</p>
             <p><b>Repository</b>: ${{ github.repository }}</p>
             <p><b>Action</b>: Infrastructures update</p>
-            <p><b>Env</b>: DEV</p>
+            <p><b>Env</b>: ${{ env.ENV }}</p>
             <p><b>Status</b>: failure</p>
-            <p>Branch: <b>${{ github.base_ref }}</b></p>
+            <p>Branch: <b>${{ github.ref }}</b></p>
             <p>Workflow: <b>${{ github.workflow }}</b></p>
             <p>Commit: <b>${{ github.sha }}</b></p>
             <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
 
-  staging_terraform_apply:
-    name: Staging - Terraform Apply
-    needs: staging_terraform_plan
-    if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ env.TF_WORKING_DIR }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
-          aws-region: ${{ env.TF_VAR_aws_region }}
-
-      - name: Download plan artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: tfplan
-          path: ${{ env.TF_WORKING_DIR }}
-
-      - name: Configure TF plugin cache dir
-        run: |
-          pwd  
-          mkdir -pv "$HOME/.terraform.d/plugin-cache"
-
-      - name: Terraform init (S3 backend)
-        env:
-          TF_PLUGIN_CACHE_DIR: ${{ env.TF_PLUGIN_CACHE_DIR }}
-        run: |
-          terraform init -reconfigure -input=false \
-            -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
-            -backend-config="region=${{ secrets.AWS_REGION }}" \
-            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.ENV }}/terraform.tfstate" \
-            -backend-config="encrypt=true"
-
-      - name: Terraform apply
-        run: terraform apply -auto-approve -input=false -no-color tfplan
-
-  # staging_send_email:
+  # staging_terraform_apply:
   #   name: Staging - Terraform Apply
-  #   needs: staging_terraform_apply
-  #   if: github.ref == 'refs/heads/master'
+  #   needs: staging_terraform_plan
+  #   if: github.ref == 'refs/heads/master' && success()
   #   runs-on: ubuntu-latest
+  #   env:
+  #     TF_WORKING_DIR: src/aws
+  #     TF_PLUGIN_CACHE_DIR: ${{ runner.home }}/.terraform.d/plugin-cache
+  #   defaults:
+  #     run:
+  #       working-directory: ${{ env.TF_WORKING_DIR }}
   #   steps:
-  #     # Notify: send email
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+
+  #     - name: Setup Terraform
+  #       uses: hashicorp/setup-terraform@v3
+  #       with:
+  #         terraform_version: ${{ env.TF_VERSION }}
+
+  #     - name: Configure AWS credentials (OIDC)
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
+  #         aws-region: ${{ env.TF_VAR_aws_region }}
+
+  #     - name: Download plan artifact
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: tfplan
+  #         path: ${{ env.TF_WORKING_DIR }}
+
+  #     - name: Cache Terraform providers and modules
+  #       uses: actions/cache@v4
+  #       with:
+  #         path: |
+  #           ${{ env.TF_PLUGIN_CACHE_DIR }}
+  #           ${{ env.TF_WORKING_DIR }}/.terraform/modules
+  #         key: ${{ runner.os }}-tf-${{ env.TF_VERSION }}-${{ hashFiles(format('{0}/**/.terraform.lock.hcl', env.TF_WORKING_DIR)) }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-tf-${{ env.TF_VERSION }}-
+  #           ${{ runner.os }}-tf-
+
+  #     - name: Terraform init (S3 backend)
+  #       run: |
+  #         terraform init -reconfigure -input=false \
+  #           -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
+  #           -backend-config="region=${{ secrets.AWS_REGION }}" \
+  #           -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.ENV }}/terraform.tfstate" \
+  #           -backend-config="encrypt=true"
+
+  #     - name: Terraform apply
+  #       run: terraform apply -auto-approve -input=false -no-color tfplan
+        
   #     - name: Send email notification on success
-  #       if: needs.staging_terraform_apply.result == 'success'
   #       uses: dawidd6/action-send-mail@v3
   #       with:
   #         server_address: smtp.gmail.com
@@ -172,7 +164,7 @@ jobs:
   #         secure: true
   #         username: ${{ secrets.EMAIL_USERNAME }}
   #         password: ${{ secrets.EMAIL_PASSWORD }}
-  #         subject: "✅ Project - Toronto shared bike(Dev): Terraform Apply Success"
+  #         subject: "✅ Toronto shared bike - Staging: Terraform Apply Success"
   #         to: ${{ secrets.EMAIL_USERNAME }}
   #         from: ${{ secrets.EMAIL_USERNAME }}
   #         html_body: |
@@ -180,33 +172,9 @@ jobs:
   #           <p><b>Project</b>: Toronto shared bike</p>
   #           <p><b>Repository</b>: ${{ github.repository }}</p>
   #           <p><b>Action</b>: Infrastructures update</p>
-  #           <p><b>Env</b>: DEV</p>
+  #           <p><b>Env</b>: ${{ env.ENV }}</p>
   #           <p><b>Status</b>: success</p>
-  #           <p>Branch: <b>${{ github.base_ref }}</b></p>
+  #           <p>Branch: <b>${{ github.ref }}</b></p>
   #           <p>Workflow: <b>${{ github.workflow }}</b></p>
   #           <p>Commit: <b>${{ github.sha }}</b></p>
   #           <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
-
-#       - name: Send email notification on failure
-#         if: failure()
-#         uses: dawidd6/action-send-mail@v3
-#         with:
-#           server_address: smtp.gmail.com
-#           server_port: 587
-#           # secure: true
-#           username: ${{ secrets.EMAIL_USERNAME }}
-#           password: ${{ secrets.EMAIL_PASSWORD }}
-#           subject: "❌ Project - Toronto shared bike(Dev): Terraform Apply Failure"
-#           to: ${{ secrets.EMAIL_USERNAME }}
-#           from: ${{ secrets.EMAIL_USERNAME }}
-#           html_body: |
-#             <h2>GitHub Actions CI/CD Notification</h2>
-#             <p><b>Project</b>: Toronto shared bike</p>
-#             <p><b>Repository</b>: ${{ github.repository }}</p>
-#             <p><b>Action</b>: Infrastructures update</p>
-#             <p><b>Env</b>: DEV</p>
-#             <p><b>Status</b>: fail</p>
-#             <p>Branch: <b>${{ github.base_ref }}</b></p>
-#             <p>Workflow: <b>${{ github.workflow }}</b></p>
-#             <p>Commit: <b>${{ github.sha }}</b></p>
-#             <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
