@@ -80,8 +80,8 @@ module "cloudflare_dns" {
   app     = var.app
   env     = var.env
   # cloudflare config
-  cloudflare_zone_id= var.cloudflare_zone_id
-  cloudflare_api_token= var.cloudflare_api_token
-  dns_domain  = var.dns_domain
-  target_domain  = module.cloudfront.domain
+  cloudflare_zone_id   = var.cloudflare_zone_id
+  cloudflare_api_token = var.cloudflare_api_token
+  dns_domain           = var.dns_domain
+  target_domain        = module.cloudfront.domain
 }
