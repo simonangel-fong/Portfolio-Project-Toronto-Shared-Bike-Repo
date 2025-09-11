@@ -3,24 +3,25 @@ name: "Production Pipeline"
 on:
   push:
     branches:
-      - master
+      - staging
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
-      - master
+      - staging
 
 env:
-  ENV: prod
+  # terraform
   TF_VERSION: 1.9.8
-  TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
-  TF_WORKING_DIR: src/aws
+  TF_VAR_project: "toronto-shared-bike"
+  TF_VAR_app: "data-warehouse"
+  TF_VAR_env: staging
+  TF_VAR_dns_domain: "trip-staging.arguswatcher.net"
   TF_VAR_aws_region: ${{ vars.AWS_REGION }}
   TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
   TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
-  TF_VAR_env: prod
-  TF_VAR_dns_domain: "trip.arguswatcher.net"
-#   K6_DEV_DNS: ${{ vars.K6_DEV_DNS }}
-#   K6_PROD_DNS: ${{ vars.K6_PROD_DNS }}
+  # threshold
+  SLA_FAIL: "0.01"
+  SLA_DUR_99: "1000"
 
 permissions:
   id-token: write
@@ -30,6 +31,9 @@ jobs:
   prod_terraform_plan:
     name: Prod - Terraform Plan
     runs-on: ubuntu-latest
+    env:
+      TF_WORKING_DIR: src/aws
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
     defaults:
       run:
         working-directory: ${{ env.TF_WORKING_DIR }}
@@ -48,11 +52,6 @@ jobs:
           role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
           aws-region: ${{ env.TF_VAR_aws_region }}
 
-      - name: Configure TF plugin cache dir
-        run: |
-          echo "TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache" >> "$GITHUB_ENV"
-          mkdir -p "$HOME/.terraform.d/plugin-cache"
-
       - name: Cache Terraform providers and modules
         uses: actions/cache@v4
         with:
@@ -65,13 +64,11 @@ jobs:
             ${{ runner.os }}-tf-
 
       - name: Terraform init (S3 backend)
-        env:
-          TF_PLUGIN_CACHE_DIR: ${{ env.TF_PLUGIN_CACHE_DIR }}
         run: |
           terraform init -reconfigure -input=false \
             -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
             -backend-config="region=${{ secrets.AWS_REGION }}" \
-            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.ENV }}/terraform.tfstate" \
+            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.TF_VAR_env }}/terraform.tfstate" \
             -backend-config="encrypt=true"
 
       - name: Terraform fmt
@@ -83,17 +80,46 @@ jobs:
       - name: Terraform plan
         run: terraform plan -out=tfplan -input=false -no-color
 
-      - name: Save dev plan artifact
+      - name: Save plan artifact
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}/tfplan
+          retention-days: 1
+
+      - name: Send email notification on failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465`
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "✉️ ${{ env.TF_VAR_project}} ${{env.TF_VAR_app}} (${{env.TF_VAR_env}}): ${{ github.job }} ${{ job.status }}"
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          html_body: |
+            <h2>GitHub Actions CI/CD Notification</h2>
+            <p><b>Project</b>: ${{ env.TF_VAR_project}}</p>
+            <p><b>Application</b>: ${{ env.TF_VAR_app}}</p>
+            <p><b>Repository</b>: ${{ github.repository }}</p>
+            <p><b>Env</b>: ${{ env.TF_VAR_env }}</p>
+            <p><b>Job</b>: ${{ github.job }}</p>
+            <p><b>Status</b>: ${{ job.status }}</p>
+            <p><b>Branch</b>: ${{ github.ref }}</p>
+            <p><b>Workflow</b>: ${{ github.workflow }}</p>
+            <p><b>Commit</b>: ${{ github.sha }}</p>
+            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
 
   prod_terraform_apply:
     name: Prod - Terraform Apply
     needs: prod_terraform_plan
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/prod' && success()
     runs-on: ubuntu-latest
+    env:
+      TF_WORKING_DIR: src/aws
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
     defaults:
       run:
         working-directory: ${{ env.TF_WORKING_DIR }}
@@ -118,78 +144,108 @@ jobs:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}
 
-      - name: Configure TF plugin cache dir
-        run: |
-          pwd  
-          mkdir -pv "$HOME/.terraform.d/plugin-cache"
+      - name: Cache Terraform providers and modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.TF_PLUGIN_CACHE_DIR }}
+            ${{ env.TF_WORKING_DIR }}/.terraform/modules
+          key: ${{ runner.os }}-tf-${{ env.TF_VERSION }}-${{ hashFiles(format('{0}/**/.terraform.lock.hcl', env.TF_WORKING_DIR)) }}
+          restore-keys: |
+            ${{ runner.os }}-tf-${{ env.TF_VERSION }}-
+            ${{ runner.os }}-tf-
 
       - name: Terraform init (S3 backend)
-        env:
-          TF_PLUGIN_CACHE_DIR: ${{ env.TF_PLUGIN_CACHE_DIR }}
         run: |
           terraform init -reconfigure -input=false \
             -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
             -backend-config="region=${{ secrets.AWS_REGION }}" \
-            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.ENV }}/terraform.tfstate" \
+            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.TF_VAR_env }}/terraform.tfstate" \
             -backend-config="encrypt=true"
 
       - name: Terraform apply
         run: terraform apply -auto-approve -input=false -no-color tfplan
 
-  prod_send_email:
-    name: Prod - Send Email
-    needs: prod_terraform_apply
-    if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ env.TF_WORKING_DIR }}
-    steps:
-      # Notify: send email
-      - name: Send email notification on success
-        if: ${{ needs.prod_terraform_apply.result == 'success' }}
+      - name: Send email notification
+        if: always()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
-          server_port: 587
+          server_port: 465`
           secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "✅ Toronto shared bike - Production Deployment Success"
+          subject: "✉️ ${{ env.TF_VAR_project}} ${{env.TF_VAR_app}} (${{env.TF_VAR_env}}): ${{ github.job }} ${{ job.status }}"
           to: ${{ secrets.EMAIL_USERNAME }}
           from: ${{ secrets.EMAIL_USERNAME }}
           html_body: |
             <h2>GitHub Actions CI/CD Notification</h2>
-            <p><b>Project</b>: Toronto shared bike</p>
+            <p><b>Project</b>: ${{ env.TF_VAR_project}}</p>
+            <p><b>Application</b>: ${{ env.TF_VAR_app}}</p>
             <p><b>Repository</b>: ${{ github.repository }}</p>
-            <p><b>Action</b>: Infrastructures update</p>
-            <p><b>Env</b>: DEV</p>
-            <p><b>Status</b>: success</p>
-            <p>Branch: <b>${{ github.base_ref }}</b></p>
-            <p>Workflow: <b>${{ github.workflow }}</b></p>
-            <p>Commit: <b>${{ github.sha }}</b></p>
+            <p><b>Env</b>: ${{ env.TF_VAR_env }}</p>
+            <p><b>Job</b>: ${{ github.job }}</p>
+            <p><b>Status</b>: ${{ job.status }}</p>
+            <p><b>Branch</b>: ${{ github.ref }}</p>
+            <p><b>Workflow</b>: ${{ github.workflow }}</p>
+            <p><b>Commit</b>: ${{ github.sha }}</p>
             <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
 
-#       - name: Send email notification on failure
-#         if: failure()
-#         uses: dawidd6/action-send-mail@v3
-#         with:
-#           server_address: smtp.gmail.com
-#           server_port: 587
-#           # secure: true
-#           username: ${{ secrets.EMAIL_USERNAME }}
-#           password: ${{ secrets.EMAIL_PASSWORD }}
-#           subject: "❌ Project - Toronto shared bike(Dev): Terraform Apply Failure"
-#           to: ${{ secrets.EMAIL_USERNAME }}
-#           from: ${{ secrets.EMAIL_USERNAME }}
-#           html_body: |
-#             <h2>GitHub Actions CI/CD Notification</h2>
-#             <p><b>Project</b>: Toronto shared bike</p>
-#             <p><b>Repository</b>: ${{ github.repository }}</p>
-#             <p><b>Action</b>: Infrastructures update</p>
-#             <p><b>Env</b>: DEV</p>
-#             <p><b>Status</b>: fail</p>
-#             <p>Branch: <b>${{ github.base_ref }}</b></p>
-#             <p>Workflow: <b>${{ github.workflow }}</b></p>
-#             <p>Commit: <b>${{ github.sha }}</b></p>
-#             <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
+  testing:
+    name: Testing - K6
+    needs: prod_terraform_apply
+    if: github.ref == 'refs/heads/prod' && success()
+    runs-on: ubuntu-latest
+    env:
+      TF_WORKING_DIR: src/aws
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run local k6 test
+        uses: grafana/run-k6-action@v1
+        id: testing_k6
+        env:
+          K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
+          K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+          DNS_DOMAIN: ${{ env.TF_VAR_dns_domain }}
+          API_ENV: ${{ env.TF_VAR_env }}
+          SLA_FAIL: "0.01"
+          SLA_DUR_99: "1000"
+        with:
+          debug: true
+          path: |
+            test/script/cloud_smoke.js
+
+      - name: Send email notification
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465`
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "✉️ ${{ env.TF_VAR_project}} ${{env.TF_VAR_app}} (${{env.TF_VAR_env}}): ${{ github.job }} ${{ job.status }}"
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          html_body: |
+            <h2>GitHub Actions CI/CD Notification</h2>
+            <p><b>Project</b>: ${{ env.TF_VAR_project}}</p>
+            <p><b>Application</b>: ${{ env.TF_VAR_app}}</p>
+            <p><b>Repository</b>: ${{ github.repository }}</p>
+            <p><b>Env</b>: ${{ env.TF_VAR_env }}</p>
+            <p><b>Job</b>: ${{ github.job }}</p>
+            <p><b>Status</b>: ${{ job.status }}</p>
+            <p><b>Branch</b>: ${{ github.ref }}</p>
+            <p><b>Test ID</b>: ${{ steps.testing_k6.outputs.testRunIds }}</p>
+            <p><b>Workflow</b>: ${{ github.workflow }}</p>
+            <p><b>Commit</b>: ${{ github.sha }}</p>
+            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
