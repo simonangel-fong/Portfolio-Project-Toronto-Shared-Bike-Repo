@@ -3,19 +3,19 @@ name: "Production Pipeline"
 on:
   push:
     branches:
-      - staging
+      - master
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
-      - staging
+      - master
 
 env:
   # terraform
   TF_VERSION: 1.9.8
   TF_VAR_project: "toronto-shared-bike"
   TF_VAR_app: "data-warehouse"
-  TF_VAR_env: staging
-  TF_VAR_dns_domain: "trip-staging.arguswatcher.net"
+  TF_VAR_env: prod
+  TF_VAR_dns_domain: "trip.arguswatcher.net"
   TF_VAR_aws_region: ${{ vars.AWS_REGION }}
   TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
   TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
@@ -115,7 +115,7 @@ jobs:
   prod_terraform_apply:
     name: Prod - Terraform Apply
     needs: prod_terraform_plan
-    if: github.ref == 'refs/heads/prod' && success()
+    if: github.ref == 'refs/heads/master' && success()
     runs-on: ubuntu-latest
     env:
       TF_WORKING_DIR: src/aws
@@ -194,7 +194,7 @@ jobs:
   testing:
     name: Testing - K6
     needs: prod_terraform_apply
-    if: github.ref == 'refs/heads/prod' && success()
+    if: github.ref == 'refs/heads/master' && success()
     runs-on: ubuntu-latest
     env:
       TF_WORKING_DIR: src/aws
