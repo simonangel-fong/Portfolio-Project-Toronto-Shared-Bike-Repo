@@ -114,7 +114,7 @@ jobs:
   staging_terraform_apply:
     name: Staging - Terraform Apply
     needs: staging_terraform_plan
-    if: github.ref == 'refs/heads/master' && success()
+    if: github.ref == 'refs/heads/staging' && success()
     runs-on: ubuntu-latest
     env:
       TF_WORKING_DIR: src/aws
