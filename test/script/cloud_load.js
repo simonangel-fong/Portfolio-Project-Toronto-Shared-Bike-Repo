@@ -32,7 +32,7 @@ export const options = {
     },
   },
   cloud: {
-    name: "Load Testing",
+    name: "API Load Testing",
   },
 };
 

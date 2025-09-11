@@ -27,7 +27,7 @@ export const options = {
     },
   },
   cloud: {
-    name: "Spike Testing",
+    name: "API Spike Testing",
   },
 };
 

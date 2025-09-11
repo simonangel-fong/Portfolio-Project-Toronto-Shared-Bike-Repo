@@ -21,7 +21,7 @@ export const options = {
   vus: 2,
   duration: "10s",
   cloud: {
-    name: "Smoke Testing",
+    name: "API Smoke Testing",
   },
 };
 

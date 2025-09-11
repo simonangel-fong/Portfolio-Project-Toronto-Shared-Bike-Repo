@@ -49,7 +49,7 @@ export const options = {
     },
   },
   cloud: {
-    name: "Stress Testing",
+    name: "API Stress Testing",
   },
 };
 
