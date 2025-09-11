@@ -11,45 +11,29 @@ const TRIP_HOUR_URL = `https://${DNS_DOMAIN}/${API_ENV}/trip-hour`;
 const TRIP_MONTH_URL = `https://${DNS_DOMAIN}/${API_ENV}/trip-month`;
 const TOP_STATION_URL = `https://${DNS_DOMAIN}/${API_ENV}/top-station`;
 
+const AVG = 100;
+const MAX = 200;
+
 const SLA_FAIL = __ENV.SLA_FAIL || "0.01";
 const SLA_DUR_99 = __ENV.SLA_DUR_99 || "1000";
-
-const LOW = 20;
-const AVG = 50;
-const HIGH = 80;
-const MAX = 100;
 
 export const options = {
   thresholds: {
     http_req_failed: [{ threshold: `rate<${SLA_FAIL}`, abortOnFail: true }], // SLA: http errors < 1%; otherwise abort the test
     http_req_duration: [`p(99)<${SLA_DUR_99}`], // SLA: http 99% of requests < 1s
   },
-  // scenarios
   scenarios: {
     // name of scenario
     average_load: {
       executor: "ramping-vus",
       stages: [
-        { duration: "30s", target: LOW },
-        { duration: "30s", target: LOW },
         { duration: "30s", target: AVG },
         { duration: "30s", target: AVG },
-        { duration: "30s", target: HIGH },
-        { duration: "30s", target: HIGH },
         { duration: "30s", target: MAX },
         { duration: "30s", target: MAX },
-        { duration: "30s", target: HIGH },
-        { duration: "30s", target: HIGH },
-        { duration: "30s", target: AVG },
-        { duration: "30s", target: AVG },
-        { duration: "30s", target: LOW },
-        { duration: "30s", target: LOW },
         { duration: "30s", target: 0 },
       ],
     },
-  },
-  cloud: {
-    name: "API Stress Testing",
   },
 };
 

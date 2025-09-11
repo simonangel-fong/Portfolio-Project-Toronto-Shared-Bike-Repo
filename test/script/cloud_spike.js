@@ -1,14 +1,15 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
 
-const API_ENV = __ENV.API_ENV;
-const HOME_URL = __ENV.HOME_URL;
+const DNS_DOMAIN = __ENV.DNS_DOMAIN || "trip-dev.arguswatcher.net";
+const API_ENV = __ENV.API_ENV || "dev";
 
-const BIKE_URL = `${HOME_URL}/${API_ENV}/bike`;
-const STATION_URL = `${HOME_URL}/${API_ENV}/station`;
-const TRIP_HOUR_URL = `${HOME_URL}/${API_ENV}/trip-hour`;
-const TRIP_MONTH_URL = `${HOME_URL}/${API_ENV}/trip-month`;
-const TOP_STATION_URL = `${HOME_URL}/${API_ENV}/top-station`;
+const HOME_URL = `https://${DNS_DOMAIN}`;
+const BIKE_URL = `https://${DNS_DOMAIN}/${API_ENV}/bike`;
+const STATION_URL = `https://${DNS_DOMAIN}/${API_ENV}/station`;
+const TRIP_HOUR_URL = `https://${DNS_DOMAIN}/${API_ENV}/trip-hour`;
+const TRIP_MONTH_URL = `https://${DNS_DOMAIN}/${API_ENV}/trip-month`;
+const TOP_STATION_URL = `https://${DNS_DOMAIN}/${API_ENV}/top-station`;
 
 const TARGET = 100;
 
@@ -21,8 +22,8 @@ export const options = {
     average_load: {
       executor: "ramping-vus",
       stages: [
-        { duration: "1m", target: TARGET },
-        { duration: "1m", target: 0 },
+        { duration: "30s", target: TARGET },
+        { duration: "30s", target: 0 },
       ],
     },
   },

@@ -1,8 +1,8 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
 
-const DNS_DOMAIN = __ENV.DNS_DOMAIN;
-const API_ENV = __ENV.API_ENV;
+const DNS_DOMAIN = __ENV.DNS_DOMAIN || "trip-dev.arguswatcher.net";
+const API_ENV = __ENV.API_ENV || "dev";
 
 const HOME_URL = `https://${DNS_DOMAIN}`;
 const BIKE_URL = `https://${DNS_DOMAIN}/${API_ENV}/bike`;
@@ -17,6 +17,7 @@ const SLA_DUR_99 = __ENV.SLA_DUR_99 || "1000";
 export const options = {
   thresholds: {
     http_req_failed: [`rate<${SLA_FAIL}`], // SLA: http errors < 1%
+    http_req_duration: [`p(99)<${SLA_DUR_99}`], // SLA: http 99% of requests < 1s
   },
   vus: 2,
   duration: "10s",

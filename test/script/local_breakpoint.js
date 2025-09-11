@@ -1,17 +1,22 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
 
-const HOME_URL = "https://trip.arguswatcher.net";
-const BIKE_URL = "https://trip.arguswatcher.net/prod/bike";
-const STATION_URL = "https://trip.arguswatcher.net/prod/station";
-const TRIP_HOUR_URL = "https://trip.arguswatcher.net/prod/trip-hour";
-const TRIP_MONTH_URL = "https://trip.arguswatcher.net/prod/trip-month";
-const TOP_STATION_URL = "https://trip.arguswatcher.net/prod/top-station";
+const DNS_DOMAIN = __ENV.DNS_DOMAIN || "trip-dev.arguswatcher.net";
+const API_ENV = __ENV.API_ENV || "dev";
+
+const HOME_URL = `https://${DNS_DOMAIN}`;
+const BIKE_URL = `https://${DNS_DOMAIN}/${API_ENV}/bike`;
+const STATION_URL = `https://${DNS_DOMAIN}/${API_ENV}/station`;
+const TRIP_HOUR_URL = `https://${DNS_DOMAIN}/${API_ENV}/trip-hour`;
+const TRIP_MONTH_URL = `https://${DNS_DOMAIN}/${API_ENV}/trip-month`;
+const TOP_STATION_URL = `https://${DNS_DOMAIN}/${API_ENV}/top-station`;
+
+const TARGET = 100;
 
 export const options = {
   executor: "ramping-arrival-rate", //Assure load increase if the system slows
   stages: [
-    { duration: "1h", target: 20000 }, // slowly ramp-up to a HUGE load
+    { duration: "1h", target: TARGET }, // slowly ramp-up to a HUGE load
   ],
 };
 
