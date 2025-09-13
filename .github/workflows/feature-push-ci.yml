@@ -112,7 +112,8 @@ jobs:
             echo "- **Commit**: ${{ github.sha }}"
             echo ""
             echo "[View Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
-          } >> "$GITHUB_STEP_SUMMARY" $GITHUB_OUTPUT
+          } >> "$GITHUB_STEP_SUMMARY" 
+          echo "$GITHUB_STEP_SUMMARY" >> "$GITHUB_OUTPUT"
 
       - name: Send email notification (optional)
         if: always()
