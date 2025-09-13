@@ -79,14 +79,16 @@ jobs:
 
       - name: Terraform validate
         run: terraform validate -no-color
-#       - name: Setup TFLint
-#         uses: terraform-linters/setup-tflint@v4
-#         with:
-#           tflint_version: v0.53.0
-#       - name: TFLint
-#         run: |
-#           tflint --init
-#           tflint -f compact
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.53.0
+
+      - name: TFLint
+        run: |
+          tflint --init
+          tflint -f compact
 
 #       - name: tfsec
 #         uses: aquasecurity/tfsec-action@v1.0.3
