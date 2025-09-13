@@ -1,41 +1,38 @@
 # ##############################
 # AWS S3 bucket
 # ##############################
-module "csv_bucket" {
-  source  = "../module/s3"
-  project = var.project
-  app     = var.app
-  env     = var.env
-
-  csv_path = var.csv_path
-  web_path = var.web_path
+module "web_bucket" {
+  source        = "../../module/s3"
+  project       = var.project
+  app           = var.app
+  env           = var.env
+  web_file_path = var.web_file_path
 }
 
 # ##############################
 # AWS Dynamodb
 # ##############################
 module "dynamodb_tb" {
-  source  = "../module/dynamodb"
+  source  = "../../module/dynamodb"
   project = var.project
   app     = var.app
   env     = var.env
 
-  csv_bucket = module.csv_bucket.id
-  csv_prefix = var.csv_prefix
-  csv_file   = var.csv_file
+  data_bucket   = var.data_bucket
+  data_file_key = var.data_file_key
 }
 
 # ##############################
 # AWS Lambda
 # ##############################
 module "lambda" {
-  source  = "../module/lambda"
+  source  = "../../module/lambda"
   project = var.project
   app     = var.app
   env     = var.env
 
-  archive_source_file = "${path.module}/../../src/lambda/main.py"
-  archive_output_path = "${path.module}/../../src/lambda/main.zip"
+  archive_source_file = "../lambda/main.py"
+  archive_output_path = "../lambda/main.zip"
   dynamodb_table_arn  = module.dynamodb_tb.arn
 }
 
@@ -43,7 +40,7 @@ module "lambda" {
 # AWS API Gateway
 # ##############################
 module "api_gateway" {
-  source  = "../module/apigw"
+  source  = "../../module/apigw"
   project = var.project
   app     = var.app
   env     = var.env
@@ -57,7 +54,7 @@ module "api_gateway" {
 # AWS Cloudfront
 # ##############################
 module "cloudfront" {
-  source  = "../module/cloudfront"
+  source  = "../../module/cloudfront"
   project = var.project
   app     = var.app
   env     = var.env
@@ -69,14 +66,14 @@ module "cloudfront" {
   apigw_stage = module.api_gateway.stage
   apigw_id    = module.api_gateway.id
   # s3 web
-  website_endpoint = module.csv_bucket.website_endpoint
+  website_endpoint = module.web_bucket.website_endpoint
 }
 
 # ##############################
 # Cloudflare DNS
 # ##############################
 module "cloudflare_dns" {
-  source  = "../module/dns"
+  source  = "../../module/dns"
   project = var.project
   app     = var.app
   env     = var.env

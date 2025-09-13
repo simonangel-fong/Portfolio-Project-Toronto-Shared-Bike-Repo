@@ -1,43 +1,38 @@
+# .github/workflows/testing-push-cd.yml
 name: testing-push-cd
 
 on:
   push:
-    branches: ["staging"]
+    branches: ["testing"]
     paths:
-      - "src/**" # update of code
-      - "test/**" # update of test case
-      - ".github/workflows/staging-push-cd.yml"
+      - "test/**"            # auto-runs when test cases change
+      - "infra/**"           # include infra changes
+      - ".github/workflows/testing-push-cd.yml"
 
 permissions:
   contents: read
-  id-token: write
+  id-token: write            # needed for AWS OIDC
 
 concurrency:
   group: testing-env-${{ github.ref }}
   cancel-in-progress: true
 
 env:
+  AWS_REGION: ca-central-1               # <- change if needed
+  AWS_ROLE_ARN: arn:aws:iam::<acct>:role/<gha-oidc-role> # <- set your role
+  TF_DIR: infra                          # terraform working directory
+  TEST_DIR: test                         # integration tests folder
   TF_VERSION: 1.9.8
-  TF_VAR_project: "toronto-shared-bike"
-  TF_VAR_app: "web-app"
-  TF_VAR_env: "staging"
-  TF_VAR_dns_domain: "trip-staging.arguswatcher.net"
-  TF_VAR_aws_region: ${{ vars.AWS_REGION }}
-  TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
-  TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
-  TF_DIR: src/web-app/aws
-  TEST_DIR: test
+  PROJECT: toronto-shared-bike
+  APP: restful-api
+  ENV: testing
 
 jobs:
-  provision_staging:
-    name: Provision Staging Env
+  provision_and_test:
+    name: Provision → Integration Tests → Teardown
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    env:
-      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
-    defaults:
-      run:
-        working-directory: ${{ env.TF_DIR }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -50,13 +45,8 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
-          aws-region: ${{ env.TF_VAR_aws_region }}
-
-      - name: Configure Terraform plugin cache
-        run: |
-          mkdir -pv ~/.terraform.d/plugin-cache
-          echo 'plugin_cache_dir = "~/.terraform.d/plugin-cache"' > ~/.terraformrc
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Cache Terraform plugins
         uses: actions/cache@v4
@@ -64,32 +54,36 @@ jobs:
           path: ~/.terraform.d/plugin-cache
           key: ${{ runner.os }}-terraform-${{ env.TF_VERSION }}
 
-      - name: Terraform init - S3 backend
-        run: |
-          terraform init -reconfigure -input=false \
-            -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
-            -backend-config="region=${{ secrets.AWS_REGION }}" \
-            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.TF_VAR_env }}/terraform.tfstate" \
-            -backend-config="encrypt=true"
+    #   - name: Configure TF plugin cache
+    #     run: |
+    #       mkdir -p ~/.terraform.d/plugin-cache
+    #       echo 'plugin_cache_dir = "~/.terraform.d/plugin-cache"' > ~/.terraformrc
 
-      - name: Terraform Validate
-        run: |
-          terraform fmt -check -recursive -no-color
-          terraform validate -no-color
+    #   - name: Terraform Init
+    #     working-directory: ${{ env.TF_DIR }}
+    #     run: terraform init -no-color
 
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan -out=tfplan -input=false -no-color -destroy
+    #   - name: Terraform Validate
+    #     working-directory: ${{ env.TF_DIR }}
+    #     run: |
+    #       terraform fmt -check -recursive -no-color
+    #       terraform validate -no-color
 
-      - name: Save plan artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan
-          path: ${{ env.TF_DIR }}/tfplan
-          retention-days: 1
+    #   - name: Terraform Plan (for logging)
+    #     id: plan
+    #     working-directory: ${{ env.TF_DIR }}
+    #     run: terraform plan -no-color -out=tfplan
 
-      - name: Terraform Apply - Staging
-        run: terraform apply -auto-approve -no-color tfplan
+    #   - name: Upload Plan (artifact)
+    #     uses: actions/upload-artifact@v4
+    #     with:
+    #       name: terraform-plan
+    #       path: ${{ env.TF_DIR }}/tfplan
+    #       if-no-files-found: ignore
+
+    #   - name: Terraform Apply (Ephemeral Testing Env)
+    #     working-directory: ${{ env.TF_DIR }}
+    #     run: terraform apply -auto-approve -no-color tfplan
 
     #   # ---- Integration tests (example with Python/pytest; swap to your stack) ----
     #   - name: Setup Python

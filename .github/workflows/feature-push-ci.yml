@@ -17,13 +17,12 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  TF_VAR_project: "toronto-shared-bike"
-  TF_VAR_app: "restful-api"
-  TF_VAR_env: dev
-
-  LAMBDA_DIR: src/lambda
-  TF_DIR: src/aws
   TF_VERSION: 1.9.8
+  TF_VAR_project: "toronto-shared-bike"
+  TF_VAR_app: "web-app"
+  TF_VAR_env: dev
+  TF_DIR: src/web-app/aws
+  LAMBDA_DIR: src/web-app/lambda
 
 jobs:
   lambda_unit_test:
