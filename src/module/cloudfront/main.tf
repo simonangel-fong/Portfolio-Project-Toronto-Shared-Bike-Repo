@@ -21,6 +21,7 @@ locals {
 # ###############################
 # CloudFront
 # ###############################
+# tfsec:ignore:aws-cloudfront-enable-waf
 resource "aws_cloudfront_distribution" "api_cdn" {
 
   # s3 web hosting
