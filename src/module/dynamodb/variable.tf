@@ -3,3 +3,4 @@ variable "app" { type = string }
 variable "env" { type = string }
 
 variable "csv_bucket" { type = string }
+variable "csv_prefix" { type = string }

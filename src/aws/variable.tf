@@ -1,27 +1,49 @@
 # ##############################
 # App
 # ##############################
-variable "project" { default = "toronto-shared-bike" }
-variable "app" { default = "data-warehouse" }
-variable "env" { default = "dev" }
+variable "project" {
+  type    = string
+  default = "toronto-shared-bike"
+}
+variable "app" {
+  type    = string
+  default = "data-warehouse"
+}
+variable "env" {
+  type    = string
+  default = "dev"
+}
 variable "aws_region" { type = string }
-variable "dns_domain" { default = "trip-dev.arguswatcher.net" }
+variable "dns_domain" {
+  type    = string
+  default = "trip-dev.arguswatcher.net"
+}
 
 # ##############################
 # S3 bucket
 # ##############################
-variable "csv_path" { default = "../../data/csv" }
-variable "web_path" { default = "../../src/web" }
+variable "csv_path" {
+  type    = string
+  default = "../../data/csv"
+}
+variable "web_path" {
+  type    = string
+  default = "../../src/web"
+}
 
 # ##############################
 # DynamoDB Table
 # ##############################
-variable "csv_prefix" { default = "data" }
+variable "csv_prefix" {
+  type    = string
+  default = "data"
+}
 
 # ##############################
 # API Gateway
 # ##############################
 variable "path_list" {
+  type = list(string)
   default = [
     "trip-hour",
     "trip-month",
@@ -34,7 +56,10 @@ variable "path_list" {
 # ##############################
 # Cloudfront
 # ##############################
-variable "cert_domain" { default = "*.arguswatcher.net" }
+variable "cert_domain" {
+  type    = string
+  default = "*.arguswatcher.net"
+}
 
 # ##############################
 # Cloudflare

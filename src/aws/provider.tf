@@ -11,6 +11,8 @@ terraform {
     }
   }
 
+  required_version = ">= 1.9.8"
+
   backend "s3" {
     bucket  = ""
     key     = ""

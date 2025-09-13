@@ -1,6 +1,6 @@
 data "aws_s3_objects" "csv_files" {
   bucket = var.csv_bucket
-  prefix = "data"
+  prefix = var.csv_prefix
 }
 
 # ########################################
