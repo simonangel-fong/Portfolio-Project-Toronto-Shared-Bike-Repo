@@ -7,7 +7,7 @@ variable "project" {
 }
 variable "app" {
   type    = string
-  default = "data-warehouse"
+  default = "web-app"
 }
 variable "env" {
   type    = string
