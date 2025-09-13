@@ -21,7 +21,7 @@ env:
   TF_VAR_app: "restful-api"
   TF_VAR_env: "staging"
   TF_VERSION: 1.9.8
-  AWS_REGION: ca-central-1
+  TF_VAR_aws_region: ${{ vars.AWS_REGION }}
   TF_DIR: "src/aws"
   TEST_DIR: test
 
@@ -53,7 +53,7 @@ jobs:
 
       - name: Configure Terraform plugin cache
         run: |
-          mkdir -p ~/.terraform.d/plugin-cache
+          mkdir -pv ~/.terraform.d/plugin-cache
           echo 'plugin_cache_dir = "~/.terraform.d/plugin-cache"' > ~/.terraformrc
 
       - name: Cache Terraform plugins
