@@ -80,7 +80,7 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -out=tfplan -input=false -no-color -target=module.dynamodb_tb
+        run: terraform plan -out=tfplan -input=false -no-color
 
       # - name: Save plan artifact
       #   uses: actions/upload-artifact@v4

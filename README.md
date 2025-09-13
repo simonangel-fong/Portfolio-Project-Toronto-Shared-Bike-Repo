@@ -30,4 +30,8 @@
 
 - [Testing with `k6`](./docs/test.md)
 
-
+```sh
+terraform fmt
+terraform validate
+tflint
+```

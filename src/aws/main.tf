@@ -22,6 +22,7 @@ module "dynamodb_tb" {
 
   csv_bucket = module.csv_bucket.id
   csv_prefix = var.csv_prefix
+  csv_file   = var.csv_file
 }
 
 # ##############################
