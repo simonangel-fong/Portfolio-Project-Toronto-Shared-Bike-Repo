@@ -6,7 +6,7 @@ on:
     paths:
       - "src/**" # update of code
       - "test/**" # update of test case
-      - ".github/workflows/testing-push-cd.yml"
+      - ".github/workflows/staging-push-cd.yml"
 
 permissions:
   contents: read
