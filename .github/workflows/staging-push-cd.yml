@@ -89,7 +89,7 @@ jobs:
           retention-days: 1
 
       - name: Terraform Apply - Staging
-        run: terraform apply -auto-approve -no-color tfplan
+        run: terraform destroy -auto-approve -no-color tfplan
 
     #   # ---- Integration tests (example with Python/pytest; swap to your stack) ----
     #   - name: Setup Python
