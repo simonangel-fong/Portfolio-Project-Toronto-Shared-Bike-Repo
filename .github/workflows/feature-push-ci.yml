@@ -1,0 +1,81 @@
+name: feature-push-ci
+
+on:
+  push:
+    branches:
+      - "feature/**"
+    paths:
+      - "src/**"
+
+env:
+  TF_VAR_project: "toronto-shared-bike"
+  TF_VAR_app: "restful-api"
+  TF_VAR_env: dev
+
+  LAMBDA_DIR: src/lambda
+  TF_DIR: src/aws
+  TF_VERSION: 1.9.8
+
+jobs:
+  lambda_unit_test:
+    name: Lambda Unit Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.LAMBDA_DIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: place holder - unit test
+        run: |
+          echo "Running Lambda unit tests..."
+
+  staging_terraform_plan:
+    name: Staging - Terraform Plan
+    runs-on: ubuntu-latest
+    env:
+      TF_WORKING_DIR: src/aws
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
+    defaults:
+      run:
+        working-directory: ${{ env.TF_DIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive -no-color
+
+      - name: Terraform validate
+        run: terraform validate -no-color
+
+      - name: Send email notification
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465`
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "✉️ ${{ env.TF_VAR_project}} ${{env.TF_VAR_app}} (${{env.TF_VAR_env}}): ${{ github.job }} ${{ job.status }}"
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          html_body: |
+            <h2>GitHub Actions CI/CD Notification</h2>
+            <p><b>Project</b>: ${{ env.TF_VAR_project}}</p>
+            <p><b>Application</b>: ${{ env.TF_VAR_app}}</p>
+            <p><b>Repository</b>: ${{ github.repository }}</p>
+            <p><b>Env</b>: ${{ env.TF_VAR_env }}</p>
+            <p><b>Job</b>: ${{ github.job }}</p>
+            <p><b>Status</b>: ${{ job.status }}</p>
+            <p><b>Branch</b>: ${{ github.ref }}</p>
+            <p><b>Workflow</b>: ${{ github.workflow }}</p>
+            <p><b>Commit</b>: ${{ github.sha }}</p>
+            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
