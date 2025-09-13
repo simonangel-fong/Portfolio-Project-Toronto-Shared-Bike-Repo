@@ -35,7 +35,6 @@ variable "data_bucket" {
   default = "toronto-shared-bike-data-warehouse-data-bucket"
 }
 
-
 variable "data_file_key" {
   type = list(string)
   default = [
