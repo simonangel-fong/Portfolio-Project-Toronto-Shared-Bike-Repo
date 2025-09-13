@@ -2,7 +2,7 @@ name: testing-push-cd
 
 on:
   push:
-    branches: ["testing"]
+    branches: ["staging"]
     paths:
       - "src/**" # update of code
       - "test/**" # update of test case
