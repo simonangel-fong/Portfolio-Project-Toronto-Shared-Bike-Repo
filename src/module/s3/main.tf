@@ -3,8 +3,8 @@
 # ########################################
 
 resource "aws_s3_bucket" "app_bucket" {
-  bucket        = local.bucket_name
-  # force_destroy = true
+  bucket = local.bucket_name
+  force_destroy = true
   tags = {
     Name = local.bucket_name
   }
@@ -20,39 +20,13 @@ resource "aws_s3_bucket_versioning" "bucket_versioning" {
 }
 
 # ########################################
-# Upload csv files
-# ########################################
-
-module "csv_file" {
-  source = "hashicorp/dir/template"
-
-  base_dir = var.csv_path
-}
-
-# update S3 object resource for hosting bucket files
-resource "aws_s3_object" "csv_file" {
-  bucket = aws_s3_bucket.app_bucket.id
-
-  # loop all files
-  for_each     = module.csv_file.files
-  key          = "data/${each.key}"
-  content_type = each.value.content_type
-
-  source  = each.value.source_path
-  content = each.value.content
-
-  # ETag of the S3 object
-  etag = each.value.digests.md5
-}
-
-# ########################################
 # Upload web files
 # ########################################
 
 module "web_file" {
   source = "hashicorp/dir/template"
 
-  base_dir = var.web_path
+  base_dir = var.web_file_path
 }
 
 # update S3 object resource for hosting bucket files
@@ -138,11 +112,3 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 
   depends_on = [aws_s3_bucket_public_access_block.bucket_public_access]
 }
-
-
-# data "aws_s3_objects" "csv_file" {
-#   bucket = aws_s3_bucket.app_bucket.id
-#   prefix = "data"
-
-#   depends_on = [aws_s3_bucket.app_bucket]
-# }

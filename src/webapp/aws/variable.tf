@@ -22,31 +22,28 @@ variable "dns_domain" {
 # ##############################
 # S3 bucket
 # ##############################
-variable "csv_path" {
+variable "web_file_path" {
   type    = string
-  default = "../../data/csv"
-}
-variable "web_path" {
-  type    = string
-  default = "../../src/web"
+  default = "../html"
 }
 
 # ##############################
 # DynamoDB Table
 # ##############################
-variable "csv_prefix" {
+variable "data_bucket" {
   type    = string
-  default = "data"
+  default = "toronto-shared-bike-data-warehouse-data-bucket"
 }
 
-variable "csv_file" {
+
+variable "data_file_key" {
   type = list(string)
   default = [
-    "mv_bike_year.csv"
-    , "mv_station_year.csv"
-    , "mv_top_station_user_year.csv"
-    , "mv_trip_user_year_hour.csv"
-    , "mv_trip_user_year_month.csv"
+    "csv/mv_bike_year.csv"
+    , "csv/mv_station_year.csv"
+    , "csv/mv_top_station_user_year.csv"
+    , "csv/mv_trip_user_year_hour.csv"
+    , "csv/mv_trip_user_year_month.csv"
   ]
 }
 

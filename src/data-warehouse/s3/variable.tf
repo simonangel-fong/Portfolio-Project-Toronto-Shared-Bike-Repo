@@ -4,7 +4,7 @@ variable "app" { type = string }
 variable "env" { type = string }
 variable "csv_path" {
   type    = string
-  default = "src/data-warehouse/csv"
+  default = "../csv"
 }
 variable "key_prefix" {
   type    = string
