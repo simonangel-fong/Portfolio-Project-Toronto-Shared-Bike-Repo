@@ -70,31 +70,24 @@ jobs:
             -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ env.TF_VAR_env }}/terraform.tfstate" \
             -backend-config="encrypt=true"
 
-    #   - name: Terraform Init
-    #     working-directory: ${{ env.TF_DIR }}
-    #     run: terraform init -no-color
+      - name: Terraform Validate
+        run: |
+          terraform fmt -check -recursive -no-color
+          terraform validate -no-color
 
-    #   - name: Terraform Validate
-    #     working-directory: ${{ env.TF_DIR }}
-    #     run: |
-    #       terraform fmt -check -recursive -no-color
-    #       terraform validate -no-color
+      - name: Terraform Plan - logging
+        id: plan
+        run: terraform plan -no-color -out=tfplan
 
-    #   - name: Terraform Plan (for logging)
-    #     id: plan
-    #     working-directory: ${{ env.TF_DIR }}
-    #     run: terraform plan -no-color -out=tfplan
+      - name: Save plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.TF_WORKING_DIR }}/tfplan
+          retention-days: 14
 
-    #   - name: Upload Plan (artifact)
-    #     uses: actions/upload-artifact@v4
-    #     with:
-    #       name: terraform-plan
-    #       path: ${{ env.TF_DIR }}/tfplan
-    #       if-no-files-found: ignore
-
-    #   - name: Terraform Apply (Ephemeral Testing Env)
-    #     working-directory: ${{ env.TF_DIR }}
-    #     run: terraform apply -auto-approve -no-color tfplan
+      - name: Terraform Apply - Staging
+        run: terraform apply -auto-approve -no-color tfplan
 
     #   # ---- Integration tests (example with Python/pytest; swap to your stack) ----
     #   - name: Setup Python
