@@ -38,43 +38,45 @@ jobs:
 
       - name: place holder - unit test
         run: |
+          pwd
+          ls
           echo "Running Lambda unit tests..."
 
-#   terraform_validate:
-#     name: Terraform Validate / Lint / Scan
-#     needs: lambda_unit_test
-#     runs-on: ubuntu-latest
-#     defaults:
-#       run:
-#         working-directory: ${{ env.TF_DIR }}
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
+  terraform_validate:
+    name: Terraform Validate / Lint / Scan
+    needs: lambda_unit_test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.TF_DIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-#       - name: Setup Terraform
-#         uses: hashicorp/setup-terraform@v3
-#         with:
-#           terraform_version: ${{ env.TF_VERSION }}
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
 
-#       - name: Cache Terraform plugin dir
-#         uses: actions/cache@v4
-#         with:
-#           path: ~/.terraform.d/plugin-cache
-#           key: ${{ runner.os }}-terraform-${{ env.TF_VERSION }}
+      - name: Cache Terraform plugin dir
+        uses: actions/cache@v4
+        with:
+          path: ~/.terraform.d/plugin-cache
+          key: ${{ runner.os }}-terraform-${{ env.TF_VERSION }}
 
-#       - name: Configure plugin cache dir
-#         run: |
-#           mkdir -p ~/.terraform.d/plugin-cache
-#           echo 'plugin_cache_dir = "~/.terraform.d/plugin-cache"' > ~/.terraformrc
+      - name: Configure plugin cache dir
+        run: |
+          mkdir -p ~/.terraform.d/plugin-cache
+          echo 'plugin_cache_dir = "~/.terraform.d/plugin-cache"' > ~/.terraformrc
 
-#       - name: Terraform init (no backend)
-#         run: terraform init -backend=false -no-color
+      - name: Terraform init (no backend)
+        run: terraform init -backend=false -no-color
 
-#       - name: Terraform fmt
-#         run: terraform fmt -check -recursive -no-color
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive -no-color
 
-#       - name: Terraform validate
-#         run: terraform validate -no-color
+      - name: Terraform validate
+        run: terraform validate -no-color
 
 #       - name: Setup TFLint
 #         uses: terraform-linters/setup-tflint@v4
