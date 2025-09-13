@@ -18,7 +18,7 @@ concurrency:
 env:
   TF_VAR_project: "toronto-shared-bike"
   TF_VAR_app: "restful-api"
-  TF_VAR_env: "testing" # env name for this PR lane
+  TF_VAR_env: "dev"
   TF_VERSION: "1.9.8"
   TF_DIR: "src/aws"
   LAMBDA_DIR: "src/lambda"
