@@ -90,28 +90,28 @@ jobs:
           tflint --init
           tflint -f compact
 
-#       - name: tfsec
-#         uses: aquasecurity/tfsec-action@v1.0.3
-#         with:
-#           working_directory: ${{ env.TF_DIR }}
-#         continue-on-error: true # make it advisory; flip to false to fail builds
+      - name: tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          working_directory: ${{ env.TF_DIR }}
+        continue-on-error: true # make it advisory; flip to false to fail builds
 
-#       - name: Summarize results
-#         if: always()
-#         run: |
-#           {
-#             echo "## CI Summary"
-#             echo ""
-#             echo "- **Project**: ${{ env.TF_VAR_project }}"
-#             echo "- **Application**: ${{ env.TF_VAR_app }}"
-#             echo "- **Env**: ${{ env.TF_VAR_env }}"
-#             echo "- **Job**: ${{ github.job }}"
-#             echo "- **Status**: ${{ job.status }}"
-#             echo "- **Branch**: ${{ github.ref }}"
-#             echo "- **Commit**: ${{ github.sha }}"
-#             echo ""
-#             echo "[View Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
-#           } >> "$GITHUB_STEP_SUMMARY"
+      - name: Summarize results
+        if: always()
+        run: |
+          {
+            echo "## CI Summary"
+            echo ""
+            echo "- **Project**: ${{ env.TF_VAR_project }}"
+            echo "- **Application**: ${{ env.TF_VAR_app }}"
+            echo "- **Env**: ${{ env.TF_VAR_env }}"
+            echo "- **Job**: ${{ github.job }}"
+            echo "- **Status**: ${{ job.status }}"
+            echo "- **Branch**: ${{ github.ref }}"
+            echo "- **Commit**: ${{ github.sha }}"
+            echo ""
+            echo "[View Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          } >> "$GITHUB_STEP_SUMMARY"
 
 #       - name: Send email notification (optional)
 #         if: always()
