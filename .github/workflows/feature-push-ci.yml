@@ -46,6 +46,8 @@ jobs:
     name: Terraform Validate / Lint / Scan
     needs: lambda_unit_test
     runs-on: ubuntu-latest
+    env:
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
     defaults:
       run:
         working-directory: ${{ env.TF_DIR }}
@@ -60,16 +62,14 @@ jobs:
 
       - name: Configure plugin cache dir
         run: |
-          mkdir -pv ~/.terraform.d/plugin-cache
-          echo 'plugin_cache_dir = "~/.terraform.d/plugin-cache"' > ~/.terraformrc
+          mkdir -pv /home/runner/.terraform.d/plugin-cache
+          echo 'plugin_cache_dir = "/home/runner/.terraform.d/plugin-cache"' > /home/runner/.terraformrc
 
       - name: Cache Terraform plugin dir
         uses: actions/cache@v4
         with:
-          path: ~/.terraform.d/plugin-cache
+          path: /home/runner/.terraform.d/plugin-cache
           key: ${{ runner.os }}-terraform-${{ env.TF_VERSION }}
-
-
 
       - name: Terraform init (no backend)
         run: terraform init -backend=false -no-color
@@ -79,7 +79,6 @@ jobs:
 
       - name: Terraform validate
         run: terraform validate -no-color
-
 #       - name: Setup TFLint
 #         uses: terraform-linters/setup-tflint@v4
 #         with:
