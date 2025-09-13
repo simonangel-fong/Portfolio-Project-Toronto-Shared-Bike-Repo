@@ -10,9 +10,12 @@ data "aws_s3_objects" "csv_files" {
 resource "aws_dynamodb_table" "dynamodb_table" {
   # for_each = local.csv_file
   # for_each = { for idx, f in var.csv_list : idx => f }
-  for_each = { for f in data.aws_s3_objects.csv_files.keys : f => f }
+  # for_each = { for f in data.aws_s3_objects.csv_files.keys : f => f }
 
-  name         = "${var.project}-${var.app}-${var.env}-${split(".", split("/", each.value)[1])[0]}"
+  for_each = toset(var.csv_file)
+
+  # name         = "${var.project}-${var.app}-${var.env}-${split(".", split("/", each.value)[1])[0]}"
+  name         = "${var.project}-${var.app}-${var.env}-${split(".", each.value)[0]}"
   billing_mode = "PAY_PER_REQUEST"
 
   # key and attribute

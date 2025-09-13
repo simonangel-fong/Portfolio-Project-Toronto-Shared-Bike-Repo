@@ -39,6 +39,17 @@ variable "csv_prefix" {
   default = "data"
 }
 
+variable "csv_file" {
+  type = list(string)
+  default = [
+    "mv_bike_year.csv"
+    , "mv_station_year.csv"
+    , "mv_top_station_user_year.csv"
+    , "mv_trip_user_year_hour.csv"
+    , "mv_trip_user_year_month.csv"
+  ]
+}
+
 # ##############################
 # API Gateway
 # ##############################
