@@ -4,7 +4,7 @@ on:
   push:
     branches: ["testing"]
     paths:
-      - "src/**"  # update of code
+      - "src/**" # update of code
       - "test/**" # update of test case
       - ".github/workflows/testing-push-cd.yml"
 
@@ -26,11 +26,16 @@ env:
   TEST_DIR: test
 
 jobs:
-  provision_and_test:
+  provision_staging:
     name: Provision → Integration Tests → Teardown
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
+    env:
+      TF_WORKING_DIR: src/aws
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
+    defaults:
+      run:
+        working-directory: ${{ env.TF_DIR }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,14 +48,14 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ env.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
+          aws-region: ${{ env.TF_VAR_aws_region }}
 
-      - name: Cache Terraform plugins
-        uses: actions/cache@v4
-        with:
-          path: ~/.terraform.d/plugin-cache
-          key: ${{ runner.os }}-terraform-${{ env.TF_VERSION }}
+      # - name: Cache Terraform plugins
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~/.terraform.d/plugin-cache
+      #     key: ${{ runner.os }}-terraform-${{ env.TF_VERSION }}
 
     #   - name: Configure TF plugin cache
     #     run: |
