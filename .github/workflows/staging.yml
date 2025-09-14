@@ -93,8 +93,8 @@ jobs:
       - name: Upload outputs
         uses: actions/upload-artifact@v4
         with:
-          name: tf-outputs
-          path: ${{ vars.DIR_AWS }}/tf-outputs.json
+          name: tf-json
+          path: ${{ vars.DIR_AWS }}/tfplan.json
 
       - name: Terraform Apply - Staging
         run: terraform apply -auto-approve -no-color tfplan
@@ -107,6 +107,9 @@ jobs:
     env:
       TF_WORKING_DIR: src/aws
       TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
+    defaults:
+      run:
+        working-directory: ${{ vars.DIR_TEST }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -127,7 +130,7 @@ jobs:
         with:
           debug: true
           path: |
-            test/script/cloud_smoke.js
+            script/cloud_smoke.js
 
       - name: Send email notification
         if: always()
