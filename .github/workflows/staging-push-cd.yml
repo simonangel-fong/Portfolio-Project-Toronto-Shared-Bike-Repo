@@ -1,4 +1,4 @@
-name: testing-push-cd
+name: staging-push-cd
 
 on:
   push:

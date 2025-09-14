@@ -1,4 +1,4 @@
-name: testing-pr-ci
+name: staging-pr-ci
 
 on:
   pull_request:
