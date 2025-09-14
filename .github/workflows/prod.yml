@@ -1,11 +1,12 @@
 name: prod-cd
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
-    # paths:
-    #   - "src/aws/**"
+    paths:
+      - "src/**"
 
 permissions:
   contents: read

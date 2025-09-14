@@ -1,6 +1,7 @@
 name: dev-ci
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - "feature/**"
@@ -58,7 +59,7 @@ jobs:
 
       - name: Configure plugin cache dir
         run: |
-          mkdir -pv /home/runner/.terraform.d/plugin-cache
+          mkdir -pv /home/runner/.terraform.d/plugin-cache /home/runner/.tflint.d/plugins
           echo 'plugin_cache_dir = "/home/runner/.terraform.d/plugin-cache"' > /home/runner/.terraformrc
 
       - name: Cache Terraform plugin dir
