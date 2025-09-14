@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   provision_staging:
-    name: Provision Staging Env
+    name: Provision Staging
     runs-on: ubuntu-latest
     environment: Staging
     timeout-minutes: 60

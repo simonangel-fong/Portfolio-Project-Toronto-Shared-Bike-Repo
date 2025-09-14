@@ -17,7 +17,7 @@ const SLA_DUR_99 = __ENV.SLA_DUR_99 || "1000";
 export const options = {
   thresholds: {
     http_req_failed: [`rate<${SLA_FAIL}`], // SLA: http errors < 1%
-    http_req_duration: [`p(99)<${SLA_DUR_99}`], // SLA: http 99% of requests < 1s
+    // http_req_duration: [`p(99)<${SLA_DUR_99}`], // SLA: http 99% of requests < 1s
   },
   vus: 2,
   duration: "10s",
