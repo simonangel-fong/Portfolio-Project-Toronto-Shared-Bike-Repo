@@ -83,3 +83,21 @@ jobs:
         run: |
           tflint --init
           tflint -f compact
+
+      - name: Summarize results
+        id: summary
+        if: always()
+        run: |
+          {
+            echo "## CI Summary"
+            echo ""
+            echo "- **Project**: ${{ vars.TF_VAR_project }}"
+            echo "- **Application**: ${{ vars.TF_VAR_app }}"
+            echo "- **Env**: ${{ vars.TF_VAR_env }}"
+            echo "- **Job**: ${{ github.job }}"
+            echo "- **Status**: ${{ job.status }}"
+            echo "- **Branch**: ${{ github.ref }}"
+            echo "- **Commit**: ${{ github.sha }}"
+            echo ""
+            echo "[View Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          } >> "$GITHUB_STEP_SUMMARY"
