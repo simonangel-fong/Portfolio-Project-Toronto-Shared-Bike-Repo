@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - "feature/**"
-    paths:
-      - "src/**"
+    # paths:
+    #   - "src/**"
 
 # control the level of access
 permissions:
