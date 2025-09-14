@@ -25,6 +25,8 @@ jobs:
     env:
       TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
       TF_VAR_aws_region: ${{ vars.AWS_REGION }}
+      TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
+      TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
     defaults:
       run:
         working-directory: ${{ vars.DIR_AWS }}
