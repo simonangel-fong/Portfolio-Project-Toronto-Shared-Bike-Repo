@@ -80,5 +80,5 @@ jobs:
           path: ${{ vars.DIR_AWS }}/tfplan
           retention-days: 1
 
-    #   - name: Terraform Apply - Staging
-    #     run: terraform apply -auto-approve -no-color tfplan
+      - name: Terraform Apply - Staging
+        run: terraform apply -auto-approve -no-color tfplan
