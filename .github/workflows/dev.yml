@@ -101,3 +101,28 @@ jobs:
             echo ""
             echo "[View Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Send failure notification
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "✉️ ${{ vars.TF_VAR_project}} ${{ vars.TF_VAR_app}} (${{ vars.TF_VAR_env}}): ${{ github.job }} ${{ job.status }}"
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          html_body: |
+            <h2>GitHub Actions CI/CD Notification</h2>
+            <p><b>Project</b>: ${{ vars.TF_VAR_project}}</p>
+            <p><b>Application</b>: ${{ vars.TF_VAR_app}}</p>
+            <p><b>Repository</b>: ${{ github.repository }}</p>
+            <p><b>Env</b>: ${{ vars.TF_VAR_env }}</p>
+            <p><b>Job</b>: ${{ github.job }}</p>
+            <p><b>Status</b>: ${{ job.status }}</p>
+            <p><b>Branch</b>: ${{ github.ref }}</p>
+            <p><b>Workflow</b>: ${{ github.workflow }}</p>
+            <p><b>Commit</b>: ${{ github.sha }}</p>
+            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
