@@ -1,0 +1,35 @@
+name: feature-push-ci
+
+on:
+  push:
+    branches:
+      - "feature/**"
+    paths:
+      - "src/**"
+
+# control the level of access
+permissions:
+  contents: read
+
+# Cancel older runs per-branch to avoid races
+concurrency:
+  group: feature-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lambda_unit_test:
+    name: Lambda Unit Test
+    runs-on: ubuntu-latest
+    environment: Dev
+    defaults:
+      run:
+        working-directory: ${{ vars.LAMBDA_DIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: place holder - unit test
+        run: |
+          pwd
+          ls
+          echo "Running Lambda unit tests..."
