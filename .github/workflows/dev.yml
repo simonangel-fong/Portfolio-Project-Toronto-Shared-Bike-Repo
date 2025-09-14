@@ -13,7 +13,7 @@ permissions:
 
 # Cancel older runs per-branch to avoid races
 concurrency:
-  group: feature-ci-${{ github.ref }}
+  group: dev-ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -33,3 +33,27 @@ jobs:
           pwd
           ls
           echo "Running Lambda unit tests..."
+
+  terraform_validate:
+    name: Terraform Validate / Lint / Scan
+    needs: lambda_unit_test
+    runs-on: ubuntu-latest
+    env:
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
+    defaults:
+      run:
+        working-directory: ${{ vars.TF_DIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ vars.TF_VERSION }}
+
+      - name: Configure plugin cache dir
+        run: |
+          mkdir -pv /home/runner/.terraform.d/plugin-cache
+          echo 'plugin_cache_dir = "/home/runner/.terraform.d/plugin-cache"' > /home/runner/.terraformrc
+          echo  ${{ vars.TF_VAR_APP }}
