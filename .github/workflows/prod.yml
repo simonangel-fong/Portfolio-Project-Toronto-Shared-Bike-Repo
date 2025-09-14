@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-    paths:
-      - "src/aws/**"
+    # paths:
+    #   - "src/aws/**"
 
 jobs:
   plan:
