@@ -3,9 +3,9 @@ name: master-push-cd
 on:
   push:
     branches: ["main"]
-    paths:
-      - "src/**"
-      - ".github/workflows/main-push-cd.yml"
+    # paths:
+    #   - "src/**"
+    #   - ".github/workflows/main-push-cd.yml"
 
 permissions:
   contents: read
