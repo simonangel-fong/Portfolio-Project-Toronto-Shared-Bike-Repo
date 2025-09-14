@@ -107,9 +107,7 @@ jobs:
     env:
       TF_WORKING_DIR: src/aws
       TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
-    defaults:
-      run:
-        working-directory: ${{ vars.DIR_TEST }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -130,7 +128,7 @@ jobs:
         with:
           debug: true
           path: |
-            script/cloud_smoke.js
+            ${{ vars.DIR_TEST }}/script/cloud_smoke.js
 
       - name: Send email notification
         if: always()
