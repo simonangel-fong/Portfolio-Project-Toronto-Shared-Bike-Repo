@@ -9,7 +9,7 @@ on:
 
 jobs:
   provision_prod:
-    name: Provision Prod Env
+    name: Provision Prod
     runs-on: ubuntu-latest
     environment: Prod
     timeout-minutes: 60
@@ -68,16 +68,16 @@ jobs:
           path: ${{ vars.DIR_AWS }}/tfplan
           retention-days: 1
 
-  #     - name: Cache Terraform providers and modules
-  #       uses: actions/cache@v4
-  #       with:
-  #         path: |
-  #           ${{ env.TF_PLUGIN_CACHE_DIR }}
-  #           ${{ env.TF_WORKING_DIR }}/.terraform/modules
-  #         key: ${{ runner.os }}-tf-${{ env.TF_VERSION }}-${{ hashFiles(format('{0}/**/.terraform.lock.hcl', env.TF_WORKING_DIR)) }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-tf-${{ env.TF_VERSION }}-
-  #           ${{ runner.os }}-tf-
+      - name: Cache Terraform providers and modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.TF_PLUGIN_CACHE_DIR }}
+            ${{ vars.DIR_AWS }}/.terraform/modules
+          key: ${{ runner.os }}-tf-${{ vars.TF_VERSION }}-${{ hashFiles(format('{0}/**/.terraform.lock.hcl', vars.DIR_AWS)) }}
+          restore-keys: |
+            ${{ runner.os }}-tf-${{ vars.TF_VERSION }}-
+            ${{ runner.os }}-tf-
 
   #     - name: Terraform init (S3 backend)
   #       run: |
