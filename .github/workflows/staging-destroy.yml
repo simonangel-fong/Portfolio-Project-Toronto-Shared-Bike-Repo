@@ -6,6 +6,7 @@ on:
 jobs:
   destroy_staging:
     name: Destroy Staging
+    if: github.ref_name == 'staging'
     runs-on: ubuntu-latest
     environment: Staging
     timeout-minutes: 60
