@@ -1,20 +1,23 @@
-name: feature-push-ci
+name: dev-ci
 
 on:
   push:
     branches:
       - "feature/**"
-    # paths:
-    #   - "src/**"
+    paths:
+      - "src/**"
+      - ".github/workflows/dev.yml"
+  pull_request:
+    branches: ["staging"]
+    paths:
+      - "src/**"
 
-# control the level of access
 permissions:
   contents: read
 
-# Cancel older runs per-branch to avoid races
 concurrency:
   group: dev-ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: true # Cancel older runs
 
 jobs:
   lambda_unit_test:
@@ -35,7 +38,7 @@ jobs:
           echo "Running Lambda unit tests..."
 
   terraform_validate:
-    name: Terraform Validate / Lint / Scan
+    name: Terraform Validate
     needs: lambda_unit_test
     runs-on: ubuntu-latest
     environment: Dev
@@ -43,7 +46,7 @@ jobs:
       TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
     defaults:
       run:
-        working-directory: ${{ vars.TF_DIR }}
+        working-directory: ${{ vars.DIR_AWS }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,7 +60,6 @@ jobs:
         run: |
           mkdir -pv /home/runner/.terraform.d/plugin-cache
           echo 'plugin_cache_dir = "/home/runner/.terraform.d/plugin-cache"' > /home/runner/.terraformrc
-          echo  ${{ vars.TF_VAR_APP }}
 
       - name: Cache Terraform plugin dir
         uses: actions/cache@v4
@@ -89,7 +91,7 @@ jobs:
         if: always()
         run: |
           {
-            echo "## CI Summary"
+            echo "## Dev CI Summary"
             echo ""
             echo "- **Project**: ${{ vars.TF_VAR_project }}"
             echo "- **Application**: ${{ vars.TF_VAR_app }}"
@@ -103,7 +105,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Send failure notification
-        if: always()
+        if: failure()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com

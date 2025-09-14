@@ -1,0 +1,42 @@
+name: staging-cd
+
+on:
+  push:
+    branches: ["staging"]
+    paths:
+      - "src/**" # update of code
+      - "test/**" # update of test case
+      - ".github/workflows/staging.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: staging-cd-${{ github.ref }}
+  cancel-in-progress: true # Cancel older runs
+
+jobs:
+  provision_staging:
+    name: Provision Staging Env
+    runs-on: ubuntu-latest
+    environment: Staging
+    timeout-minutes: 60
+    env:
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
+    defaults:
+      run:
+        working-directory: ${{ vars.DIR_AWS }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ vars.TF_VERSION }}
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
+          aws-region: ${{ vars.TF_VAR_aws_region }}
