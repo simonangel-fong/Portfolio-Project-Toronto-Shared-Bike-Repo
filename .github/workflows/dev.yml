@@ -16,7 +16,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: dev-ci-${{ github.ref }}
+  group: dev-ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref_name || github.run_id }}
   cancel-in-progress: true # Cancel older runs
 
 jobs:
@@ -80,6 +80,14 @@ jobs:
         uses: terraform-linters/setup-tflint@v4
         with:
           tflint_version: v0.53.0
+
+      - name: Cache TFLint plugins
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.tflint.d/plugins
+          key: ${{ runner.os }}-tflint-${{ hashFiles('**/.tflint.hcl') }}
+          restore-keys: |
+            ${{ runner.os }}-tflint-
 
       - name: TFLint
         run: |
