@@ -2,7 +2,7 @@ name: master-push-cd
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
     # paths:
     #   - "src/**"
     #   - ".github/workflows/main-push-cd.yml"
