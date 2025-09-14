@@ -58,3 +58,28 @@ jobs:
           mkdir -pv /home/runner/.terraform.d/plugin-cache
           echo 'plugin_cache_dir = "/home/runner/.terraform.d/plugin-cache"' > /home/runner/.terraformrc
           echo  ${{ vars.TF_VAR_APP }}
+
+      - name: Cache Terraform plugin dir
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.terraform.d/plugin-cache
+          key: ${{ runner.os }}-terraform-${{ vars.TF_VERSION }}
+
+      - name: Terraform init (no backend)
+        run: terraform init -backend=false -no-color
+
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive -no-color
+
+      - name: Terraform validate
+        run: terraform validate -no-color
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.53.0
+
+      - name: TFLint
+        run: |
+          tflint --init
+          tflint -f compact
