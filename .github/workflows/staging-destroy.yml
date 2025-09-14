@@ -3,6 +3,14 @@ name: staging-destroy
 on:
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: staging-destroy-${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true # Cancel older runs
+
 jobs:
   destroy_staging:
     name: Destroy Staging
