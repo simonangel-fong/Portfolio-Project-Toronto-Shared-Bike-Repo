@@ -13,7 +13,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: staging-cd-${{ github.ref }}
+  group: staging-cd-${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true # Cancel older runs
 
 jobs:
@@ -77,12 +77,23 @@ jobs:
         id: plan
         run: terraform plan -out=tfplan -input=false -no-color
 
-      - name: Save plan artifact
+      - name: Show plan (JSON)
+        run: terraform show -json tfplan > tfplan.json
+
+      - name: Save plan artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: tfplan
-          path: ${{ vars.DIR_AWS }}/tfplan
-          retention-days: 1
+          name: tfplan-bundle
+          path: |
+            ${{ vars.DIR_AWS }}/tfplan
+            ${{ vars.DIR_AWS }}/tfplan.json
+          retention-days: 3
+
+      - name: Upload outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: tf-outputs
+          path: ${{ vars.DIR_AWS }}/tf-outputs.json
 
       - name: Terraform Apply - Staging
         run: terraform apply -auto-approve -no-color tfplan
@@ -90,15 +101,11 @@ jobs:
   staging_testing:
     name: Integrate Testing - K6
     needs: provision_staging
-    # if: github.ref == 'refs/heads/staging' && success()
     runs-on: ubuntu-latest
     environment: Staging
     env:
       TF_WORKING_DIR: src/aws
       TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
-    # defaults:
-    #   run:
-    #     working-directory: ${{ vars.DIR_TEST }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -106,7 +113,7 @@ jobs:
       - name: Setup K6
         uses: grafana/setup-k6-action@v1
 
-      - name: Run local k6 test
+      - name: Run k6 test
         uses: grafana/run-k6-action@v1
         id: testing_k6
         env:
