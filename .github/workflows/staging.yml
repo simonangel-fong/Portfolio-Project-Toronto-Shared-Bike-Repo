@@ -86,3 +86,64 @@ jobs:
 
       - name: Terraform Apply - Staging
         run: terraform apply -auto-approve -no-color tfplan
+
+  staging_testing:
+    name: Integrate Testing - K6
+    needs: provision_staging
+    # if: github.ref == 'refs/heads/staging' && success()
+    runs-on: ubuntu-latest
+    environment: Staging
+    env:
+      TF_WORKING_DIR: src/aws
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
+    defaults:
+      run:
+        working-directory: ${{ vars.DIR_TEST }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run local k6 test
+        uses: grafana/run-k6-action@v1
+        id: testing_k6
+        env:
+          K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
+          K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+          DNS_DOMAIN: ${{ vars.TF_VAR_dns_domain }}
+          API_ENV: ${{ vars.TF_VAR_env }}
+          SLA_FAIL: "0.01"
+          SLA_DUR_99: "1000"
+        with:
+          debug: true
+          path: |
+            script/cloud_smoke.js
+
+    #   - name: Send email notification
+    #     if: always()
+    #     uses: dawidd6/action-send-mail@v3
+    #     with:
+    #       server_address: smtp.gmail.com
+    #       server_port: 465`
+    #       secure: true
+    #       username: ${{ secrets.EMAIL_USERNAME }}
+    #       password: ${{ secrets.EMAIL_PASSWORD }}
+    #       subject: "✉️ ${{ env.TF_VAR_project}} ${{env.TF_VAR_app}} (${{env.TF_VAR_env}}): ${{ github.job }} ${{ job.status }}"
+    #       to: ${{ secrets.EMAIL_USERNAME }}
+    #       from: ${{ secrets.EMAIL_USERNAME }}
+    #       html_body: |
+    #         <h2>GitHub Actions CI/CD Notification</h2>
+    #         <p><b>Project</b>: ${{ env.TF_VAR_project}}</p>
+    #         <p><b>Application</b>: ${{ env.TF_VAR_app}}</p>
+    #         <p><b>Repository</b>: ${{ github.repository }}</p>
+    #         <p><b>Env</b>: ${{ env.TF_VAR_env }}</p>
+    #         <p><b>Job</b>: ${{ github.job }}</p>
+    #         <p><b>Status</b>: ${{ job.status }}</p>
+    #         <p><b>Branch</b>: ${{ github.ref }}</p>
+    #         <p><b>Test ID</b>: ${{ steps.testing_k6.outputs.testRunIds }}</p>
+    #         <p><b>Workflow</b>: ${{ github.workflow }}</p>
+    #         <p><b>Commit</b>: ${{ github.sha }}</p>
+    #         <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
+
