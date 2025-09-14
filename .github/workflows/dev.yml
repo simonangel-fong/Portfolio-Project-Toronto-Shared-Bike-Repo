@@ -31,7 +31,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: place holder - unit test
+      - name: Unit test
         run: |
           pwd
           ls
