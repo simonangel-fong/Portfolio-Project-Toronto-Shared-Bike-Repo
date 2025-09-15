@@ -124,8 +124,6 @@ jobs:
           path: |
             ${{ vars.DIR_TEST }}/script/cloud_smoke.js
             ${{ vars.DIR_TEST }}/script/cloud_load.js
-            ${{ vars.DIR_TEST }}/script/cloud_stress.js
-            ${{ vars.DIR_TEST }}/script/cloud_load.js
 
       - name: Send email notification
         if: always()
