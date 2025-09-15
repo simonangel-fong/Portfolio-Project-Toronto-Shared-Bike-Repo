@@ -90,12 +90,6 @@ jobs:
             ${{ vars.DIR_AWS }}/tfplan.json
           retention-days: 3
 
-      - name: Upload outputs
-        uses: actions/upload-artifact@v4
-        with:
-          name: tf-json
-          path: ${{ vars.DIR_AWS }}/tfplan.json
-
       - name: Terraform Apply - Staging
         run: terraform apply -auto-approve -no-color tfplan
 
@@ -129,6 +123,9 @@ jobs:
           # debug: true
           path: |
             ${{ vars.DIR_TEST }}/script/cloud_smoke.js
+            ${{ vars.DIR_TEST }}/script/cloud_load.js
+            ${{ vars.DIR_TEST }}/script/cloud_stress.js
+            ${{ vars.DIR_TEST }}/script/cloud_load.js
 
       - name: Send email notification
         if: always()

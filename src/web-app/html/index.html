@@ -29,17 +29,18 @@
             </a>
             <ul class="nav nav-masthead justify-content-center">
                 <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#insight">Insight</a>
+                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#dashboard">Data Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#devops">DevOps</a>
+                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#insight">Data Insight</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#devops">DevOps Skill</a>
+                </li>
+                <!-- <li class="nav-item">
                     <a class="nav-link fw-bold py-1 px-0 me-2" href="#de">Data Engineer</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#dashboard">Dashboard</a>
-                </li>
+                </li> -->
+
             </ul>
         </nav>
 
@@ -108,6 +109,114 @@
                     </div>
                 </div>
 
+            </div>
+        </section>
+
+        <!-- divider -->
+        <hr class="col-8 mx-auto py-lg-4 py-sm-2">
+
+        <!-- Dashboard -->
+        <section id="dashboard" class="container pb-5">
+
+            <!-- Chart Title -->
+            <div class="row">
+                <div class="px-5 py-5">
+
+                    <!-- title text -->
+                    <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
+                        Dashboard
+                    </h1>
+                    <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
+                    <p class="text-center lead pt-4">
+                        Select charts to visualize API data (https://trip.arguswatcher.net/prod/bike).
+                    </p>
+                </div>
+            </div>
+
+            <!-- selector -->
+            <div class="row">
+                <!-- selector -->
+                <div class="col-sm-6 mx-auto">
+                    <select id="year-selector" class="form-select form-select-sm mb-3">
+                        <option value="trip-month-annual" selected>Annual Member - Monthly Pattern</option>
+                        <option value="trip-hour-annual">Annual Member - Hourly Pattern</option>
+                        <option value="trip-month-casual">Casual Member - Monthly Pattern</option>
+                        <option value="trip-hour-casual">Casual Member - Hourly Pattern</option>
+                        <option value="bike">Bike Count Over Years</option>
+                        <option value="station">Station Count Over Years</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- chart -->
+            <div class="row">
+                <div id="chart-container" class="p-4 mx-auto text-center" style="width: 800px;height: 450px;"></div>
+            </div>
+
+            <!-- divider -->
+            <hr class="col-8 mx-auto py-lg-4 py-sm-2">
+
+            <!-- Dashboard Title -->
+            <div class="row">
+                <div class="px-5 py-5">
+
+                    <!-- title text -->
+                    <p class="text-center lead pt-4">
+                        Explore year-to-year changes by selecting different years in the Tableau dashboard below.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tableau dashboard -->
+            <div class="row text-center">
+
+                <div class='tableauPlaceholder mx-auto' id='viz1749863467121' style='position: relative'>
+                    <noscript>
+                        <a href='#'>
+                            <img alt='Dashboard '
+                                src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;pr&#47;project_17476928016330&#47;Dashboard&#47;1_rss.png'
+                                style='border: none' />
+                        </a>
+                    </noscript>
+                    <object class='tableauViz' style='display:none;'>
+                        <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+                        <param name='embed_code_version' value='3' />
+                        <param name='site_root' value='' />
+                        <param name='name' value='project_17476928016330&#47;Dashboard' />
+                        <param name='tabs' value='no' />
+                        <param name='toolbar' value='yes' />
+                        <param name='static_image'
+                            value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;pr&#47;project_17476928016330&#47;Dashboard&#47;1.png' />
+                        <param name='animate_transition' value='yes' />
+                        <param name='display_static_image' value='yes' />
+                        <param name='display_spinner' value='yes' />
+                        <param name='display_overlay' value='yes' />
+                        <param name='display_count' value='yes' />
+                        <param name='language' value='en-US' />
+                        <param name='filter' value='publish=yes' />
+                    </object>
+                </div>
+                <script type='text/javascript'>
+                    var divElement = document.getElementById('viz1749863467121');
+                    var vizElement = divElement.getElementsByTagName('object')[0];
+
+                    if (divElement.offsetWidth > 768) {
+                        vizElement.style.width = '1120px';
+                        vizElement.style.height = '657px';
+
+                    } else if (divElement.offsetWidth > 576) {
+                        vizElement.style.width = '640px';
+                        vizElement.style.height = '360px';
+
+                    } else {
+                        vizElement.style.width = '100%';
+                        vizElement.style.height = '2127px';
+                    }
+
+                    var scriptElement = document.createElement('script');
+                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+                    vizElement.parentNode.insertBefore(scriptElement, vizElement); 
+                </script>
             </div>
         </section>
 
@@ -237,22 +346,119 @@
         <!-- divider -->
         <hr class="col-8 mx-auto py-3">
 
-        <!-- tech -->
-        <section id="tech" data-bs-spy="scroll" data-bs-target="#trip-navbar" class="container pb-5">
+        <!-- DevOps -->
+        <section id="devops" class="container pb-5">
+            <div data-bs-spy="scroll" data-bs-target="#trip-navbar" data-bs-root-margin="0px 0px -40%"
+                data-bs-smooth-scroll="true" class="bg-body-white p-3 rounded-2" tabindex="0">
 
-            <!-- Title -->
+                <!-- Title -->
+                <div class="row row-cols-1">
+                    <div class="px-5 py-5">
+
+                        <!-- title text -->
+                        <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
+                            DevOps Skill
+                        </h1>
+                        <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
+                        <p class="text-center lead py-2">
+                            Explore DevOps skills by navigating the following slides
+                        </p>
+
+                        <div class="d-flex justify-content-center">
+                            <ul class="lead" style="list-style-type:square;">
+                                <li>CI/CD pipeline with GitHub Actions</li>
+                                <li>Infrastructure as Code (IaC) with Terraform</li>
+                                <li>Load testing with Grafana Cloud k6</li>
+                                <li>Central monitoring dashboard with Prometheus + Grafana</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DevOps: Slide -->
+                <div class=" row py-3 mb-4">
+                    <div id="techCarousel" class="carousel slide shadow col-md-10 col-sm-12  p-0 mx-auto">
+
+                        <!-- indicator -->
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#techCarousel" data-bs-slide-to="0" class="active"
+                                aria-current="true" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#techCarousel" data-bs-slide-to="1"
+                                aria-label="Slide 2"></button>
+                            <button type="button button-warning" data-bs-target="#techCarousel" data-bs-slide-to="2"
+                                aria-label="Slide 3"></button>
+                        </div>
+
+                        <!-- content -->
+                        <div class="carousel-inner">
+
+                            <!-- sa
+                        <div class="carousel-item active">
+                            <img src="./img/tech/sa.gif" class="d-block w-100" alt="system architecture">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>API System Architecture</h5>
+                            </div>
+                        </div> -->
+
+                            <!-- cicd -->
+                            <div class="carousel-item active">
+                                <img src="./img/devops/devops_cicd.gif" class="d-block w-100" alt="system architecture">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>GitHub Actions CI/CD</h5>
+                                </div>
+                            </div>
+
+                            <!-- cloud -->
+                            <div class="carousel-item">
+                                <img src="./img/devops/devops_cloud.gif" class="d-block w-100"
+                                    alt="system architecture">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Cloud Solution & IaC</h5>
+                                </div>
+                            </div>
+
+                            <!-- devops -->
+                            <div class="carousel-item">
+                                <img src="./img/tech/devops.gif" class="d-block w-100" alt="devops">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Devops Pipelines</h5>
+                                </div>
+                            </div>
+
+                            <!-- dw -->
+                            <!-- <div class="carousel-item">
+                                <img src="./img/tech/dw.gif" class="d-block w-100" alt="data warehouse">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Data Warehouse Design</h5>
+                                </div>
+                            </div> -->
+
+                            <!-- Left and right controls -->
+                            <button class="carousel-control-prev" type="button" data-bs-target="#techCarousel"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#techCarousel"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <!-- divider -->
+        <hr class="col-8 mx-auto py-3">
+
+        <!-- tech -->
+        <!-- <section id="tech" data-bs-spy="scroll" data-bs-target="#trip-navbar" class="container pb-5">
             <div class="row">
                 <div class="px-5 py-5">
 
-                    <!-- title text -->
                     <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
                         Technology
-                        <!-- sign -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor"
-                            class="bi bi-tools" viewBox="0 0 16 16">
-                            <path
-                                d="M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3q0-.405-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708M3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026z" />
-                        </svg>
                     </h1>
 
                     <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
@@ -261,7 +467,6 @@
                 </div>
             </div>
 
-            <!-- tech stack -->
             <div class="row py-2">
                 <p class="text-center lead py-4">
                     Explore the comprehensive technology ecosystem powering this project.
@@ -272,7 +477,6 @@
                 </div>
             </div>
 
-            <!-- slide -->
             <div class="row py-3">
 
                 <p class="text-center lead py-3">
@@ -282,7 +486,6 @@
 
                 <div id="techCarousel" class="carousel slide shadow col-md-10 col-sm-12  p-0 mx-auto">
 
-                    <!-- indicator -->
                     <div class="carousel-indicators">
                         <button type="button" data-bs-target="#techCarousel" data-bs-slide-to="0" class="active"
                             aria-current="true" aria-label="Slide 1"></button>
@@ -292,18 +495,15 @@
                             aria-label="Slide 3"></button>
                     </div>
 
-                    <!-- content -->
                     <div class="carousel-inner">
 
-                        <!-- sa
                         <div class="carousel-item active">
                             <img src="./img/tech/sa.gif" class="d-block w-100" alt="system architecture">
                             <div class="carousel-caption d-none d-md-block">
                                 <h5>API System Architecture</h5>
                             </div>
-                        </div> -->
+                        </div>
 
-                        <!-- sa -->
                         <div class="carousel-item active">
                             <img src="./img/tech/system_design.gif" class="d-block w-100" alt="system architecture">
                             <div class="carousel-caption d-none d-md-block">
@@ -311,7 +511,6 @@
                             </div>
                         </div>
 
-                        <!-- devops -->
                         <div class="carousel-item">
                             <img src="./img/tech/devops.gif" class="d-block w-100" alt="devops">
                             <div class="carousel-caption d-none d-md-block">
@@ -319,7 +518,6 @@
                             </div>
                         </div>
 
-                        <!-- dw -->
                         <div class="carousel-item">
                             <img src="./img/tech/dw.gif" class="d-block w-100" alt="data warehouse">
                             <div class="carousel-caption d-none d-md-block">
@@ -327,7 +525,6 @@
                             </div>
                         </div>
 
-                        <!-- Left and right controls -->
                         <button class="carousel-control-prev" type="button" data-bs-target="#techCarousel"
                             data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -341,122 +538,8 @@
                     </div>
                 </div>
             </div>
-            <!-- challenge & response -->
-        </section>
+        </section> -->
 
-        <!-- divider -->
-        <hr class="col-8 mx-auto py-lg-4 py-sm-2">
-
-        <!-- Dashboard -->
-        <section id="dashboard" class="container pb-5">
-
-            <!-- Chart Title -->
-            <div class="row">
-                <div class="px-5 py-5">
-
-                    <!-- title text -->
-                    <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
-                        Dashboard
-                    </h1>
-                    <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
-                    <p class="text-center lead pt-4">
-                        Select charts to visualize API data (https://trip.arguswatcher.net/prod/bike).
-                    </p>
-                </div>
-            </div>
-
-            <!-- selector -->
-            <div class="row">
-                <!-- selector -->
-                <div class="col-sm-6 mx-auto">
-                    <select id="year-selector" class="form-select form-select-sm mb-3">
-                        <option value="trip-month-annual" selected>Annual Member - Monthly Pattern</option>
-                        <option value="trip-hour-annual">Annual Member - Hourly Pattern</option>
-                        <option value="trip-month-casual">Casual Member - Monthly Pattern</option>
-                        <option value="trip-hour-casual">Casual Member - Hourly Pattern</option>
-                        <option value="bike">Bike Count Over Years</option>
-                        <option value="station">Station Count Over Years</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- chart -->
-            <div class="row">
-                <div id="chart-container" class="p-4 mx-auto text-center" style="width: 800px;height: 450px;"></div>
-            </div>
-
-            <!-- divider -->
-            <hr class="col-8 mx-auto py-lg-4 py-sm-2">
-
-            <!-- Dashboard Title -->
-            <div class="row">
-                <div class="px-5 py-5">
-
-                    <!-- title text -->
-                    <p class="text-center lead pt-4">
-                        Explore year-to-year changes by selecting different years in the Tableau dashboard below.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Tableau dashboard -->
-            <div class="row text-center">
-
-                <div class='tableauPlaceholder mx-auto' id='viz1749863467121' style='position: relative'>
-                    <noscript>
-                        <a href='#'>
-                            <img alt='Dashboard '
-                                src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;pr&#47;project_17476928016330&#47;Dashboard&#47;1_rss.png'
-                                style='border: none' />
-                        </a>
-                    </noscript>
-                    <object class='tableauViz' style='display:none;'>
-                        <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
-                        <param name='embed_code_version' value='3' />
-                        <param name='site_root' value='' />
-                        <param name='name' value='project_17476928016330&#47;Dashboard' />
-                        <param name='tabs' value='no' />
-                        <param name='toolbar' value='yes' />
-                        <param name='static_image'
-                            value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;pr&#47;project_17476928016330&#47;Dashboard&#47;1.png' />
-                        <param name='animate_transition' value='yes' />
-                        <param name='display_static_image' value='yes' />
-                        <param name='display_spinner' value='yes' />
-                        <param name='display_overlay' value='yes' />
-                        <param name='display_count' value='yes' />
-                        <param name='language' value='en-US' />
-                        <param name='filter' value='publish=yes' />
-                    </object>
-                </div>
-                <script type='text/javascript'>
-                    var divElement = document.getElementById('viz1749863467121');
-                    var vizElement = divElement.getElementsByTagName('object')[0];
-
-                    if (divElement.offsetWidth > 768) {
-                        vizElement.style.width = '1120px';
-                        vizElement.style.height = '657px';
-
-                    } else if (divElement.offsetWidth > 576) {
-                        vizElement.style.width = '640px';
-                        vizElement.style.height = '360px';
-
-                    } else {
-                        vizElement.style.width = '100%';
-                        vizElement.style.height = '2127px';
-                    }
-
-                    var scriptElement = document.createElement('script');
-                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
-                    vizElement.parentNode.insertBefore(scriptElement, vizElement); 
-                </script>
-            </div>
-        </section>
-
-        <!-- Echart -->
-        <section id="echart" class="container pb-5">
-
-
-        </section>
     </main>
 
     <!-- footer -->
@@ -464,7 +547,6 @@
         <p class="float-end"><a href="#">Back to top</a></p>
         <p>&copy; 2025 <a href="https://www.arguswatcher.net">Arguswatcher</a> </p>
     </footer>
-
 
     <!-- bootstrap js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
