@@ -122,7 +122,7 @@ resource "aws_lambda_function" "lambda_function" {
   handler          = "main.lambda_handler"
   runtime          = "python3.12"
   role             = aws_iam_role.lambda_role.arn
-  timeout          = 30
+  timeout          = 28
 
   environment {
     variables = {

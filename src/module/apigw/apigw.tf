@@ -76,20 +76,53 @@ resource "aws_api_gateway_stage" "API_ENV" {
     lambdaAlias = "live"
   }
 
+  xray_tracing_enabled = true
+
   # assign log group and format
+  # access_log_settings {
+  #   destination_arn = aws_cloudwatch_log_group.api_gateway_logs.arn
+  #   format = jsonencode({
+  #     requestId      = "$context.requestId"
+  #     ip             = "$context.identity.sourceIp"
+  #     caller         = "$context.identity.caller"
+  #     user           = "$context.identity.user"
+  #     requestTime    = "$context.requestTime"
+  #     httpMethod     = "$context.httpMethod"
+  #     resourcePath   = "$context.resourcePath"
+  #     status         = "$context.status"
+  #     protocol       = "$context.protocol"
+  #     responseLength = "$context.responseLength"
+  #   })
+  # }
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.api_gateway_logs.arn
     format = jsonencode({
-      requestId      = "$context.requestId"
-      ip             = "$context.identity.sourceIp"
-      caller         = "$context.identity.caller"
-      user           = "$context.identity.user"
-      requestTime    = "$context.requestTime"
-      httpMethod     = "$context.httpMethod"
-      resourcePath   = "$context.resourcePath"
-      status         = "$context.status"
-      protocol       = "$context.protocol"
-      responseLength = "$context.responseLength"
+      # Request identity
+      requestId         = "$context.requestId"
+      extendedRequestId = "$context.extendedRequestId"
+      ip                = "$context.identity.sourceIp"
+      userAgent         = "$context.identity.userAgent"
+      caller            = "$context.identity.caller"
+      user              = "$context.identity.user"
+
+      # Route + timing
+      requestTime        = "$context.requestTime"
+      httpMethod         = "$context.httpMethod"
+      resourcePath       = "$context.resourcePath"
+      path               = "$context.path"
+      stage              = "$context.stage"
+      protocol           = "$context.protocol"
+      integrationLatency = "$context.integrationLatency"
+
+      # Outcomes
+      status            = "$context.status"
+      integrationStatus = "$context.integrationStatus"
+      error             = "$context.error.message"
+      integrationError  = "$context.integrationErrorMessage"
+      responseLength    = "$context.responseLength"
+
+      # Tracing
+      xrayTraceId = "$context.xrayTraceId"
     })
   }
 
@@ -111,12 +144,13 @@ resource "aws_api_gateway_method_settings" "cached_gets" {
   method_path = "${each.value}/GET"
 
   settings {
-    caching_enabled        = true
-    cache_ttl_in_seconds   = 60 # start with 60s; tune per endpoint
-    cache_data_encrypted   = true
-    metrics_enabled        = true    # keep on for tuning; you can disable later
-    logging_level          = "ERROR" # cut down on overhead vs "INFO"
-    throttling_burst_limit = 1000
-    throttling_rate_limit  = 500
+    caching_enabled      = true
+    cache_ttl_in_seconds = 60 # start with 60s; tune per endpoint
+    cache_data_encrypted = true
+    metrics_enabled      = true # keep on for tuning; you can disable later
+    logging_level        = "INFO"
+    # logging_level          = "ERROR" # cut down on overhead vs "INFO"
+    throttling_burst_limit = 200
+    throttling_rate_limit  = 100
   }
 }
