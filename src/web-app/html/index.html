@@ -29,18 +29,17 @@
             </a>
             <ul class="nav nav-masthead justify-content-center">
                 <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#dashboard">Data Dashboard</a>
+                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#dashboard">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#insight">Data Insight</a>
+                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#insight">Insight</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#devops">DevOps Skill</a>
+                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#devops">DevOps</a>
                 </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#de">Data Engineer</a>
-                </li> -->
-
+                <li class="nav-item">
+                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#data_engineer">Data Engineer</a>
+                </li>
             </ul>
         </nav>
 
@@ -49,14 +48,14 @@
             <div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
                 <div class="header-cover-text text-center p-4">
                     <h1 class="display-5 fw-bold">Toronto Shared Bike</h1>
-                    <h5 class="lead py-3">Advanced Data Analytics & Visualization Platform</h5>
+                    <h5 class="lead py-3">Comprehensive Data Engineering & Cloud Project</h5>
                     <p class="fs-5">
-                        A comprehensive portfolio project showcasing end-to-end data engineering, featuring a modern
-                        data warehouse, interactive dashboards, cloud native RESTful API, and automated CI/CD pipeline
-                        management.
+                        A portfolio project showcasing end-to-end data engineering and DevOps skills — from building a
+                        data warehouse and automated pipelines to deploying cloud-native APIs and web applications on
+                        AWS.
                     </p>
                     <a href="#dashboard" class="btn btn-warning rounded-pill me-4">Try Dashboard</a>
-                    <a href="#tech" class="btn btn-light rounded-pill">Technical Details</a>
+                    <a href="#devops" class="btn btn-light rounded-pill">Technical Details</a>
                 </div>
             </div>
         </div>
@@ -69,6 +68,19 @@
         <!-- features -->
         <section id="feature-card" class="container py-5 my-5">
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+
+                <!-- Dashboard -->
+                <div class="col">
+                    <div class="card h-100 overflow-hidden text-bg-dark rounded-4">
+                        <img src="./img/features/dashbaord.jpg" class="card-img" alt="dashbaord">
+                        <div class="card-img-overlay d-flex flex-column">
+                            <p class="card-title h2 text-white my-auto text-center align-middle">
+                                Dashboard
+                            </p>
+                            <a href="#dashboard" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Insight -->
                 <div class="col">
@@ -83,28 +95,15 @@
                     </div>
                 </div>
 
-                <!-- tech -->
+                <!-- skill -->
                 <div class="col">
                     <div class="card h-100 overflow-hidden text-bg-dark rounded-4">
                         <img src="./img/features/tech.jpg" class="card-img" alt="tech">
                         <div class="card-img-overlay d-flex flex-column">
                             <p class="card-title h2 text-white my-auto text-center align-middle">
-                                Technology
+                                Skills
                             </p>
-                            <a href="#tech" class="stretched-link"></a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dashboard -->
-                <div class="col">
-                    <div class="card h-100 overflow-hidden text-bg-dark rounded-4">
-                        <img src="./img/features/dashbaord.jpg" class="card-img" alt="dashbaord">
-                        <div class="card-img-overlay d-flex flex-column">
-                            <p class="card-title h2 text-white my-auto text-center align-middle">
-                                Dashboard
-                            </p>
-                            <a href="#dashboard" class="stretched-link"></a>
+                            <a href="#devops" class="stretched-link"></a>
                         </div>
                     </div>
                 </div>
@@ -235,12 +234,6 @@
                         <!-- title text -->
                         <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
                             User Behavior Insight
-                            <!-- sign -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                                class="bi bi-search" viewBox="0 0 16 16">
-                                <path
-                                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-                            </svg>
                         </h1>
                         <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
                     </div>
@@ -368,8 +361,8 @@
                             <ul class="lead" style="list-style-type:square;">
                                 <li>CI/CD pipeline with GitHub Actions</li>
                                 <li>Infrastructure as Code (IaC) with Terraform</li>
-                                <li>Load testing with Grafana Cloud k6</li>
-                                <li>Central monitoring dashboard with Prometheus + Grafana</li>
+                                <!-- <li>Load testing with Grafana Cloud k6</li> -->
+                                <!-- <li>Central monitoring dashboard with Prometheus + Grafana</li> -->
                             </ul>
                         </div>
                     </div>
@@ -377,28 +370,20 @@
 
                 <!-- DevOps: Slide -->
                 <div class=" row py-3 mb-4">
-                    <div id="techCarousel" class="carousel slide shadow col-md-10 col-sm-12  p-0 mx-auto">
+                    <div id="devopsCarousel" class="carousel slide shadow col-md-10 col-sm-12  p-0 mx-auto">
 
                         <!-- indicator -->
                         <div class="carousel-indicators">
-                            <button type="button" data-bs-target="#techCarousel" data-bs-slide-to="0" class="active"
-                                aria-current="true" aria-label="Slide 1"></button>
-                            <button type="button" data-bs-target="#techCarousel" data-bs-slide-to="1"
-                                aria-label="Slide 2"></button>
-                            <button type="button button-warning" data-bs-target="#techCarousel" data-bs-slide-to="2"
-                                aria-label="Slide 3"></button>
+                            <button type="button" data-bs-target="#devopsCarousel" data-bs-slide-to="0" class="active"
+                                aria-current="true" aria-label="devops 1"></button>
+                            <button type="button" data-bs-target="#devopsCarousel" data-bs-slide-to="1"
+                                aria-label="devops 2"></button>
+                            <!-- <button type="button button-warning" data-bs-target="#devopsCarousel" data-bs-slide-to="2"
+                                aria-label="Slide 3"></button> -->
                         </div>
 
                         <!-- content -->
                         <div class="carousel-inner">
-
-                            <!-- sa
-                        <div class="carousel-item active">
-                            <img src="./img/tech/sa.gif" class="d-block w-100" alt="system architecture">
-                            <div class="carousel-caption d-none d-md-block">
-                                <h5>API System Architecture</h5>
-                            </div>
-                        </div> -->
 
                             <!-- cicd -->
                             <div class="carousel-item active">
@@ -417,29 +402,13 @@
                                 </div>
                             </div>
 
-                            <!-- devops -->
-                            <div class="carousel-item">
-                                <img src="./img/tech/devops.gif" class="d-block w-100" alt="devops">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5>Devops Pipelines</h5>
-                                </div>
-                            </div>
-
-                            <!-- dw -->
-                            <!-- <div class="carousel-item">
-                                <img src="./img/tech/dw.gif" class="d-block w-100" alt="data warehouse">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5>Data Warehouse Design</h5>
-                                </div>
-                            </div> -->
-
                             <!-- Left and right controls -->
-                            <button class="carousel-control-prev" type="button" data-bs-target="#techCarousel"
+                            <button class="carousel-control-prev" type="button" data-bs-target="#devopsCarousel"
                                 data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Previous</span>
                             </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#techCarousel"
+                            <button class="carousel-control-next" type="button" data-bs-target="#devopsCarousel"
                                 data-bs-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Next</span>
@@ -452,94 +421,91 @@
         <!-- divider -->
         <hr class="col-8 mx-auto py-3">
 
-        <!-- tech -->
-        <!-- <section id="tech" data-bs-spy="scroll" data-bs-target="#trip-navbar" class="container pb-5">
-            <div class="row">
-                <div class="px-5 py-5">
+        <!-- DE -->
+        <section id="data_engineer" class="container pb-5">
+            <div data-bs-spy="scroll" data-bs-target="#trip-navbar" data-bs-root-margin="0px 0px -40%"
+                data-bs-smooth-scroll="true" class="bg-body-white p-3 rounded-2" tabindex="0">
 
-                    <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
-                        Technology
-                    </h1>
+                <!-- Title -->
+                <div class="row row-cols-1">
+                    <div class="px-5 py-5">
 
-                    <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
+                        <!-- title text -->
+                        <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
+                            Data Engineering Skill
+                        </h1>
+                        <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
+                        <p class="text-center lead py-2">
+                            Explore Data Engineering skills by navigating the following slides
+                        </p>
 
-
-                </div>
-            </div>
-
-            <div class="row py-2">
-                <p class="text-center lead py-4">
-                    Explore the comprehensive technology ecosystem powering this project.
-                </p>
-
-                <div class=" text-center">
-                    <img class="col-md-10 col-sm-12 img-fluid shadow" src="./img/tech/tech_stack.png" alt="tech_stack">
-                </div>
-            </div>
-
-            <div class="row py-3">
-
-                <p class="text-center lead py-3">
-                    Navigate through detailed architectural diagrams showcasing the system design, DevOps workflows, and
-                    data warehouse implementation.
-                </p>
-
-                <div id="techCarousel" class="carousel slide shadow col-md-10 col-sm-12  p-0 mx-auto">
-
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#techCarousel" data-bs-slide-to="0" class="active"
-                            aria-current="true" aria-label="Slide 1"></button>
-                        <button type="button" data-bs-target="#techCarousel" data-bs-slide-to="1"
-                            aria-label="Slide 2"></button>
-                        <button type="button button-warning" data-bs-target="#techCarousel" data-bs-slide-to="2"
-                            aria-label="Slide 3"></button>
-                    </div>
-
-                    <div class="carousel-inner">
-
-                        <div class="carousel-item active">
-                            <img src="./img/tech/sa.gif" class="d-block w-100" alt="system architecture">
-                            <div class="carousel-caption d-none d-md-block">
-                                <h5>API System Architecture</h5>
-                            </div>
+                        <div class="d-flex justify-content-center">
+                            <ul class="lead" style="list-style-type:square;">
+                                <li>On-premises data warehouse solution</li>
+                                <li>ETL Pipeline with PostgreSQL</li>
+                                <li>Data warehouse logical desgin</li>
+                                <!-- <li>Schedule backup task with Jenkins</li> -->
+                            </ul>
                         </div>
-
-                        <div class="carousel-item active">
-                            <img src="./img/tech/system_design.gif" class="d-block w-100" alt="system architecture">
-                            <div class="carousel-caption d-none d-md-block">
-                                <h5>Hybrid Cloud Architecture</h5>
-                            </div>
-                        </div>
-
-                        <div class="carousel-item">
-                            <img src="./img/tech/devops.gif" class="d-block w-100" alt="devops">
-                            <div class="carousel-caption d-none d-md-block">
-                                <h5>Devops Pipelines</h5>
-                            </div>
-                        </div>
-
-                        <div class="carousel-item">
-                            <img src="./img/tech/dw.gif" class="d-block w-100" alt="data warehouse">
-                            <div class="carousel-caption d-none d-md-block">
-                                <h5>Data Warehouse Design</h5>
-                            </div>
-                        </div>
-
-                        <button class="carousel-control-prev" type="button" data-bs-target="#techCarousel"
-                            data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#techCarousel"
-                            data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
                     </div>
                 </div>
-            </div>
-        </section> -->
 
+                <!-- Data Engineer: Slide -->
+                <div class=" row py-3 mb-4">
+                    <div id="deCarousel" class="carousel slide shadow col-md-10 col-sm-12  p-0 mx-auto">
+
+                        <!-- indicator -->
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#deCarousel" data-bs-slide-to="0" class="active"
+                                aria-current="true" aria-label="de 1"></button>
+                            <button type="button" data-bs-target="#deCarousel" data-bs-slide-to="1"
+                                aria-label="de 2"></button>
+                            <button type="button button-warning" data-bs-target="#deCarousel" data-bs-slide-to="2"
+                                aria-label="de 3"></button>
+                        </div>
+
+                        <!-- content -->
+                        <div class="carousel-inner">
+
+                            <!-- sa -->
+                            <div class="carousel-item active">
+                                <img src="./img/de/on-prem.gif" class="d-block w-100" alt="on-prem sa">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>On-premises Solution Architecture</h5>
+                                </div>
+                            </div>
+
+                            <!-- etl -->
+                            <div class="carousel-item">
+                                <img src="./img/de/etl.gif" class="d-block w-100" alt="etl pipeline">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Extract, Transform, Load Pipeline</h5>
+                                </div>
+                            </div>
+
+                            <!-- star schema -->
+                            <div class="carousel-item">
+                                <img src="./img/de/erd.png" class="d-block w-100" alt="star schema">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Star Schema</h5>
+                                </div>
+                            </div>
+
+                            <!-- Left and right controls -->
+                            <button class="carousel-control-prev" type="button" data-bs-target="#deCarousel"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#deCarousel"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        </section>
     </main>
 
     <!-- footer -->
@@ -560,8 +526,8 @@
     <script src="https://echarts.apache.org/en/js/vendors/echarts/dist/echarts.min.js"></script>
     <script src="./js/charts.js"></script>
     <script>
-        const DOMAIN = "trip-dev.arguswatcher.net";
-        const STAG = "dev";
+        const DOMAIN = "trip.arguswatcher.net";
+        const STAG = "prod";
 
         document.addEventListener('DOMContentLoaded', () => {
             const sel = document.getElementById('year-selector');
