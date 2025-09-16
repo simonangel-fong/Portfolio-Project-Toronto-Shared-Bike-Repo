@@ -150,7 +150,7 @@ resource "aws_api_gateway_method_settings" "cached_gets" {
     metrics_enabled      = true # keep on for tuning; you can disable later
     logging_level        = "INFO"
     # logging_level          = "ERROR" # cut down on overhead vs "INFO"
-    throttling_burst_limit = 1000
-    throttling_rate_limit  = 500
+    throttling_burst_limit = 1500
+    throttling_rate_limit  = 1000
   }
 }
