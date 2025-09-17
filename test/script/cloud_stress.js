@@ -15,9 +15,9 @@ const SLA_FAIL = __ENV.SLA_FAIL || "0.01";
 const SLA_DUR_99 = __ENV.SLA_DUR_99 || "1000";
 
 const LOW = 20;
-const AVG = 50;
-const HIGH = 80;
-const MAX = 100;
+const AVG = 40;
+const HIGH = 60;
+const MAX = 80;
 
 export const options = {
   thresholds: {
@@ -30,21 +30,21 @@ export const options = {
     average_load: {
       executor: "ramping-vus",
       stages: [
-        { duration: "20s", target: LOW },
-        { duration: "20s", target: LOW },
-        { duration: "20s", target: AVG },
-        { duration: "20s", target: AVG },
-        { duration: "20s", target: HIGH },
-        { duration: "20s", target: HIGH },
-        { duration: "20s", target: MAX },
-        { duration: "20s", target: MAX },
-        { duration: "20s", target: HIGH },
-        { duration: "20s", target: HIGH },
-        { duration: "20s", target: AVG },
-        { duration: "20s", target: AVG },
-        { duration: "20s", target: LOW },
-        { duration: "20s", target: LOW },
-        { duration: "20s", target: 0 },
+        { duration: "30s", target: LOW },
+        { duration: "30s", target: LOW },
+        { duration: "30s", target: AVG },
+        { duration: "30s", target: AVG },
+        { duration: "30s", target: HIGH },
+        { duration: "30s", target: HIGH },
+        { duration: "30s", target: MAX },
+        { duration: "30s", target: MAX },
+        { duration: "30s", target: HIGH },
+        { duration: "30s", target: HIGH },
+        { duration: "30s", target: AVG },
+        { duration: "30s", target: AVG },
+        { duration: "30s", target: LOW },
+        { duration: "30s", target: LOW },
+        { duration: "30s", target: 0 },
       ],
     },
   },
