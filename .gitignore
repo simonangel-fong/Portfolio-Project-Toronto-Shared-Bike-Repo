@@ -244,8 +244,6 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-*.hcl
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
