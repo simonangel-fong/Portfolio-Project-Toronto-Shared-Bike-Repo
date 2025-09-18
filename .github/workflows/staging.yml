@@ -120,7 +120,8 @@ jobs:
           SLA_FAIL: "0.01"
           SLA_DUR_99: "1000"
         with:
-          # debug: true
+          debug: true
+          fail-fast: true
           path: |
             ${{ vars.DIR_TEST }}/script/cloud_smoke.js
             ${{ vars.DIR_TEST }}/script/cloud_load.js

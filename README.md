@@ -8,7 +8,7 @@
 
 ## System Architecture
 
-![sa](./src/web/img/tech/system_design.gif)
+![sa](./src/web-app/html/img/tech/system_design.gif)
 
 ---
 
@@ -29,13 +29,3 @@
 ---
 
 - [Testing with `k6`](./docs/test.md)
-
-```sh
-terraform fmt
-terraform validate
-tflint
-```
-
-feature/web
-feature/api
-feature/data-warehouse

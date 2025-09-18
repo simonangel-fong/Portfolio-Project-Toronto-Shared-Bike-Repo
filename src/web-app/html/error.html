@@ -13,34 +13,13 @@
 </head>
 
 <body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="50" style="height: 100vh;">
-    <!-- header -->
-    <div class="container-fluid text-bg-dark mb-5">
-        <!-- header nav -->
-        <nav id="trip-navbar" class="navbar bg-dark border-bottom border-body fixed-top justify-content-center"
-            data-bs-theme="dark">
-            <a class="navbar-brand fw-bold py-1 px-0 active" aria-current="page" href="#">
-                Toronto Shared Bike
-            </a>
-            <ul class="nav nav-masthead justify-content-center">
-                <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#insight">Insight</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#tech">Technology</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#dashboard">Dashboard</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
 
     <!-- Main -->
     <main class="container-fluid px-0 text-center">
         <h1 class="py-4">Requested URL is unavailable.</h1>
         <p>
             Redirecting to
-            <a href="https://test-api.arguswatcher.net">test-api.arguswatcher.net</a>
+            <a href="https://trip.arguswatcher.net">https://trip.arguswatcher.net</a>
             in <span id="countdown" class="countdown">5</span> seconds…
         </p>
 
@@ -53,6 +32,7 @@
         integrity="sha384-RuyvpeZCxMJCqVUGFI0Do1mQrods/hhxYlcVfGPOfQtPJh0JCw12tUAZ/Mv10S7D"
         crossorigin="anonymous"></script>
     <script>
+        const DOMAIN = "trip.arguswatcher.net";
         let seconds = 5; // countdown time in seconds
         function startCountdown() {
             const timer = document.getElementById("countdown");
@@ -61,7 +41,7 @@
                 seconds--;
                 if (seconds < 0) {
                     clearInterval(interval);
-                    window.location.href = "https://test-api.arguswatcher.net";
+                    window.location.href = "http://" + DOMAIN;
                 }
             }, 1000);
         }
