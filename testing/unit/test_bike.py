@@ -12,7 +12,7 @@ LAMBDA_PATH = "src/web-app/lambda"
 PROJECT = os.environ.get('PROJECT', 'toronto-shared-bike')
 APP = os.environ.get('APP', 'data-warehouse')
 ENV = os.environ.get('ENV', 'dev')
-AWS_REGION = os.environ.get('aws_region', 'ca-central-1')
+AWS_REGION = os.environ.get('AWS_REGION', 'ca-central-1')
 # tb name
 MV_BIKE_YEAR = f"{PROJECT}-{APP}-{ENV}-mv_bike_year"
 
