@@ -7,11 +7,13 @@ on:
       - "feature/**"
     paths:
       - "src/**"
+      - "testing/**"
       - ".github/workflows/dev.yml"
   pull_request:
     branches: ["staging"]
     paths:
       - "src/**"
+      - "testing/**"
 
 permissions:
   contents: read
