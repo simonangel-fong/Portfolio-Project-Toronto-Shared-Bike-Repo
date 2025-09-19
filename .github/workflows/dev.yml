@@ -56,7 +56,7 @@ jobs:
           echo "Running Lambda unit tests…"
           pwd
           ls
-          pytest testing/unit/test-bike.py
+          pytest testing/unit/test_bike.py
 
   terraform_validate:
     name: Terraform Validate
