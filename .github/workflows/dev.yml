@@ -25,9 +25,9 @@ jobs:
     name: Lambda Unit Test
     runs-on: ubuntu-latest
     environment: Dev
-    defaults:
-      run:
-        working-directory: ${{ vars.LAMBDA_DIR }}
+    # defaults:
+    #   run:
+    #     working-directory: ${{ vars.LAMBDA_DIR }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
