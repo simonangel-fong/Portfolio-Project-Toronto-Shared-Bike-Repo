@@ -1,7 +1,7 @@
 #!/bin/bash
 
-JENKINS_DOCKER_COMPOSE_FILE="../jenkins/docker-compose.yaml"
-PROMETHEUS_DOCKER_COMPOSE_FILE="../monitor/docker-compose.yaml"
+JENKINS_DOCKER_COMPOSE_FILE="data-warehouse/jenkins/docker-compose.yaml"
+PROMETHEUS_DOCKER_COMPOSE_FILE="data-warehouse/monitor/docker-compose.yaml"
 
 echo
 echo "##############################"
@@ -38,9 +38,15 @@ sudo usermod -aG docker $USER
 sudo chmod 666 /var/run/docker.sock
 
 sudo systemctl enable --now docker
-# verify
-docker run hello-world
+
+echo
+echo "##############################"
+echo "Verify Docker"
+echo "##############################"
+echo
+
 docker --version
+docker run hello-world
 
 echo
 echo "##############################"
