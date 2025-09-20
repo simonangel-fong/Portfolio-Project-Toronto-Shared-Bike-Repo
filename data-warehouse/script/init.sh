@@ -1,7 +1,7 @@
 #!/bin/bash
 
-JENKINS_DOCKER_COMPOSE_FILE="data-warehouse/jenkins/docker-compose.yaml"
-PROMETHEUS_DOCKER_COMPOSE_FILE="data-warehouse/monitor/docker-compose.yaml"
+JENKINS_DIR="data-warehouse/jenkins"
+PROMETHEUS_DIR="data-warehouse/monitor"
 
 echo
 echo "##############################"
@@ -54,8 +54,9 @@ echo "Start Prometheus & Grafana"
 echo "##############################"
 echo
 # spin up prom
-docker compose -f $PROMETHEUS_DOCKER_COMPOSE_FILE down
-docker compose -f $PROMETHEUS_DOCKER_COMPOSE_FILE up -d --build
+cd $PROMETHEUS_DIR
+docker compose down
+docker compose up -d --build
 
 echo
 echo "##############################"
@@ -63,6 +64,7 @@ echo "Start Jenkins"
 echo "##############################"
 echo
 # spin up Jenkins
-docker compose -f $JENKINS_DOCKER_COMPOSE_FILE down
-docker compose -f $JENKINS_DOCKER_COMPOSE_FILE up -d --build
+cd $JENKINS_DIR
+docker compose down
+docker compose up -d --build
 # docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword

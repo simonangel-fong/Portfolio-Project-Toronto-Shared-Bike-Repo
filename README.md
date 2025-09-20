@@ -39,5 +39,5 @@ cd ~/project_toronto_shared_bike
 git checkout feature/dw
 chmod -v +x ~/project_toronto_shared_bike/data-warehouse/script/init.sh
 
-bash ~/project_toronto_shared_bike/data-warehouse/script/init.sh
+bash data-warehouse/script/init.sh
 ```
