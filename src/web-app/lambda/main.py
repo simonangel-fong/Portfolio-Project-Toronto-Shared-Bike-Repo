@@ -69,7 +69,7 @@ def lambda_handler(event, context):
     if method == 'GET' and path == '/top-station':
         year = params.get('year') if params else None
         user = params.get('user') if params else None
-        return _top_station(year)
+        return _top_station(year, user)
 
     # Default response: unsupported paths/methods
     return {

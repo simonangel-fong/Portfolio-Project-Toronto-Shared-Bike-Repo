@@ -7,11 +7,13 @@ on:
       - "feature/**"
     paths:
       - "src/**"
+      - "testing/**"
       - ".github/workflows/dev.yml"
   pull_request:
     branches: ["staging"]
     paths:
       - "src/**"
+      - "testing/**"
 
 permissions:
   contents: read
@@ -25,18 +27,32 @@ jobs:
     name: Lambda Unit Test
     runs-on: ubuntu-latest
     environment: Dev
-    defaults:
-      run:
-        working-directory: ${{ vars.LAMBDA_DIR }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Unit test
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirement*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install test dependencies
         run: |
-          pwd
-          ls
-          echo "Running Lambda unit tests..."
+          python -m pip install --upgrade pip
+          pip install -r requirement.txt
+
+      - name: Run unit tests
+        run: |
+          echo "Running Lambda unit tests…"
+          pytest testing/unit/
 
   terraform_validate:
     name: Terraform Validate
