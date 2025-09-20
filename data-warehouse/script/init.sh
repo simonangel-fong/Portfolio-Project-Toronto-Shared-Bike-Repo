@@ -64,4 +64,5 @@ echo "##############################"
 echo
 # spin up Jenkins
 docker compose -f $PROMETHEUS_FILE down
-docker compose -f $PROMETHEUS_FILE  up -d --build && docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+docker compose -f $PROMETHEUS_FILE  up -d --build
+# docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
