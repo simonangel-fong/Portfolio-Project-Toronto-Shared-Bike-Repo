@@ -1,8 +1,8 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
 
-const DNS_DOMAIN = __ENV.DNS_DOMAIN || "trip-dev.arguswatcher.net";
-const API_ENV = __ENV.API_ENV || "dev";
+const DNS_DOMAIN = __ENV.DNS_DOMAIN;
+const API_ENV = __ENV.API_ENV;
 
 const HOME_URL = `https://${DNS_DOMAIN}`;
 const BIKE_URL = `https://${DNS_DOMAIN}/${API_ENV}/bike`;
