@@ -118,7 +118,7 @@ jobs:
         with:
           debug: true
           fail-fast: true
-          flags: --env DNS_DOMAIN=${{ vars.TF_VAR_dns_domain }} --env API_ENV=${{ vars.TF_VAR_env }} --env SLA_FAIL="0.01" --env SLA_DUR_99="1000"
+          flags: --env DNS_DOMAIN=${{ vars.TF_VAR_dns_domain }} --env API_ENV=${{ vars.TF_VAR_env }} --env SLA_FAIL=0.01 --env SLA_DUR_99=1000
           path: |
             ${{ vars.DIR_LOAD_TESTING }}/cloud_smoke.js
             ${{ vars.DIR_LOAD_TESTING }}/cloud_load.js
