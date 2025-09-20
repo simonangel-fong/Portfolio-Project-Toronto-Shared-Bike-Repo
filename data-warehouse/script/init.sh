@@ -3,15 +3,19 @@
 JENKINS_DOCKER_COMPOSE_FILE="../jenkins/docker-compose.yaml"
 PROMETHEUS_DOCKER_COMPOSE_FILE="../monitor/docker-compose.yaml"
 
+echo
 echo "##############################"
 echo "remove exiting docker"
 echo "##############################"
+echo
 
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 
+echo
 echo "##############################"
 echo "Install Docker"
 echo "##############################"
+echo
 
 # Add Docker's official GPG key:
 sudo apt-get update
@@ -38,17 +42,21 @@ sudo systemctl enable --now docker
 docker run hello-world
 docker --version
 
+echo
 echo "##############################"
 echo "Start Prometheus & Grafana"
 echo "##############################"
+echo
 # spin up prom
 docker compose -f $PROMETHEUS_DOCKER_COMPOSE_FILE down
 docker compose -f $PROMETHEUS_DOCKER_COMPOSE_FILE up -d --build
 
+echo
 echo "##############################"
 echo "Start Jenkins"
 echo "##############################"
+echo
 # spin up Jenkins
 docker compose -f $JENKINS_DOCKER_COMPOSE_FILE down
 docker compose -f $JENKINS_DOCKER_COMPOSE_FILE up -d --build
-docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+# docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword

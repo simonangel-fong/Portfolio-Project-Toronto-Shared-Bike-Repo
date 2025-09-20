@@ -30,7 +30,7 @@ services:
     image: prom/prometheus
     restart: unless-stopped
     volumes:
-      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     networks:
       - monitoring
@@ -44,7 +44,8 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - grafana_data:/var/lib/grafana
+      - ./grafana:/var/lib/grafana
+      # - grafana_data:/var/lib/grafana
     networks:
       - monitoring
     ports:
