@@ -27,7 +27,7 @@ sudo usermod -aG docker $USER
 docker --version
 
 # spin up prom
-docker compose -f $PROMETHEUS_DOCKER_COMPOSE_FILE up -d --build
+sudo docker compose -f $PROMETHEUS_DOCKER_COMPOSE_FILE up -d --build
 
 # spin up jenkins
-docker compose -f $JENKINS_DOCKER_COMPOSE_FILE up -d --build
+sudo docker compose -f $JENKINS_DOCKER_COMPOSE_FILE up -d --build
