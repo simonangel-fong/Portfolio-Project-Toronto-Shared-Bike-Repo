@@ -47,16 +47,12 @@ jobs:
       - name: Install test dependencies
         run: |
           python -m pip install --upgrade pip
-          pwd
-          ls
           pip install -r requirement.txt
 
       - name: Run unit tests
         run: |
           echo "Running Lambda unit tests…"
-          pwd
-          ls
-          pytest testing/unit/test_bike.py
+          pytest testing/unit/
 
   terraform_validate:
     name: Terraform Validate

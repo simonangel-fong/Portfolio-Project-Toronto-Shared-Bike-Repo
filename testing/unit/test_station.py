@@ -24,6 +24,13 @@ class TestStation(unittest.TestCase):
         cls.mock = mock_aws()
         cls.mock.start()
 
+        # setup boto3
+        os.environ.setdefault("AWS_DEFAULT_REGION", "ca-central-1")
+        os.environ.setdefault("AWS_REGION", "ca-central-1")
+        os.environ.setdefault("AWS_ACCESS_KEY_ID", "test")
+        os.environ.setdefault("AWS_SECRET_ACCESS_KEY", "test")
+        os.environ.setdefault("AWS_SESSION_TOKEN", "test")
+        
         # set env used
         os.environ.setdefault('PROJECT', PROJECT)
         os.environ.setdefault('APP', APP)
