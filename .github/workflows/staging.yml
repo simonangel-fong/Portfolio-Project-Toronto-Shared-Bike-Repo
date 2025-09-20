@@ -124,8 +124,6 @@ jobs:
           fail-fast: true
           path: |
             ${{ vars.DIR_LOAD_TESTING }}/cloud_smoke.js
-            ${{ vars.DIR_LOAD_TESTING }}/cloud_load.js
-            ${{ vars.DIR_LOAD_TESTING }}/cloud_stress.js
 
       - name: Send email notification
         if: always()
