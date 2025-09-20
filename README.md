@@ -41,6 +41,10 @@ chmod -v +x ~/project_toronto_shared_bike/data-warehouse/script/init.sh
 
 bash data-warehouse/script/init.sh
 
-docker exec -it grafana bash
+JENKINS_FILE="data-warehouse/jenkins/docker-compose.yaml"
+PROMETHEUS_FILE="data-warehouse/monitor/docker-compose.yaml"
+
+docker compose -f data-warehouse/monitor/docker-compose.yaml down
+docker compose -f data-warehouse/monitor/docker-compose.yaml up -d --build
 
 ```
