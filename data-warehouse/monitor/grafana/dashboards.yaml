@@ -3,17 +3,17 @@ apiVersion: 1
 providers:
   - name: node-exporter
     orgId: 1
-    folder: on-prem
+    folder: Node Exporter
     type: file
     disableDeletion: false
     allowUiUpdates: true
     options:
       path: /var/lib/grafana/dashboards/node-exporter
       updateIntervalSeconds: 10
-  
+
   - name: cadvisor
     orgId: 1
-    folder: on-prem
+    folder: cAdvisor
     type: file
     disableDeletion: false
     allowUiUpdates: true
