@@ -9,3 +9,12 @@ providers:
     allowUiUpdates: true
     options:
       path: /var/lib/grafana/dashboards/
+
+  - name: cadvisor
+    orgId: 1
+    folder: cAdvisor
+    type: file
+    disableDeletion: false
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards
