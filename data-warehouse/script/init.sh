@@ -50,7 +50,7 @@ docker run hello-world
 
 echo
 echo "##############################"
-echo "Start Prometheus & Grafana"
+echo "Start Jenkins"
 echo "##############################"
 echo
 # spin up prom
@@ -59,7 +59,7 @@ docker compose -f $JENKINS_FILE up -d --build
 
 echo
 echo "##############################"
-echo "Start Jenkins"
+echo "Start Prometheus & Grafana"
 echo "##############################"
 echo
 # spin up Jenkins

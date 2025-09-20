@@ -40,4 +40,7 @@ git checkout feature/dw
 chmod -v +x ~/project_toronto_shared_bike/data-warehouse/script/init.sh
 
 bash data-warehouse/script/init.sh
+
+docker exec -it grafana bash
+
 ```
