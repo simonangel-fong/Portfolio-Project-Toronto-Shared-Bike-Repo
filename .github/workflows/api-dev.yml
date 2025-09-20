@@ -1,26 +1,34 @@
-name: dev-ci
+name: api-dev
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - "feature/**"
+      - "feature/api"
     paths:
-      - "src/**"
+      - "web-app/**"
       - "testing/**"
       - ".github/workflows/dev.yml"
   pull_request:
-    branches: ["staging"]
+    branches: ["api-staging"]
     paths:
-      - "src/**"
+      - "web-app/**"
       - "testing/**"
 
+# read only
 permissions:
   contents: read
 
+# multiple trigger
 concurrency:
   group: dev-ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref_name || github.run_id }}
   cancel-in-progress: true # Cancel older runs
+
+env:
+  DIR_WEB_APP_AWS: web-app/aws
+  DIR_UNIT_TESTING: testing/unit
+  TF_VERSION: 1.9.8
+  TFLINT_VERSION: v0.53.0
 
 jobs:
   lambda_unit_test:
@@ -52,7 +60,7 @@ jobs:
       - name: Run unit tests
         run: |
           echo "Running Lambda unit tests…"
-          pytest ${{vars.DIR_UNIT_TESTING}}
+          pytest ${{env.DIR_UNIT_TESTING}}
 
   terraform_validate:
     name: Terraform Validate
@@ -63,7 +71,7 @@ jobs:
       TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
     defaults:
       run:
-        working-directory: ${{ vars.DIR_AWS }}
+        working-directory: ${{ env.DIR_WEB_APP_AWS }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -96,7 +104,7 @@ jobs:
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
         with:
-          tflint_version: v0.53.0
+          tflint_version: ${{env.TFLINT_VERSION}}
 
       - name: Cache TFLint plugins
         uses: actions/cache@v4

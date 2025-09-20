@@ -2,7 +2,7 @@
 # AWS S3 bucket
 # ##############################
 module "web_bucket" {
-  source        = "../../module/s3"
+  source        = "../module/s3"
   project       = var.project
   app           = var.app
   env           = var.env
@@ -13,7 +13,7 @@ module "web_bucket" {
 # AWS Dynamodb
 # ##############################
 module "dynamodb_tb" {
-  source  = "../../module/dynamodb"
+  source  = "../module/dynamodb"
   project = var.project
   app     = var.app
   env     = var.env
@@ -26,7 +26,7 @@ module "dynamodb_tb" {
 # AWS Lambda
 # ##############################
 module "lambda" {
-  source  = "../../module/lambda"
+  source  = "../module/lambda"
   project = var.project
   app     = var.app
   env     = var.env
@@ -40,7 +40,7 @@ module "lambda" {
 # AWS API Gateway
 # ##############################
 module "api_gateway" {
-  source  = "../../module/apigw"
+  source  = "../module/apigw"
   project = var.project
   app     = var.app
   env     = var.env
@@ -54,7 +54,7 @@ module "api_gateway" {
 # AWS Cloudfront
 # ##############################
 module "cloudfront" {
-  source  = "../../module/cloudfront"
+  source  = "../module/cloudfront"
   project = var.project
   app     = var.app
   env     = var.env
@@ -73,7 +73,7 @@ module "cloudfront" {
 # Cloudflare DNS
 # ##############################
 module "cloudflare_dns" {
-  source  = "../../module/dns"
+  source  = "../module/dns"
   project = var.project
   app     = var.app
   env     = var.env
