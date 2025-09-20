@@ -1,6 +1,7 @@
 #!/bin/bash
 
-JENKINS_DOCKER_FILE="../jenkins/docker-compose.yaml"
+JENKINS_DOCKER_COMPOSE_FILE="../jenkins/docker-compose.yaml"
+PROMETHEUS_DOCKER_COMPOSE_FILE="../monitor/docker-compose.yaml"
 
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 
@@ -25,4 +26,8 @@ sudo usermod -aG docker $USER
 
 docker --version
 
-docker compose -f $JENKINS_DOCKER_FILE up -d --build
+# spin up prom
+docker compose -f $PROMETHEUS_DOCKER_COMPOSE_FILE up -d --build
+
+# spin up jenkins
+docker compose -f $JENKINS_DOCKER_COMPOSE_FILE up -d --build
