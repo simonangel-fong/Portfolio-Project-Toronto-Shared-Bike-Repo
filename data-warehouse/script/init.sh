@@ -54,7 +54,7 @@ echo "Start Jenkins"
 echo "##############################"
 echo
 # spin up Jenkins
-docker compose -f $JENKINS_FILE down -v
+docker compose -f $JENKINS_FILE down
 docker compose -f $JENKINS_FILE up -d --build
 
 echo
