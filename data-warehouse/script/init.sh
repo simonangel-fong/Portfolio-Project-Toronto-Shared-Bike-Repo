@@ -53,8 +53,8 @@ echo "##############################"
 echo "Start Jenkins"
 echo "##############################"
 echo
-# spin up prom
-docker compose -f $JENKINS_FILE down
+# spin up Jenkins
+docker compose -f $JENKINS_FILE down -v
 docker compose -f $JENKINS_FILE up -d --build
 
 echo
@@ -62,7 +62,7 @@ echo "##############################"
 echo "Start Prometheus & Grafana"
 echo "##############################"
 echo
-# spin up Jenkins
-docker compose -f $PROMETHEUS_FILE down
+# spin up Prometheus
+docker compose -f $PROMETHEUS_FILE down -v
 docker compose -f $PROMETHEUS_FILE  up -d --build
 # docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
