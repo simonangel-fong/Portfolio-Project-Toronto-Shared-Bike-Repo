@@ -52,7 +52,7 @@ jobs:
       - name: Run unit tests
         run: |
           echo "Running Lambda unit tests…"
-          pytest testing/unit/
+          pytest ${{vars.DIR_UNIT_TESTING}}
 
   terraform_validate:
     name: Terraform Validate
