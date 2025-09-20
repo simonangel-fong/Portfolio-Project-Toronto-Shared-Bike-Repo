@@ -8,7 +8,8 @@ providers:
     disableDeletion: false
     allowUiUpdates: true
     options:
-      path: /var/lib/grafana/dashboards/
+      path: /var/lib/grafana/dashboards/node-exporter
+      updateIntervalSeconds: 10
 
   - name: cadvisor
     orgId: 1
@@ -17,4 +18,5 @@ providers:
     disableDeletion: false
     allowUiUpdates: true
     options:
-      path: /var/lib/grafana/dashboards
+      path: /var/lib/grafana/dashboards/cadvisor
+      updateIntervalSeconds: 10
