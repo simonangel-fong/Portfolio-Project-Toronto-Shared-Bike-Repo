@@ -1,0 +1,17 @@
+networks:
+  jenkins_network:
+    driver: bridge
+
+services:
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins
+    restart: unless-stopped
+    # privileged: true
+    # user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - jenkins_network
+    ports:
+      - "8080:8080"
