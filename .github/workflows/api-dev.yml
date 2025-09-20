@@ -10,7 +10,7 @@ on:
       - "testing/**"
       - ".github/workflows/api-dev.yml"
   pull_request:
-    branches: ["api-staging"]
+    branches: ["staging"]
     paths:
       - "web-app/**"
       - "testing/**"
