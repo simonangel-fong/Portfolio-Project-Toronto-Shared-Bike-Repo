@@ -115,13 +115,12 @@ jobs:
         env:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
-          DNS_DOMAIN: ${{ vars.TF_VAR_dns_domain }}
-          API_ENV: ${{ vars.TF_VAR_env }}
           SLA_FAIL: "0.01"
           SLA_DUR_99: "1000"
         with:
           debug: true
           fail-fast: true
+          flags: --env DNS_DOMAIN=${{ vars.TF_VAR_dns_domain }} --env API_ENV=${{ vars.TF_VAR_env }}
           path: |
             ${{ vars.DIR_LOAD_TESTING }}/cloud_smoke.js
 
