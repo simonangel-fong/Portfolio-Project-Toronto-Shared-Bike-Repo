@@ -1,10 +1,5 @@
 #!/bin/bash
 
-mkdir -pv ~/project_toronto_shared_bike
-cd ~/project_toronto_shared_bike
-git clone https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git ~/project_toronto_shared_bike
-
-
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 
 # Add Docker's official GPG key:

@@ -29,3 +29,10 @@
 ---
 
 - [Testing with `k6`](./docs/test.md)
+
+
+```sh
+mkdir -pv ~/project_toronto_shared_bike
+cd ~/project_toronto_shared_bike
+git clone https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git ~/project_toronto_shared_bike
+```
