@@ -23,6 +23,7 @@ pipeline {
         sh '''
         docker --version
         docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
+        docker logs postgresql
         '''
       }
     }
