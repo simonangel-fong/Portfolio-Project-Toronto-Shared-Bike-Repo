@@ -2,28 +2,22 @@ pipeline {
   agent any
   stages
   {
-    // stage('Start PostgreSQL') {
-    //   steps {
-    //     sh '''
-    //     docker --version
-    //     docker compose -f data-warehouse/postgresql/docker-compose.yaml down
-    //     docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
-    //     '''
-    //   }
-    // }
-    stage('Download Raw Data') {
+    stage('Start PostgreSQL') {
       steps {
         sh '''
-        echo download
-        cat /data/2020/Ridership-2020-05.csv
+        docker --version
+        docker compose -f data-warehouse/postgresql/docker-compose.yaml down
+        docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
         '''
       }
     }
-    // stage('Extract Data') {
-    //   steps {
-    //     sh 'echo Extract'
-    //   }
-    // }
+    stage('Extract Data') {
+      steps {
+        sh '''
+        docker exec -it postgresql hostname
+        '''
+      }
+    }
     // stage('Transform Data') {
     //   steps {
     //     sh '''
