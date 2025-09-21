@@ -26,6 +26,11 @@ pipeline {
         sh 'echo Load'
       }
     }
+    stage('Refresh MV') {
+      steps {
+        sh 'echo Refresh'
+      }
+    }
     stage('Export Data') {
       steps {
         sh 'echo Export'
@@ -34,6 +39,11 @@ pipeline {
     stage('Upload Data') {
       steps {
         sh 'echo Upload'
+      }
+    }
+    stage('Stop PostgreSQL') {
+      steps {
+        sh 'echo Stop'
       }
     }
   }
