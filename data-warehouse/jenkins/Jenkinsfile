@@ -43,7 +43,7 @@ pipeline {
     }
     stage('Stop PostgreSQL') {
       steps {
-        sh 'echo Stop'
+        sh 'docker compose -f data-warehouse/postgresql/docker-compose.yaml down'
       }
     }
   }
