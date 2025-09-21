@@ -8,7 +8,11 @@ pipeline {
     }
     stage('Download Raw Data') {
       steps {
-        sh 'echo download'
+        sh '''
+        echo download
+        ls data-warehouse/postgresql/raw
+        ls data-warehouse/postgresql/mv
+        '''
       }
     }
     stage('Extract Data') {
