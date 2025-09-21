@@ -30,4 +30,4 @@ git clone https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bi
 
 cd ~/project-shared-bike
 git checkout feature/dw
-bash ~/project-shared-bike/data-warehouse/script/install.sh
+bash ~/project-shared-bike/data-warehouse/script/init.sh

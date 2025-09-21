@@ -52,6 +52,4 @@ sudo systemctl enable --now ssh
 
 sudo vi /etc/ssh/sshd_config
 sudo systemctl restart ssh
-
-
 ```
