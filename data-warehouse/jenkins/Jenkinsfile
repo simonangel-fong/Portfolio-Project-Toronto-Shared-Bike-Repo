@@ -20,7 +20,7 @@ pipeline {
       steps {
         sh '''
         docker --version
-        docker compose -f data-warehouse/postgresql/docker-compose.yaml down
+        docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
         docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
         '''
       }
