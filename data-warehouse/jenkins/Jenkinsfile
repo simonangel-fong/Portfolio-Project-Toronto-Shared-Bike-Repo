@@ -15,8 +15,7 @@ pipeline {
       steps {
         sh '''
         echo download
-        cat /data/file
-        bash data-warehouse/script/get_raw.sh
+        cat /data/2020/Ridership-2020-05.csv
         '''
       }
     }
