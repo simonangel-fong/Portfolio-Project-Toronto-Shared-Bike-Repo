@@ -6,11 +6,19 @@ pipeline {
       steps {
         sh '''
         docker --version
-        // docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d
         docker run hello-world
         '''
       }
     }
+    // stage('Start PostgreSQL') {
+    //   steps {
+    //     sh '''
+    //     docker --version
+    //     // docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d
+    //     docker run hello-world
+    //     '''
+    //   }
+    // }
     // stage('Download Raw Data') {
     //   steps {
     //     sh '''
