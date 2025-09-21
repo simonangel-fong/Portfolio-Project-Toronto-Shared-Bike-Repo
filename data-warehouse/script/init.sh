@@ -63,6 +63,6 @@ echo "Start Prometheus & Grafana"
 echo "##############################"
 echo
 # spin up Prometheus
-docker compose -f $PROMETHEUS_FILE down -v
+docker compose -f $PROMETHEUS_FILE down
 docker compose -f $PROMETHEUS_FILE  up -d --build
 # docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword

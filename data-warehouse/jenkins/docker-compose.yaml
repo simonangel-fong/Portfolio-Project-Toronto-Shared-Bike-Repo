@@ -1,15 +1,15 @@
 networks:
   jenkins_network:
     driver: bridge
+
 volumes:
   jenkins_data: {}
 
 services:
   jenkins:
     container_name: jenkins
-    image: jenkins/jenkins
+    image: jenkins/jenkins:lts
     restart: unless-stopped
-    privileged: true
     user: root
     environment:
       - DOCKER_HOST=unix:///var/run/docker.sock
@@ -21,3 +21,10 @@ services:
     ports:
       - "8080:8080"
       - "50000:50000"
+    command: >
+      bash -lc "
+        apt-get update &&
+        apt-get install -y docker.io git ca-certificates openssh-client &&
+        rm -rf /var/lib/apt/lists/* &&
+        /usr/bin/tini -- /usr/local/bin/jenkins.sh
+      "
