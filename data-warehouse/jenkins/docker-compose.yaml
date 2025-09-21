@@ -9,8 +9,10 @@ services:
     container_name: jenkins
     image: jenkins/jenkins
     restart: unless-stopped
-    # privileged: true
-    # user: root
+    privileged: true
+    user: root
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
       - jenkins_data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
@@ -18,3 +20,4 @@ services:
       - jenkins_network
     ports:
       - "8080:8080"
+      - "50000:50000"
