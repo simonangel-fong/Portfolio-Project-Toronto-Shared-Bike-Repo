@@ -20,7 +20,7 @@ pipeline {
     stage('Extract Data') {
       steps {
         sh '''
-        docker ps postgresql
+        docker exec -it postgresql bash /scripts/etl/extract.sh
         '''
       }
     }
@@ -51,10 +51,10 @@ pipeline {
   //     sh 'echo Upload'
   //   }
   // }
-  // stage('Stop PostgreSQL') {
-  //   steps {
-  //     sh 'docker compose -f data-warehouse/postgresql/docker-compose.yaml down'
-  //   }
-  // }
+  stage('Stop PostgreSQL') {
+    steps {
+      sh 'docker compose -f data-warehouse/postgresql/docker-compose.yaml down'
+    }
+  }
   }
 }
