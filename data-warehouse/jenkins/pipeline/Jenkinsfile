@@ -6,6 +6,7 @@ pipeline {
         sh 'pwd'
         sh 'ls'
         sh 'docker --version'
+        sh 'docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d'
       }
     }
   }
