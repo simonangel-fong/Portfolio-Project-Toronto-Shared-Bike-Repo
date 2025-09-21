@@ -19,7 +19,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-toronto_shared_bike}
       PGDATA: ${PGDATA}
     volumes:
-      # - ./scripts/setup:/docker-entrypoint-initdb.d # scripts to run after setup
+      - ./scripts/setup:/docker-entrypoint-initdb.d # scripts to run after setup
       - ./scripts:/scripts
       - ./data:/data
       - ./mv:/mv

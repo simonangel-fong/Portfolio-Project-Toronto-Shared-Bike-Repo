@@ -29,7 +29,7 @@ pipeline {
     stage('Extract Data') {
       steps {
         sh '''
-        docker exec -t postgresql bash /scripts/etl/extract.sh
+        docker exec -t postgresql ls /scripts/etl/extract.sh
         '''
       }
     }
@@ -66,4 +66,19 @@ pipeline {
       }
     }
   }
+
+  // post {
+    // always {
+    //   echo 'This will always execute, regardless of success or failure.'
+    //   deleteDir() // Clean up workspace
+    // }
+    // success {
+    //   echo 'Pipeline succeeded! Sending success notification.'
+    //     // mail to: 'devs@example.com', subject: 'Pipeline Success'
+    //     }
+    // failure {
+    //   echo 'Pipeline failed! Sending failure notification.'
+    //     // mail to: 'devs@example.com', subject: 'Pipeline Failure'
+    // }
+  // }
 }
