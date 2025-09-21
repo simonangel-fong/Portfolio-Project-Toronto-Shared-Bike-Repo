@@ -2,24 +2,23 @@ pipeline {
   agent any
   stages
   {
-    stage('Start PostgreSQL') {
-      steps {
-        sh '''
-        docker --version
-        docker compose -f data-warehouse/postgresql/docker-compose.yaml down
-        docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
-        '''
-      }
-    }
-    // stage('Download Raw Data') {
+    // stage('Start PostgreSQL') {
     //   steps {
     //     sh '''
-    //     echo download
-    //             ls data-warehouse/postgresql/raw
-    //     ls data-warehouse/postgresql/mv
+    //     docker --version
+    //     docker compose -f data-warehouse/postgresql/docker-compose.yaml down
+    //     docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
     //     '''
     //   }
     // }
+    stage('Download Raw Data') {
+      steps {
+        sh '''
+        echo download
+        bash data-warehouse/jenkins/script/get_raw.sh
+        '''
+      }
+    }
     // stage('Extract Data') {
     //   steps {
     //     sh 'echo Extract'
