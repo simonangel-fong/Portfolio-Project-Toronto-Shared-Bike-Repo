@@ -64,20 +64,20 @@ pipeline {
     // }
   }
 
-  // post {
-  //   always {
-  //     sh '''
-  //     docker --version
-  //     docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
-  //     '''
-  //   }
-  //   success {
-  //     echo 'Pipeline succeeded! Sending success notification.'
-  //   // mail to: 'devs@example.com', subject: 'Pipeline Success'
-  //   }
-  //   failure {
-  //     echo 'Pipeline failed! Sending failure notification.'
-  //   // mail to: 'devs@example.com', subject: 'Pipeline Failure'
-  //   }
-  // }
+  post {
+    always {
+      sh '''
+      docker --version
+      docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
+      '''
+    }
+    success {
+      echo 'Pipeline succeeded! Sending success notification.'
+    // mail to: 'devs@example.com', subject: 'Pipeline Success'
+    }
+    failure {
+      echo 'Pipeline failed! Sending failure notification.'
+    // mail to: 'devs@example.com', subject: 'Pipeline Failure'
+    }
+  }
 }

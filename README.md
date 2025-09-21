@@ -43,3 +43,15 @@ bash data-warehouse/script/init.sh
 # get jenkins pwd
 docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 ```
+
+
+```sh
+sudo apt update
+sudo apt install -y openssh-server 
+sudo systemctl enable --now ssh
+
+sudo vi /etc/ssh/sshd_config
+sudo systemctl restart ssh
+
+
+```
