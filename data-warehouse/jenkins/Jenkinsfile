@@ -1,12 +1,5 @@
 pipeline {
   agent any
-  parameters {
-    string(name: 'URL1', defaultValue: 'https://example.com/path/to/data.csv')
-    string(name: 'CONTAINER_NAME', defaultValue: 'postgresql')
-    string(name: 'DIR_RAW_DIR', defaultValue: 'raw')
-    string(name: 'SCRIPT_LOCAL', defaultValue: 'etl.sh', description: 'Path to etl.sh in the repo/workspace')
-  }
-
   stages
   {
     stage('Start PostgreSQL') {
@@ -18,47 +11,47 @@ pipeline {
         '''
       }
     }
-    stage('Download Raw Data') {
-      steps {
-        sh '''
-        echo download
-                ls data-warehouse/postgresql/raw
-        ls data-warehouse/postgresql/mv
-        '''
-      }
-    }
-    stage('Extract Data') {
-      steps {
-        sh 'echo Extract'
-      }
-    }
-    stage('Transform Data') {
-      steps {
-        sh '''
-        echo Transform
-        '''
-      }
-    }
-    stage('Load Data') {
-      steps {
-        sh 'echo Load'
-      }
-    }
-    stage('Refresh MV') {
-      steps {
-        sh 'echo Refresh'
-      }
-    }
-    stage('Export Data') {
-      steps {
-        sh 'echo Export'
-      }
-    }
-    stage('Upload Data') {
-      steps {
-        sh 'echo Upload'
-      }
-    }
+    // stage('Download Raw Data') {
+    //   steps {
+    //     sh '''
+    //     echo download
+    //             ls data-warehouse/postgresql/raw
+    //     ls data-warehouse/postgresql/mv
+    //     '''
+    //   }
+    // }
+    // stage('Extract Data') {
+    //   steps {
+    //     sh 'echo Extract'
+    //   }
+    // }
+    // stage('Transform Data') {
+    //   steps {
+    //     sh '''
+    //     echo Transform
+    //     '''
+    //   }
+    // }
+    // stage('Load Data') {
+    //   steps {
+    //     sh 'echo Load'
+    //   }
+    // }
+    // stage('Refresh MV') {
+    //   steps {
+    //     sh 'echo Refresh'
+    //   }
+    // }
+    // stage('Export Data') {
+    //   steps {
+    //     sh 'echo Export'
+    //   }
+    // }
+    // stage('Upload Data') {
+    //   steps {
+    //     sh 'echo Upload'
+    //   }
+    // }
     // stage('Stop PostgreSQL') {
     //   steps {
     //     sh 'docker compose -f data-warehouse/postgresql/docker-compose.yaml down'
