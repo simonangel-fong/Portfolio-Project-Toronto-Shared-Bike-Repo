@@ -30,7 +30,6 @@
 
 - [Testing with `k6`](./docs/test.md)
 
-
 ```sh
 mkdir -pv ~/project_toronto_shared_bike
 sudo apt install -y git
