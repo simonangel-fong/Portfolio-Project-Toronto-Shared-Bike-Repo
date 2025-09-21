@@ -22,7 +22,6 @@ pipeline {
       steps {
         sh '''
         docker --version
-        docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
         docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
         '''
       }
@@ -31,8 +30,7 @@ pipeline {
     stage('Extract Data') {
       steps {
         sh '''
-        docker exec -t postgresql ls /data
-        docker exec -t postgresql cat /scripts/etl/extract.sh
+        docker exec -t postgresql bash /scripts/etl/extract.sh
         '''
       }
     }
@@ -63,11 +61,6 @@ pipeline {
     //     sh 'echo Upload'
     //   }
     // }
-    stage('Stop PostgreSQL') {
-      steps {
-        sh 'docker compose -f data-warehouse/postgresql/docker-compose.yaml down'
-      }
-    }
   }
 
   // post {
