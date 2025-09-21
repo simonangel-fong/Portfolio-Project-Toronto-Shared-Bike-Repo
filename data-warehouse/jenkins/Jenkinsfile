@@ -1,0 +1,40 @@
+pipeline {
+  agent any
+  stages {
+    stage('Start PostgreSQL') {
+      steps {
+        sh 'docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d'
+      }
+    }
+    stage('Download Raw Data') {
+      steps {
+        sh 'echo download'
+      }
+    }
+    stage('Extract Data') {
+      steps {
+        sh 'echo Extract'
+      }
+    }
+    stage('Transform Data') {
+      steps {
+        sh 'echo Transform'
+      }
+    }
+    stage('Load Data') {
+      steps {
+        sh 'echo Load'
+      }
+    }
+    stage('Export Data') {
+      steps {
+        sh 'echo Export'
+      }
+    }
+    stage('Upload Data') {
+      steps {
+        sh 'echo Upload'
+      }
+    }
+  }
+}
