@@ -10,19 +10,19 @@ pipeline {
 
   stages
   {
-    stage('Copy Raw Data') {
-      steps {
-        sh '''
-        cp -rv /data data-warehouse/postgresql/data
-        ls data-warehouse/postgresql/data
-        '''
-      }
-    }
+    // stage('Copy Raw Data') {
+    //   steps {
+    //     sh '''
+    //     cp -rv /data data-warehouse/postgresql/data
+    //     ls data-warehouse/postgresql/data
+    //     '''
+    //   }
+    // }
     stage('Start PostgreSQL') {
       steps {
         sh '''
         docker --version
-        docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
+        // docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
         docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
         '''
       }
@@ -31,7 +31,8 @@ pipeline {
     stage('Extract Data') {
       steps {
         sh '''
-        docker exec -t postgresql ls /scripts/etl/extract.sh
+        docker exec -t postgresql ls /data
+        docker exec -t postgresql cat /scripts/etl/extract.sh
         '''
       }
     }
