@@ -14,7 +14,8 @@ echo "Download csv files ..."
 echo "##############################"
 echo
 
-mkdir -p "${DATA_DIR}"
+pwd
+mkdir -pv "${DATA_DIR}"
 
 for URL in "${URL_LIST[@]}";
 do
