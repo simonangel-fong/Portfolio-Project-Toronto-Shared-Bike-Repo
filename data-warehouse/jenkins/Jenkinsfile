@@ -15,7 +15,7 @@ pipeline {
       steps {
         sh '''
         echo download
-        bash data-warehouse/jenkins/script/get_raw.sh
+        bash data-warehouse/script/get_raw.sh
         '''
       }
     }
