@@ -69,6 +69,11 @@ echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
 sudo apt update
 sudo apt install -y jenkins
 
+# verify
+jenkins --version
+# add jenkins user to docker
+sudo usermod -aG docker jenkins
+
 echo
 echo "##############################"
 echo "Start Prometheus & Grafana"

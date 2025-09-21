@@ -1,19 +1,20 @@
 pipeline {
   agent any
-    parameters {
+  parameters {
     string(name: 'URL1', defaultValue: 'https://example.com/path/to/data.csv')
     string(name: 'CONTAINER_NAME', defaultValue: 'postgresql')
     string(name: 'DIR_RAW_DIR', defaultValue: 'raw')
     string(name: 'SCRIPT_LOCAL', defaultValue: 'etl.sh', description: 'Path to etl.sh in the repo/workspace')
-    string(name: 'SCRIPT_IN_CONTAINER', defaultValue: '/tmp/etl.sh', description: 'Location to place etl.sh inside the container')
-    }
+  }
+
   stages
   {
     stage('Start PostgreSQL') {
       steps {
         sh '''
         docker --version
-        docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d
+        // docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d
+        docker run hello-world
         '''
       }
     }
@@ -21,8 +22,7 @@ pipeline {
       steps {
         sh '''
         echo download
-        curl https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/Ridership-2019-Q1.csv
-        ls data-warehouse/postgresql/raw
+                ls data-warehouse/postgresql/raw
         ls data-warehouse/postgresql/mv
         '''
       }
@@ -59,10 +59,10 @@ pipeline {
         sh 'echo Upload'
       }
     }
-    stage('Stop PostgreSQL') {
-      steps {
-        sh 'docker compose -f data-warehouse/postgresql/docker-compose.yaml down'
-      }
-    }
+    // stage('Stop PostgreSQL') {
+    //   steps {
+    //     sh 'docker compose -f data-warehouse/postgresql/docker-compose.yaml down'
+    //   }
+    // }
   }
 }
