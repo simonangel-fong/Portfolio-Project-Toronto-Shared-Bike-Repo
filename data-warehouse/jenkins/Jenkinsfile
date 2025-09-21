@@ -2,6 +2,14 @@ pipeline {
   agent any
   stages
   {
+    stage('Copy Raw Data') {
+      steps {
+        sh '''
+        cp -rv /data data-warehouse/postgresql/raw
+        ls /data data-warehouse/postgresql/raw
+        '''
+      }
+    }
     stage('Start PostgreSQL') {
         environment {
           POSTGRES_USER = 'postgres'
@@ -17,6 +25,7 @@ pipeline {
         '''
       }
     }
+
     stage('Extract Data') {
       steps {
         sh '''
@@ -24,37 +33,37 @@ pipeline {
         '''
       }
     }
-  // stage('Transform Data') {
-  //   steps {
-  //     sh '''
-  //     echo Transform
-  //     '''
-  //   }
-  // }
-  // stage('Load Data') {
-  //   steps {
-  //     sh 'echo Load'
-  //   }
-  // }
-  // stage('Refresh MV') {
-  //   steps {
-  //     sh 'echo Refresh'
-  //   }
-  // }
-  // stage('Export Data') {
-  //   steps {
-  //     sh 'echo Export'
-  //   }
-  // }
-  // stage('Upload Data') {
-  //   steps {
-  //     sh 'echo Upload'
-  //   }
-  // }
-  stage('Stop PostgreSQL') {
-    steps {
-      sh 'docker compose -f data-warehouse/postgresql/docker-compose.yaml down'
+    // stage('Transform Data') {
+    //   steps {
+    //     sh '''
+    //     echo Transform
+    //     '''
+    //   }
+    // }
+    // stage('Load Data') {
+    //   steps {
+    //     sh 'echo Load'
+    //   }
+    // }
+    // stage('Refresh MV') {
+    //   steps {
+    //     sh 'echo Refresh'
+    //   }
+    // }
+    // stage('Export Data') {
+    //   steps {
+    //     sh 'echo Export'
+    //   }
+    // }
+    // stage('Upload Data') {
+    //   steps {
+    //     sh 'echo Upload'
+    //   }
+    // }
+    stage('Stop PostgreSQL') {
+      steps {
+        sh 'docker compose -f data-warehouse/postgresql/docker-compose.yaml down'
+      }
     }
-  }
   }
 }
