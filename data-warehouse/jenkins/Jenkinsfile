@@ -5,8 +5,8 @@ pipeline {
     stage('Copy Raw Data') {
       steps {
         sh '''
-        cp -rv /data data-warehouse/postgresql/raw
-        ls /data data-warehouse/postgresql/raw
+        cp -rv /data data-warehouse/postgresql/data
+        ls data-warehouse/postgresql/data
         '''
       }
     }
