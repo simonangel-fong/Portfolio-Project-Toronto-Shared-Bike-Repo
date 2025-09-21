@@ -33,6 +33,7 @@
 
 ```sh
 mkdir -pv ~/project_toronto_shared_bike
+sudo apt install -y git
 git clone https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git ~/project_toronto_shared_bike
 
 cd ~/project_toronto_shared_bike
@@ -40,11 +41,6 @@ git checkout feature/dw
 chmod -v +x ~/project_toronto_shared_bike/data-warehouse/script/init.sh
 
 bash data-warehouse/script/init.sh
-
-JENKINS_FILE="data-warehouse/jenkins/docker-compose.yaml"
-PROMETHEUS_FILE="data-warehouse/monitor/docker-compose.yaml"
-
-docker compose -f data-warehouse/monitor/docker-compose.yaml down
-docker compose -f data-warehouse/monitor/docker-compose.yaml up -d --build
-
+# get jenkins pwd
+docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 ```
