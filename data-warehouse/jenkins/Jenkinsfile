@@ -1,5 +1,13 @@
 pipeline {
   agent any
+
+  environment {
+    POSTGRES_USER = 'postgres'
+    POSTGRES_PASSWORD = 'SecurePassword123'
+    POSTGRES_DB = 'toronto_shared_bike'
+    PGDATA = '/var/lib/postgresql/data/pgdata'
+  }
+
   stages
   {
     stage('Copy Raw Data') {
@@ -11,12 +19,6 @@ pipeline {
       }
     }
     stage('Start PostgreSQL') {
-        environment {
-          POSTGRES_USER = 'postgres'
-          POSTGRES_PASSWORD = 'SecurePassword123'
-          POSTGRES_DB = 'toronto_shared_bike'
-          PGDATA = '/var/lib/postgresql/data/pgdata'
-        }
       steps {
         sh '''
         docker --version
@@ -67,18 +69,20 @@ pipeline {
     }
   }
 
-  // post {
-    // always {
-    //   echo 'This will always execute, regardless of success or failure.'
-    //   deleteDir() // Clean up workspace
-    // }
-    // success {
-    //   echo 'Pipeline succeeded! Sending success notification.'
-    //     // mail to: 'devs@example.com', subject: 'Pipeline Success'
-    //     }
-    // failure {
-    //   echo 'Pipeline failed! Sending failure notification.'
-    //     // mail to: 'devs@example.com', subject: 'Pipeline Failure'
-    // }
-  // }
+  post {
+    always {
+      sh '''
+      docker --version
+      docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
+      '''
+    }
+    success {
+      echo 'Pipeline succeeded! Sending success notification.'
+    // mail to: 'devs@example.com', subject: 'Pipeline Success'
+    }
+    failure {
+      echo 'Pipeline failed! Sending failure notification.'
+    // mail to: 'devs@example.com', subject: 'Pipeline Failure'
+    }
+  }
 }
