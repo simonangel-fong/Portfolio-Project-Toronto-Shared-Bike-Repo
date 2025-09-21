@@ -1,8 +1,16 @@
 pipeline {
   agent any
+  environment {
+  }
   stages
   {
     stage('Start PostgreSQL') {
+        environment {
+          POSTGRES_USER = 'postgres'
+          POSTGRES_PASSWORD = 'SecurePassword123'
+          POSTGRES_DB = 'toronto_shared_bike'
+          PGDATA = '/var/lib/postgresql/data/pgdata'
+        }
       steps {
         sh '''
         docker --version
@@ -14,41 +22,41 @@ pipeline {
     stage('Extract Data') {
       steps {
         sh '''
-        docker exec -it postgresql hostname
+        docker ps postgresql
         '''
       }
     }
-    // stage('Transform Data') {
-    //   steps {
-    //     sh '''
-    //     echo Transform
-    //     '''
-    //   }
-    // }
-    // stage('Load Data') {
-    //   steps {
-    //     sh 'echo Load'
-    //   }
-    // }
-    // stage('Refresh MV') {
-    //   steps {
-    //     sh 'echo Refresh'
-    //   }
-    // }
-    // stage('Export Data') {
-    //   steps {
-    //     sh 'echo Export'
-    //   }
-    // }
-    // stage('Upload Data') {
-    //   steps {
-    //     sh 'echo Upload'
-    //   }
-    // }
-    // stage('Stop PostgreSQL') {
-    //   steps {
-    //     sh 'docker compose -f data-warehouse/postgresql/docker-compose.yaml down'
-    //   }
-    // }
+  // stage('Transform Data') {
+  //   steps {
+  //     sh '''
+  //     echo Transform
+  //     '''
+  //   }
+  // }
+  // stage('Load Data') {
+  //   steps {
+  //     sh 'echo Load'
+  //   }
+  // }
+  // stage('Refresh MV') {
+  //   steps {
+  //     sh 'echo Refresh'
+  //   }
+  // }
+  // stage('Export Data') {
+  //   steps {
+  //     sh 'echo Export'
+  //   }
+  // }
+  // stage('Upload Data') {
+  //   steps {
+  //     sh 'echo Upload'
+  //   }
+  // }
+  // stage('Stop PostgreSQL') {
+  //   steps {
+  //     sh 'docker compose -f data-warehouse/postgresql/docker-compose.yaml down'
+  //   }
+  // }
   }
 }
