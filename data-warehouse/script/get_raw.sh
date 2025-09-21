@@ -15,6 +15,8 @@ echo "##############################"
 echo
 
 pwd
+ls
+ls -l "${DATA_DIR}"
 mkdir -pv "${DATA_DIR}"
 
 for URL in "${URL_LIST[@]}";
