@@ -68,15 +68,11 @@ pipeline {
             // aws s3 cp /export s3://toronto-shared-bike-data-warehouse-data-bucket/test/ --recursive
             // '''
             s3Upload(
-              profileName: env.S3_PROFILE,
-              bucket:      env.S3_BUCKET,
-              sourceFile:  "${env.EXPORT_DIR}/**/*.csv", // glob
-              path:        "${env.S3_PREFIX}/",
-              managedArtifacts: true,
-              flatten: true,
-              noUploadOnFailure: true,
-              useServerSideEncryption: true
-        )
+              bucket:"toronto-shared-bike-data-warehouse-data-bucket", 
+              path:'/export', 
+              includePathPattern:'**/*.csv', 
+              workingDir:'mv'
+            )
           }
         }
       }
