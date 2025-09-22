@@ -2,27 +2,16 @@
 
 set -euxo pipefail
 
-DATA_DIR="data-warehouse/postgresql/raw"
-URL_LIST=(
-    "https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/Ridership-2019-Q1.csv"
-    "https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/Ridership-2019-Q2.csv"
-)
+DATA_DIR="/data"
+ZIP_FILE="csv.zip"
 
-echo
-echo "##############################"
-echo "Download csv files ..."
-echo "##############################"
-echo
+sudo mkdir -pv $DATA_DIR
 
-pwd
-ls
-ls -l "${DATA_DIR}"
-mkdir -pv "${DATA_DIR}"
+sudo curl -o $DATA_DIR/$ZIP_FILE https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip
+sudo curl -o /data/csv.zip https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip
 
-for URL in "${URL_LIST[@]}";
-do
-    fname="$(basename "${URL}")"
-    curl -f -L -S "${URL}" -o "${DATA_DIR}/${fname}"
-    # sanity check
-    test -s "${DATA_DIR}/${fname}"
-done
+sudo unzip $DATA_DIR/$ZIP_FILE -d /
+sudo rm $DATA_DIR/$ZIP_FILE
+
+sudo chown -R jenkins:jenkins $DATA_DIR
+
