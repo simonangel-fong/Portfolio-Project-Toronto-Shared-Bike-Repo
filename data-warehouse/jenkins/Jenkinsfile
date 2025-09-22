@@ -41,32 +41,32 @@ pipeline {
     //     '''
     //   }
     // }
-    stage('Load Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/etl/load.sh
-        '''
-      }
-    }
-    stage('Refresh MV') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
-        '''
-      }
-    }
-    stage('Export Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/export/export.sh
-        '''
-      }
-    }
-    stage('Upload Data') {
-      steps {
-        sh 'echo Upload'
-      }
-    }
+    // stage('Load Data') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/etl/load.sh
+    //     '''
+    //   }
+    // }
+    // stage('Refresh MV') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+    //     '''
+    //   }
+    // }
+    // stage('Export Data') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/export/export.sh
+    //     '''
+    //   }
+    // }
+    // stage('Upload Data') {
+    //   steps {
+    //     sh 'echo Upload'
+    //   }
+    // }
   }
 
   // post {
