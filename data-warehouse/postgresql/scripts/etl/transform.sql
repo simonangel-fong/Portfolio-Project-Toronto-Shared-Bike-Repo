@@ -96,37 +96,51 @@ UPDATE dw_schema.staging_trip
 SET end_station_name = 'UNKNOWN'
 WHERE end_station_name IS NULL OR TRIM(end_station_name) = 'NULL';
 
--- \echo '\n######## Update membership type... ########\n'
--- UPDATE dw_schema.staging_trip
--- SET user_type = 'annual'
--- WHERE user_type = 'Annual Member';
+\echo 
+\echo '##################################################'
+\echo 'Update membership type... '
+\echo '##################################################'
+UPDATE dw_schema.staging_trip
+SET user_type = 'annual'
+WHERE user_type = 'Annual Member';
 
--- UPDATE dw_schema.staging_trip
--- SET user_type = 'casual'
--- WHERE user_type = 'Casual Member';
+UPDATE dw_schema.staging_trip
+SET user_type = 'casual'
+WHERE user_type = 'Casual Member';
 
--- \echo '\n######## Substitute missing user_type with "UNKNOWN"... ########\n'
--- -- Substitute missing user_type with 'UNKNOWN'
--- UPDATE dw_schema.staging_trip
--- SET user_type = 'UNKNOWN'
--- WHERE user_type IS NULL;
+-- Substitute missing user_type with 'UNKNOWN'
+\echo 
+\echo '##################################################'
+\echo 'Substitute missing user_type with "UNKNOWN"... '
+\echo '##################################################'
+UPDATE dw_schema.staging_trip
+SET user_type = 'UNKNOWN'
+WHERE user_type IS NULL;
 
--- \echo '\n######## Substitute invalid or missing bike_id with "-1"... ########\n'
--- -- Substitute invalid or missing bike_id with '-1'
--- UPDATE dw_schema.staging_trip
--- SET bike_id = '-1'
--- WHERE bike_id IS NULL
---    OR (bike_id !~ '^[0-9]+$' AND bike_id != '-1');
+-- Substitute invalid or missing bike_id with '-1'
+\echo 
+\echo '##################################################'
+\echo 'Substitute invalid or missing bike_id with "-1"... '
+\echo '##################################################'
+UPDATE dw_schema.staging_trip
+SET bike_id = '-1'
+WHERE bike_id IS NULL
+   OR (bike_id !~ '^[0-9]+$' AND bike_id != '-1');
 
--- \echo '\n######## Substitute missing model with "UNKNOWN"... ########\n'
+-- Substitute missing model with 'UNKNOWN'
+\echo 
+\echo '##################################################'
+\echo 'Substitute missing model with "UNKNOWN"... '
+\echo '##################################################'
+UPDATE dw_schema.staging_trip
+SET model = 'UNKNOWN'
+WHERE model IS NULL;
 
--- -- Substitute missing model with 'UNKNOWN'
--- UPDATE dw_schema.staging_trip
--- SET model = 'UNKNOWN'
--- WHERE model IS NULL;
-
--- \echo '\n######## Remove carriage return characters from user_type... ########\n'
--- -- Remove carriage return characters from user_type
--- UPDATE dw_schema.staging_trip
--- SET user_type = REPLACE(user_type, CHR(13), '')
--- WHERE POSITION(CHR(13) IN user_type) > 0;
+-- Remove carriage return characters from user_type
+\echo 
+\echo '##################################################'
+\echo 'Remove carriage return characters from user_type... '
+\echo '##################################################'
+UPDATE dw_schema.staging_trip
+SET user_type = REPLACE(user_type, CHR(13), '')
+WHERE POSITION(CHR(13) IN user_type) > 0;
