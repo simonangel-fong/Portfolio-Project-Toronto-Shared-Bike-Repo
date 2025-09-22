@@ -9,8 +9,10 @@
 -- ============================================================================
 -- Load dim_time
 -- ============================================================================
-\echo '\n######## Loading dim_time... ########\n'
-
+\echo 
+\echo '##################################################'
+\echo 'Loading dim_time... '
+\echo '##################################################'
 MERGE INTO dw_schema.dim_time AS tgt
 USING (
     SELECT DISTINCT
@@ -49,8 +51,10 @@ VALUES (
 -- ============================================================================
 -- Load dim_station
 -- ============================================================================
-\echo '\n######## Loading dim_station... ########\n'
-
+\echo 
+\echo '##################################################'
+\echo 'Loading dim_station... '
+\echo '##################################################'
 WITH station_times AS (
     SELECT 
         start_station_id::INT AS station_id,
@@ -87,8 +91,10 @@ WHEN NOT MATCHED THEN
 -- ============================================================================
 -- Load dim_bike
 -- ============================================================================
-\echo '\n######## Loading dim_bike... ########\n'
-
+\echo 
+\echo '##################################################'
+\echo 'Loading dim_bike... '
+\echo '##################################################'
 MERGE INTO dw_schema.dim_bike AS tgt
 USING (
     SELECT 
@@ -110,8 +116,10 @@ WHEN NOT MATCHED THEN
 -- ============================================================================
 -- Load dim_user_type
 -- ============================================================================
-\echo '\n######## Loading dim_user_type... ########\n'
-
+\echo 
+\echo '##################################################'
+\echo 'Loading dim_user_type... '
+\echo '##################################################'
 MERGE INTO dw_schema.dim_user_type AS tgt
 USING (
     SELECT DISTINCT user_type AS dim_user_type_name
@@ -126,8 +134,10 @@ WHEN NOT MATCHED THEN
 -- ============================================================================
 -- Load fact_trip
 -- ============================================================================
-\echo '\n######## Loading fact_trip... ########\n'
-
+\echo 
+\echo '##################################################'
+\echo 'Loading fact_trip... '
+\echo '##################################################'
 MERGE INTO dw_schema.fact_trip AS tgt
 USING (
     SELECT 
@@ -184,7 +194,11 @@ WHEN NOT MATCHED THEN
   );
 
 -- Confirm
-\echo '\n######## Confirm loading task... ########\n'
+\echo 
+\echo '##################################################'
+\echo 'Confirm loading task... '
+\echo '##################################################'
+
 SELECT COUNT(*) AS dim_time_count
 FROM dw_schema.dim_time;
 

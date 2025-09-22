@@ -34,20 +34,20 @@ pipeline {
     //     '''
     //   }
     // }
-    stage('Transform Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/etl/transform.sh
-        '''
-      }
-    }
-    // stage('Load Data') {
+    // stage('Transform Data') {
     //   steps {
     //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/load.sh
+    //     docker exec -t postgresql bash /scripts/etl/transform.sh
     //     '''
     //   }
     // }
+    stage('Load Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/load.sh
+        '''
+      }
+    }
     // stage('Refresh MV') {
     //   steps {
     //     sh 'echo Refresh'
