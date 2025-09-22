@@ -8,8 +8,7 @@ pipeline {
     PGDATA = '/var/lib/postgresql/data/pgdata'
   }
 
-  stages
-  {
+  stages {
     // stage('Copy Raw Data') {
     //   steps {
     //     sh '''
@@ -61,7 +60,7 @@ pipeline {
     //     docker exec -t postgresql bash /scripts/export/export.sh
     //     '''
     //   }
-    }
+    // }
     // stage('Upload Data') {
     //   steps {
     //     sh 'echo Upload'
