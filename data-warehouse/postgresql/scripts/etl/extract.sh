@@ -21,7 +21,7 @@ echo "##############################"
 echo
 
 psql -U "postgres" -d "toronto_shared_bike" -c "TRUNCATE TABLE dw_schema.staging_trip"
-# psql -U  -d $POSTGRES_PASSWORD -c "TRUNCATE TABLE dw_schema.staging_trip"
+# psql -U $POSTGRES_USER -d $POSTGRES_PASSWORD -c "TRUNCATE TABLE dw_schema.staging_trip"
 
 # Check if truncate was successful
 if [[ $? -ne 0 ]]; then
