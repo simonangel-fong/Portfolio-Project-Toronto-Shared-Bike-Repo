@@ -50,14 +50,18 @@ pipeline {
     }
     // stage('Refresh MV') {
     //   steps {
-    //     sh 'echo Refresh'
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+    //     '''
     //   }
     // }
     // stage('Export Data') {
     //   steps {
-    //     sh 'echo Export'
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/export/export.sh
+    //     '''
     //   }
-    // }
+    }
     // stage('Upload Data') {
     //   steps {
     //     sh 'echo Upload'

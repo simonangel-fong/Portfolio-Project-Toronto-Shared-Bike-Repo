@@ -194,22 +194,22 @@ WHEN NOT MATCHED THEN
   );
 
 -- Confirm
-\echo 
-\echo '##################################################'
-\echo 'Confirm loading task... '
-\echo '##################################################'
+-- \echo 
+-- \echo '##################################################'
+-- \echo 'Confirm loading task... '
+-- \echo '##################################################'
 
-SELECT COUNT(*) AS dim_time_count
-FROM dw_schema.dim_time;
+-- SELECT COUNT(*) AS dim_time_count
+-- FROM dw_schema.dim_time;
 
-SELECT COUNT(*) AS dim_station_count
-FROM dw_schema.dim_station;
+-- SELECT COUNT(*) AS dim_station_count
+-- FROM dw_schema.dim_station;
 
-SELECT COUNT(*) AS dim_bike_count
-FROM dw_schema.dim_bike;
+-- SELECT COUNT(*) AS dim_bike_count
+-- FROM dw_schema.dim_bike;
 
-SELECT COUNT(*) AS dim_user_type_count
-FROM dw_schema.dim_user_type;
+-- SELECT COUNT(*) AS dim_user_type_count
+-- FROM dw_schema.dim_user_type;
 
-SELECT COUNT(*) AS fact_trip_count
-FROM dw_schema.fact_trip;
+-- SELECT COUNT(*) AS fact_trip_count
+-- FROM dw_schema.fact_trip;
