@@ -69,9 +69,9 @@ pipeline {
             // '''
             s3Upload(
               bucket:"toronto-shared-bike-data-warehouse-data-bucket", 
-              path:'/export', 
-              includePathPattern:'**/*.csv', 
+              path:'test', 
               workingDir:'/export'
+              includePathPattern:'**/*.csv', 
             )
           }
         }
