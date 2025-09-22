@@ -13,6 +13,7 @@ services:
     container_name: postgresql
     image: postgres:15
     restart: unless-stopped
+    user: "${UID:-123}:${GID:-123}"
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-SecurePassword123}
