@@ -67,20 +67,18 @@ pipeline {
     //   }
     // }
     stage('Upload Data') {
-      stage('Upload all CSVs (optional)') {
-        when { expression { return fileExists("${env.EXPORT_DIR}") } }
-        steps {
-          s3Upload(
-            profileName: env.S3_PROFILE,
-            bucket:      env.S3_BUCKET,
-            sourceFile:  "${env.EXPORT_DIR}/**/*.csv", // glob
-            path:        "${env.S3_PREFIX}/",
-            managedArtifacts: true,
-            flatten: true,
-            noUploadOnFailure: true,
-            useServerSideEncryption: true
-          )
-        }
+      when { expression { return fileExists("${env.EXPORT_DIR}") } }
+      steps {
+        s3Upload(
+          profileName: env.S3_PROFILE,
+          bucket:      env.S3_BUCKET,
+          sourceFile:  "${env.EXPORT_DIR}/**/*.csv", // glob
+          path:        "${env.S3_PREFIX}/",
+          managedArtifacts: true,
+          flatten: true,
+          noUploadOnFailure: true,
+          useServerSideEncryption: true
+        )
       }
     }
   }
