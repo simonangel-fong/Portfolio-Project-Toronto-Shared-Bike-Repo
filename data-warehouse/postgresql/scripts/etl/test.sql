@@ -13,18 +13,9 @@
 \c toronto_shared_bike;
 
 -- Show current database and user
-SELECT 
-	current_database() 	AS database_name
-	, current_user 		AS username
-;
-
-SELECT 
-	current_database() 	AS database_name
-	, current_user 		AS username
-;
-
-SELECT 
-	current_database() 	AS database_name
-	, current_user 		AS username
-;
-
+DELETE FROM dw_schema.staging_trip
+WHERE trip_id = 'NULL'
+   OR trip_duration = 'NULL'
+   OR start_time = 'NULL'
+   OR start_station_id = 'NULL'
+   OR end_station_id = 'NULL';
