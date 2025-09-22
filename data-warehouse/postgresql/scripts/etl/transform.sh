@@ -14,4 +14,12 @@ DB_USER="postgres"
 DB_NAME="toronto_shared_bike"
 SQL_FILE="/scripts/etl/transform.sql"
 
+echo
+echo "##############################"
+echo "Transform Data ..."
+echo "##############################"
+echo
+
 psql -U "$DB_USER" -d "$DB_NAME" -f $SQL_FILE
+
+echo "Transform Data completed."
