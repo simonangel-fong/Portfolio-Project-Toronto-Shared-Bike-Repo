@@ -18,9 +18,6 @@ SELECT
 	, current_user 		AS username
 ;
 
-DELETE FROM dw_schema.staging_trip
-WHERE trip_id IS NULL
-   OR trip_duration IS NULL
-   OR start_time IS NULL
-   OR start_station_id IS NULL
-   OR end_station_id IS NULL;
+SELECT COUNT(*) 
+FROM dw_schema.staging_trip
+;
