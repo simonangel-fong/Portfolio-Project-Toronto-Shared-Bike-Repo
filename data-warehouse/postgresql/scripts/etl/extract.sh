@@ -20,8 +20,8 @@ echo "Truncate table ..."
 echo "##############################"
 echo
 
-# psql -U postgres -d toronto_shared_bike -c "TRUNCATE TABLE dw_schema.staging_trip"
-psql -U $DB_USER -d $DB_NAME -c "TRUNCATE TABLE dw_schema.staging_trip"
+psql -U postgres -d toronto_shared_bike -c "TRUNCATE TABLE dw_schema.staging_trip"
+# psql -U $DB_USER -d $DB_NAME -c "TRUNCATE TABLE dw_schema.staging_trip"
 
 # Check if truncate was successful
 if [[ $? -ne 0 ]]; then
