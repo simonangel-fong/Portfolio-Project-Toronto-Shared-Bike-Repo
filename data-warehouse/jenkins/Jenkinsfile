@@ -55,16 +55,34 @@ pipeline {
     //     '''
     //   }
     // }
-    stage('Export Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/export/export.sh
-        '''
-      }
-    }
+    // stage('Export Data') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/export/export.sh
+    //     '''
+    //   }
+    // }
     stage('Upload Data') {
-      steps {
-        sh 'echo Upload'
+      environment {
+        S3_PROFILE = 'toronto_shared_bike'
+        S3_BUCKET  = 'toronto-shared-bike-data-warehouse-data-bucket '
+        S3_PREFIX  = "mv" 
+        EXPORT_DIR = '/export'
+      }
+      stage('Upload all CSVs (optional)') {
+        when { expression { return fileExists("${env.EXPORT_DIR}") } }
+        steps {
+          s3Upload(
+            profileName: env.S3_PROFILE,
+            bucket:      env.S3_BUCKET,
+            sourceFile:  "${env.EXPORT_DIR}/**/*.csv", // glob
+            path:        "${env.S3_PREFIX}/",
+            managedArtifacts: true,
+            flatten: true,
+            noUploadOnFailure: true,
+            useServerSideEncryption: true
+          )
+        }
       }
     }
   }
