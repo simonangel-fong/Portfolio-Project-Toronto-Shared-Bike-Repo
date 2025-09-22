@@ -15,9 +15,10 @@
 -- ============================================================================
 -- Data processing: Remove rows with NULLs in Key columns
 -- ============================================================================
-\echo '##############################'
+\echo 
+\echo '##################################################'
 \echo 'Remove rows with NULLs in key columns... '
-\echo '##############################'
+\echo '##################################################'
 -- Remove rows with NULL values in key columns
 DELETE FROM dw_schema.staging_trip
 WHERE trip_id IS NULL
@@ -29,6 +30,10 @@ WHERE trip_id IS NULL
 -- \echo '#######################'
 -- \echo '\n######## Remove rows with "NULLs" in Key columns... ########\n'
 -- -- Remove rows where key columns contain the string "NULL"
+\echo 
+\echo '##################################################'
+\echo 'Remove rows with NULLs in key columns... '
+\echo '##################################################'
 -- DELETE FROM dw_schema.staging_trip
 -- WHERE trip_id = 'NULL'
 --    OR trip_duration = 'NULL'

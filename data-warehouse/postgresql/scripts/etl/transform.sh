@@ -12,7 +12,7 @@ set -e
 
 DB_USER=postgres
 DB_NAME=toronto_shared_bike
-SQL_FILE=/scripts/etl/test.sql
+SQL_FILE=/scripts/etl/transform.sql
 
 echo
 echo "##############################"
