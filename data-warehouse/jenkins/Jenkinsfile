@@ -14,59 +14,61 @@ pipeline {
   }
 
   stages {
-    // stage('Start PostgreSQL') {
-    //   steps {
-    //     sh '''
-    //     docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
-    //     docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
-    //     sleep 30
-    //     docker logs postgresql
-    //     '''
-    //   }
-    // }
+    stage('Start PostgreSQL') {
+      steps {
+        sh '''
+        docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
+        docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
+        sleep 30
+        docker logs postgresql
+        '''
+      }
+    }
 
-    // stage('Extract Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/extract.sh
-    //     '''
-    //   }
-    // }
-    // stage('Transform Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/transform.sh
-    //     '''
-    //   }
-    // }
-    // stage('Load Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/load.sh
-    //     '''
-    //   }
-    // }
-    // stage('Refresh MV') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
-    //     '''
-    //   }
-    // }
-    // stage('Export Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/export/export.sh
-    //     '''
-    //   }
-    // }
+    stage('Extract Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/extract.sh
+        '''
+      }
+    }
+
+    stage('Transform Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/transform.sh
+        '''
+      }
+    }
+
+    stage('Load Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/load.sh
+        '''
+      }
+    }
+
+    stage('Refresh MV') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+        '''
+      }
+    }
+
+    stage('Export Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/export/export.sh
+        '''
+      }
+    }
+    
     stage('Upload to S3') {
       steps {
         script{
           withAWS(credentials: 'toronto_shared_bike', region: 'ca-central-1') {
-            // sh '''
-            // aws s3 cp /export s3://toronto-shared-bike-data-warehouse-data-bucket/test/ --recursive
-            // '''
             s3Upload(
               bucket:"toronto-shared-bike-data-warehouse-data-bucket", 
               path:'test', 
@@ -82,7 +84,7 @@ pipeline {
   post {
     always {
       sh '''
-      docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
+      docker compose -f data-warehouse/postgresql/docker-compose.yaml down
       '''
     }
     success {
