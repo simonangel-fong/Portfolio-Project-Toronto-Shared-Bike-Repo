@@ -12,10 +12,12 @@
 -- Connect to the toronto_shared_bike database
 \c toronto_shared_bike;
 
--- Show current database and user
-\echo '#######################'
-\echo '#######################'
-\echo '#######################'
+\echo 
+\echo '##################################################'
+\echo 'Remove rows with NULLs in key columns... '
+\echo '##################################################'
+\echo 
+
 DELETE FROM dw_schema.staging_trip
 WHERE trip_id = 'NULL'
    OR trip_duration = 'NULL'

@@ -12,16 +12,12 @@
 -- Connect to the toronto_shared_bike database
 \c toronto_shared_bike;
 
--- Show current database and user
-SELECT 
-	current_database() 	AS database_name
-	, current_user 		AS username
-;
-
 -- ============================================================================
 -- Data processing: Remove rows with NULLs in Key columns
 -- ============================================================================
--- \echo '\n######## Remove rows with NULLs in key columns... ########\n'
+\echo '##############################'
+\echo 'Remove rows with NULLs in key columns... '
+\echo '##############################'
 -- Remove rows with NULL values in key columns
 DELETE FROM dw_schema.staging_trip
 WHERE trip_id IS NULL
