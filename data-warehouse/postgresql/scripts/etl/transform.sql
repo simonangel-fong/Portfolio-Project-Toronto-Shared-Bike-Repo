@@ -15,11 +15,11 @@
 -- ============================================================================
 -- Data processing: Remove rows with NULLs in Key columns
 -- ============================================================================
+-- Remove rows with NULL values in key columns
 \echo 
 \echo '##################################################'
 \echo 'Remove rows with NULLs in key columns... '
 \echo '##################################################'
--- Remove rows with NULL values in key columns
 DELETE FROM dw_schema.staging_trip
 WHERE trip_id IS NULL
    OR trip_duration IS NULL
@@ -27,12 +27,10 @@ WHERE trip_id IS NULL
    OR start_station_id IS NULL
    OR end_station_id IS NULL;
 
--- \echo '#######################'
--- \echo '\n######## Remove rows with "NULLs" in Key columns... ########\n'
--- -- Remove rows where key columns contain the string "NULL"
+-- Remove rows where key columns contain the string "NULL"
 \echo 
 \echo '##################################################'
-\echo 'Remove rows with NULLs in key columns... '
+\echo 'Remove rows with "NULLs" in Key columns... '
 \echo '##################################################'
 -- DELETE FROM dw_schema.staging_trip
 -- WHERE trip_id = 'NULL'
@@ -44,20 +42,26 @@ WHERE trip_id IS NULL
 -- -- ============================================================================
 -- -- Key columns processing: Remove rows with invalid data types or formats
 -- -- ============================================================================
--- \echo '\n######## Remove rows with invalid data types or formats... ########\n'
--- DELETE FROM dw_schema.staging_trip
--- WHERE NOT trip_id ~ '^[0-9]+$'
---    OR NOT trip_duration ~ '^[0-9]+(\.[0-9]+)?$'
---    OR NOT start_time ~ '^[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}$'
---    OR TO_TIMESTAMP(start_time, 'MM/DD/YYYY HH24:MI') IS NULL
---    OR NOT start_station_id ~ '^[0-9]+$'
---    OR NOT end_station_id ~ '^[0-9]+$';
+\echo 
+\echo '##################################################'
+\echo 'Remove rows with invalid data types or formats... '
+\echo '##################################################'
+DELETE FROM dw_schema.staging_trip
+WHERE NOT trip_id ~ '^[0-9]+$'
+   OR NOT trip_duration ~ '^[0-9]+(\.[0-9]+)?$'
+   OR NOT start_time ~ '^[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}$'
+   OR TO_TIMESTAMP(start_time, 'MM/DD/YYYY HH24:MI') IS NULL
+   OR NOT start_station_id ~ '^[0-9]+$'
+   OR NOT end_station_id ~ '^[0-9]+$';
 
--- -- ============================================================================
--- -- Key column processing (trip durations): Remove rows with non-positive value
--- -- ============================================================================
--- \echo '\n######## Delete rows with non-positive duration... ########\n'
--- -- Delete rows with non-positive duration
+-- ============================================================================
+-- Key column processing (trip durations): Remove rows with non-positive value
+-- ============================================================================
+-- Delete rows with non-positive duration
+\echo 
+\echo '##################################################'
+\echo 'Delete rows with non-positive duration...'
+\echo '##################################################'
 -- DELETE FROM dw_schema.staging_trip
 -- WHERE trip_duration::numeric <= 0;
 
