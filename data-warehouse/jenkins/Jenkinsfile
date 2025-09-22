@@ -70,13 +70,14 @@ pipeline {
       steps {
         script {
           withAWS(region: 'ca-central-1', credentials: 'toronto_shared_bike') {
-            s3Upload(
-              bucket: 'toronto-shared-bike-data-warehouse-data-bucket',
-              file: 'mv_bike_year.csv',
-              path: 'test/', 
-              acl: 'Private', // Or 'PublicRead', etc.
-              workingDir: '/export' // Directory where the artifact is located relative to workspace
-            )
+            sh 'aws s3 ls'
+            // s3Upload(
+            //   bucket: 'toronto-shared-bike-data-warehouse-data-bucket',
+            //   file: 'mv_bike_year.csv',
+            //   path: 'test/', 
+            //   acl: 'Private', // Or 'PublicRead', etc.
+            //   workingDir: '/export' // Directory where the artifact is located relative to workspace
+            // )
           }
         }
       }
