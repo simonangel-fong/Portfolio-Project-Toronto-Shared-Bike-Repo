@@ -70,8 +70,8 @@ pipeline {
             s3Upload(
               bucket:"toronto-shared-bike-data-warehouse-data-bucket", 
               path:'test', 
-              workingDir:'/export'
-              includePathPattern:'**/*.csv', 
+              workingDir:'/export',
+              includePathPattern:'**/*.csv',
             )
           }
         }
