@@ -13,9 +13,21 @@
 \c toronto_shared_bike;
 
 -- Show current database and user
+\echo '#######################'
+\echo '#######################'
+\echo '#######################'
 DELETE FROM dw_schema.staging_trip
 WHERE trip_id = 'NULL'
    OR trip_duration = 'NULL'
    OR start_time = 'NULL'
    OR start_station_id = 'NULL'
    OR end_station_id = 'NULL';
+
+\echo '#######################'
+DELETE FROM dw_schema.staging_trip
+WHERE NOT trip_id ~ '^[0-9]+$'
+   OR NOT trip_duration ~ '^[0-9]+(\.[0-9]+)?$'
+   OR NOT start_time ~ '^[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}$'
+   OR TO_TIMESTAMP(start_time, 'MM/DD/YYYY HH24:MI') IS NULL
+   OR NOT start_station_id ~ '^[0-9]+$'
+   OR NOT end_station_id ~ '^[0-9]+$';
