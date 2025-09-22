@@ -60,35 +60,41 @@ WHERE NOT trip_id ~ '^[0-9]+$'
 -- Delete rows with non-positive duration
 \echo 
 \echo '##################################################'
-\echo 'Delete rows with non-positive duration...'
+\echo 'Delete rows with non-positive duration... '
 \echo '##################################################'
--- DELETE FROM dw_schema.staging_trip
--- WHERE trip_duration::numeric <= 0;
+DELETE FROM dw_schema.staging_trip
+WHERE trip_duration::numeric <= 0;
 
--- -- ============================================================================
--- -- Non-critical columns processing
--- -- ============================================================================
+-- ============================================================================
+-- Non-critical columns processing
+-- ============================================================================
 
--- \echo '\n######## Fix invalid or NULL end_time values... ########\n'
--- -- Fix invalid or NULL end_time values
--- UPDATE dw_schema.staging_trip
--- SET end_time = TO_CHAR(
---     TO_TIMESTAMP(start_time, 'MM/DD/YYYY HH24:MI') + (trip_duration::numeric / 86400) * INTERVAL '1 day',
---     'MM/DD/YYYY HH24:MI'
--- )
--- WHERE end_time IS NULL
---    OR NOT end_time ~ '^[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}$'
---    OR TO_TIMESTAMP(end_time, 'MM/DD/YYYY HH24:MI') IS NULL;
+-- Fix invalid or NULL end_time values
+\echo 
+\echo '##################################################'
+\echo 'Fix invalid or NULL end_time values... '
+\echo '##################################################'
+UPDATE dw_schema.staging_trip
+SET end_time = TO_CHAR(
+    TO_TIMESTAMP(start_time, 'MM/DD/YYYY HH24:MI') + (trip_duration::numeric / 86400) * INTERVAL '1 day',
+    'MM/DD/YYYY HH24:MI'
+)
+WHERE end_time IS NULL
+   OR NOT end_time ~ '^[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}$'
+   OR TO_TIMESTAMP(end_time, 'MM/DD/YYYY HH24:MI') IS NULL;
 
--- \echo '\n######## Substitute missing station names with "UNKNOWN"... ########\n'
--- -- Substitute missing station names with 'UNKNOWN'
--- UPDATE dw_schema.staging_trip
--- SET start_station_name = 'UNKNOWN'
--- WHERE start_station_name IS NULL OR TRIM(start_station_name) = 'NULL';
+-- Substitute missing station names with 'UNKNOWN'
+\echo 
+\echo '##################################################'
+\echo 'Substitute missing station names with "UNKNOWN"... '
+\echo '##################################################'
+UPDATE dw_schema.staging_trip
+SET start_station_name = 'UNKNOWN'
+WHERE start_station_name IS NULL OR TRIM(start_station_name) = 'NULL';
 
--- UPDATE dw_schema.staging_trip
--- SET end_station_name = 'UNKNOWN'
--- WHERE end_station_name IS NULL OR TRIM(end_station_name) = 'NULL';
+UPDATE dw_schema.staging_trip
+SET end_station_name = 'UNKNOWN'
+WHERE end_station_name IS NULL OR TRIM(end_station_name) = 'NULL';
 
 -- \echo '\n######## Update membership type... ########\n'
 -- UPDATE dw_schema.staging_trip
