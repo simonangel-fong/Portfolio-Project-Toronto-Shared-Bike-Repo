@@ -21,15 +21,15 @@ pipeline {
     //     '''
     //   }s
     // }
-    stage('Start PostgreSQL') {
-      steps {
-        sh '''
-        docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
-        sleep 30
-        docker logs postgresql
-        '''
-      }
-    }
+    // stage('Start PostgreSQL') {
+    //   steps {
+    //     sh '''
+    //     docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
+    //     sleep 30
+    //     docker logs postgresql
+    //     '''
+    //   }
+    // }
 
     // stage('Extract Data') {
     //   steps {
