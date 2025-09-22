@@ -20,7 +20,6 @@ pipeline {
     stage('Start PostgreSQL') {
       steps {
         sh '''
-        docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
         docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
         sleep 30
         docker logs postgresql
@@ -28,34 +27,34 @@ pipeline {
       }
     }
 
-    stage('Extract Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/etl/extract.sh
-        '''
-      }
-    }
-    stage('Transform Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/etl/transform.sh
-        '''
-      }
-    }
-    stage('Load Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/etl/load.sh
-        '''
-      }
-    }
-    stage('Refresh MV') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
-        '''
-      }
-    }
+    // stage('Extract Data') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/etl/extract.sh
+    //     '''
+    //   }
+    // }
+    // stage('Transform Data') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/etl/transform.sh
+    //     '''
+    //   }
+    // }
+    // stage('Load Data') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/etl/load.sh
+    //     '''
+    //   }
+    // }
+    // stage('Refresh MV') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+    //     '''
+    //   }
+    // }
     stage('Export Data') {
       steps {
         sh '''
