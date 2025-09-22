@@ -27,13 +27,13 @@ pipeline {
       }
     }
 
-    // stage('Extract Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/extract.sh
-    //     '''
-    //   }
-    // }
+    stage('Extract Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/extract.sh
+        '''
+      }
+    }
     // stage('Transform Data') {
     //   steps {
     //     sh '''
