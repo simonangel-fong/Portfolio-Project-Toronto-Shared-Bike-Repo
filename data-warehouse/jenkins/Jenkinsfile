@@ -22,7 +22,7 @@ pipeline {
         sh '''
         docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
         docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
-        sleep(30)
+        sleep 30
         docker logs postgresql
         '''
       }
