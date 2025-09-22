@@ -71,7 +71,7 @@ pipeline {
               bucket:"toronto-shared-bike-data-warehouse-data-bucket", 
               path:'/export', 
               includePathPattern:'**/*.csv', 
-              workingDir:'mv'
+              workingDir:'/export'
             )
           }
         }
