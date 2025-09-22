@@ -68,7 +68,7 @@ pipeline {
     // }
     stage('Upload Data') {
       when { expression { return fileExists("${env.EXPORT_DIR}") } }
-      script {
+      steps {
         s3Upload(
           profileName: env.S3_PROFILE,
           bucket:      env.S3_BUCKET,
