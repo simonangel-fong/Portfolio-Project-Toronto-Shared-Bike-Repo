@@ -67,14 +67,15 @@ pipeline {
     //   }
     // }
     stage('Upload to S3') {
+      steps {
         dir('/export'){
-            withAWS(region:env.S3_BUCKET,credentials:env.S3_PROFILE) {
-                 def identity=awsIdentity();
-                // Upload files from working directory to project workspace
-                s3Upload(bucket:env.S3_BUCKET, workingDir:'.', includePathPattern:'**/*');
-            }
-
-        };
+          withAWS(region:env.S3_BUCKET,credentials:env.S3_PROFILE) {
+            def identity=awsIdentity();
+            // Upload files from working directory to project workspace
+            s3Upload(bucket:env.S3_BUCKET, workingDir:'.', includePathPattern:'**/*');
+          }
+        }
+      }
     }
   }
 
