@@ -7,7 +7,7 @@ pipeline {
     POSTGRES_DB = 'toronto_shared_bike'
     PGDATA = '/var/lib/postgresql/data/pgdata'
     S3_PROFILE = 'toronto_shared_bike'
-    S3_BUCKET  = 'toronto-shared-bike-data-warehouse-data-bucket '
+    S3_BUCKET  = 'toronto-shared-bike-data-warehouse-data-bucket'
     S3_PREFIX  = "mv" 
     EXPORT_DIR = '/export'
   }
@@ -68,7 +68,7 @@ pipeline {
     // }
     stage('Upload Data') {
       when { expression { return fileExists("${env.EXPORT_DIR}") } }
-      steps {
+      script {
         s3Upload(
           profileName: env.S3_PROFILE,
           bucket:      env.S3_BUCKET,
