@@ -8,64 +8,58 @@ pipeline {
     PGDATA = '/var/lib/postgresql/data/pgdata'
     S3_PROFILE = 'toronto_shared_bike'
     S3_BUCKET  = 'toronto-shared-bike-data-warehouse-data-bucket'
+    RAW_URL = 'https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip'
     S3_PREFIX  = "mv" 
     EXPORT_DIR = '/export'
   }
 
   stages {
-    // stage('Copy Raw Data') {
-    //   steps {
-    //     sh '''
-    //     cp -rv /data data-warehouse/postgresql/data
-    //     ls data-warehouse/postgresql/data
-    //     '''
-    //   }s
-    // }
-    // stage('Start PostgreSQL') {
-    //   steps {
-    //     sh '''
-    //     docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
-    //     sleep 30
-    //     docker logs postgresql
-    //     '''
-    //   }
-    // }
+    stage('Start PostgreSQL') {
+      steps {
+        sh '''
+        docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
+        docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
+        sleep 30
+        docker logs postgresql
+        '''
+      }
+    }
 
-    // stage('Extract Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/extract.sh
-    //     '''
-    //   }
-    // }
-    // stage('Transform Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/transform.sh
-    //     '''
-    //   }
-    // }
-    // stage('Load Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/load.sh
-    //     '''
-    //   }
-    // }
-    // stage('Refresh MV') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
-    //     '''
-    //   }
-    // }
-    // stage('Export Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/export/export.sh
-    //     '''
-    //   }
-    // }
+    stage('Extract Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/extract.sh
+        '''
+      }
+    }
+    stage('Transform Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/transform.sh
+        '''
+      }
+    }
+    stage('Load Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/load.sh
+        '''
+      }
+    }
+    stage('Refresh MV') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+        '''
+      }
+    }
+    stage('Export Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/export/export.sh
+        '''
+      }
+    }
     stage('Upload to S3') {
       steps {
         script{
