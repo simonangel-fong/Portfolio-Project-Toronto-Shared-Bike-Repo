@@ -66,19 +66,18 @@ pipeline {
     //     '''
     //   }
     // }
-    stage('Publish to S3') {
+    stage('Upload to S3') {
       steps {
         script {
-          s3Publish(
-            bucket: 'toronto-shared-bike-data-warehouse-data-bucket', 
-            file: '/export/mv_bike_year.csv',     
-            path: 'test',
-            // acl: 'Private',                // Optional: S3 ACL (e.g., Private, PublicRead)
-            // contentType: 'text/plain',   // Optional: Set content type
-            // storageClass: 'STANDARD_IA', // Optional: Set S3 storage class
-            // keepForever: true,           // Optional: Prevents deletion by S3 artifact manager
-            // managedArtifacts: true       // Optional: Use S3 artifact manager
-          )
+          withAWS(region: 'ca-central-1', credentials: 'toronto_shared_bike') {
+            s3Upload(
+              bucket: 'toronto-shared-bike-data-warehouse-data-bucket',
+              file: 'mv_bike_year.csv',
+              path: 'test/', 
+              acl: 'Private', // Or 'PublicRead', etc.
+              workingDir: '/export' // Directory where the artifact is located relative to workspace
+            )
+          }
         }
       }
     }
