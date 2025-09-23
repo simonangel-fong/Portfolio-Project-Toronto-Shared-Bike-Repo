@@ -39,14 +39,15 @@ pipeline {
     
     // COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_NUMBER}"
     // PRJECT_NAME = 'toronto_shared_bike'
-    // POSTGRES_DOCKE_FILE = 'data-warehouse/postgresql/docker-compose.yaml'
     // EXPORT_DIR = '/export'
     // AWS_REGION = 'ca-central-1'
     // S3_CREDENTIAL = 'toronto_shared_bike'
     POSTGRES_DIR        = 'data-warehouse/postgresql'
-    POSTGRES_DATA_DIR   = 'data'
-    POSTGRES_EXPORT_DIR   = 'export'
+    POSTGRES_DATA_DIR   = 'data-warehouse/postgresql/data'
+    POSTGRES_EXPORT_DIR = 'data-warehouse/postgresql/export'
+    POSTGRES_DOCKE_FILE = 'data-warehouse/postgresql/docker-compose.yaml'
     CSV_URL = 'https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip'
+
   }
 
   stages {
@@ -63,70 +64,68 @@ pipeline {
 
     stage('Download CSV Files') {
       steps {
-        dir(env.POSTGRES_DIR) {
-          echo "#################### Download CSV zip ####################"
-          sh '''
-            pwd
-            ls -l
-            mkdir -pv $POSTGRES_DATA_DIR
-            curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
-            cd $POSTGRES_DATA_DIR
-            pwd
-            ls -l
-          '''
-          
-          echo "#################### Unzip CSV zip ####################"
-          sh '''
-            unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DIR
-            rm -f $POSTGRES_DATA_DIR/csv.zip
-            cd $POSTGRES_DATA_DIR
-            pwd
-            ls -l
-          '''
-
-          echo "#################### Confirm ####################"
-          sh '''
-            ls -l $POSTGRES_DATA_DIR
-            pwd
-            du -h $POSTGRES_DATA_DIR
-          '''
-        }
-      }
-    }
-
-    stage('Start PostgreSQL') {
-      steps {
-        dir(env.POSTGRES_DIR) {
-          
-          echo "#################### Spin up PGDB ####################"
-          sh '''
-            docker compose -f docker-compose.yaml down
-            docker compose -f docker-compose.yaml up -d --build
-
-            # Wait until Postgres is ready instead of sleeping blindly
-            until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-toronto_shared_bike}"'; do
-              echo "Waiting for PostgreSQL to become ready..."
-              sleep 3
-            done
-          '''
-          
-          echo "#################### Confirm PGDB ####################"
-          sh '''
-            docker ps
-            docker logs --tail=100 postgresql || true
-          '''
-        }
-      }
-    }
-
-    stage('Extract Data') {
-      steps {
-        echo "#################### Extract Data ####################"
+        echo "#################### Download CSV zip ####################"
         sh '''
-          docker exec -t postgresql bash /scripts/etl/extract.sh
+          pwd
+          ls -l
+          mkdir -pv $POSTGRES_DATA_DIR
+          curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
+          cd $POSTGRES_DATA_DIR
+          pwd
+          ls -l
         '''
+          
+          // echo "#################### Unzip CSV zip ####################"
+          // sh '''
+          //   unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DIR
+          //   rm -f $POSTGRES_DATA_DIR/csv.zip
+          //   cd $POSTGRES_DATA_DIR
+          //   pwd
+          //   ls -l
+          // '''
+
+          // echo "#################### Confirm ####################"
+          // sh '''
+          //   ls -l $POSTGRES_DATA_DIR
+          //   pwd
+          //   du -h $POSTGRES_DATA_DIR
+          // '''
       }
     }
+
+    // stage('Start PostgreSQL') {
+    //   steps {
+    //     dir(env.POSTGRES_DIR) {
+          
+    //       echo "#################### Spin up PGDB ####################"
+    //       sh '''
+    //         docker compose -f docker-compose.yaml down
+    //         docker compose -f docker-compose.yaml up -d --build
+
+    //         # Wait until Postgres is ready instead of sleeping blindly
+    //         until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-toronto_shared_bike}"'; do
+    //           echo "Waiting for PostgreSQL to become ready..."
+    //           sleep 3
+    //         done
+    //       '''
+          
+    //       echo "#################### Confirm PGDB ####################"
+    //       sh '''
+    //         docker ps
+    //         docker logs --tail=100 postgresql || true
+    //       '''
+    //     }
+    //   }
+    // }
+
+    // stage('Extract Data') {
+    //   steps {
+    //     echo "#################### Extract Data ####################"
+    //     sh '''
+    //       docker exec -t postgresql bash /scripts/etl/extract.sh
+    //     '''
+    //   }
+    // }
 
   //   stage('Transform Data') {
   //     steps {
@@ -152,14 +151,14 @@ pipeline {
   //     }
   //   }
 
-    stage('Export Data') {
-      steps {
-        echo "#################### Export Data ####################"
-        sh '''
-          docker exec -t postgresql bash /scripts/export/export.sh
-        '''
-      }
-    }
+    // stage('Export Data') {
+    //   steps {
+    //     echo "#################### Export Data ####################"
+    //     sh '''
+    //       docker exec -t postgresql bash /scripts/export/export.sh
+    //     '''
+    //   }
+    // }
 
   //   stage('Upload to S3') {
   //     steps {
