@@ -55,45 +55,45 @@ pipeline {
     stage('Cleanup Workspace & Checkout') {
         steps {
             echo "#################### Cleans the workspace ####################"
-            // cleanWs()
+            cleanWs()
             
             echo "#################### Checkout ####################"
             checkout scm // Explicitly checks out the SCM after cleaning.
         }
     }
 
-    // stage('Download CSV Files') {
-    //   steps {
-    //     echo "#################### Download CSV zip ####################"
-    //     sh '''
-    //       pwd
-    //       ls -l
-    //       mkdir -pv $POSTGRES_DATA_DIR
-    //       curl -o $POSTGRES_DIR/csv.zip $CSV_URL
-    //       cd $POSTGRES_DATA_DIR
-    //       pwd
-    //       ls -l
-    //     '''
+    stage('Download CSV Files') {
+      steps {
+        echo "#################### Download CSV zip ####################"
+        sh '''
+          pwd
+          ls -l
+          mkdir -pv $POSTGRES_DATA_DIR
+          curl -o $POSTGRES_DIR/csv.zip $CSV_URL
+          cd $POSTGRES_DATA_DIR
+          pwd
+          ls -l
+        '''
           
-    //     echo "#################### Unzip CSV zip ####################"
-    //     sh '''
-    //       cd $POSTGRES_DATA_DIR
-    //       pwd
-    //       ls -l
-    //       unzip -o $POSTGRES_DIR/csv.zip -d $POSTGRES_DIR
-    //       rm -f $POSTGRES_DIR/csv.zip
-    //       pwd
-    //       ls -l
-    //     '''
+        echo "#################### Unzip CSV zip ####################"
+        sh '''
+          cd $POSTGRES_DATA_DIR
+          pwd
+          ls -l
+          unzip -o $POSTGRES_DIR/csv.zip -d $POSTGRES_DIR
+          rm -f $POSTGRES_DIR/csv.zip
+          pwd
+          ls -l
+        '''
 
-    //     echo "#################### Confirm ####################"
-    //     sh '''
-    //       ls -l $POSTGRES_DATA_DIR
-    //       pwd
-    //       du -h $POSTGRES_DATA_DIR
-    //     '''
-    //   }
-    // }
+        echo "#################### Confirm ####################"
+        sh '''
+          ls -l $POSTGRES_DATA_DIR
+          pwd
+          du -h $POSTGRES_DATA_DIR
+        '''
+      }
+    }
 
     stage('Start PostgreSQL') {
       steps {
@@ -129,53 +129,54 @@ pipeline {
       }
     }
 
-  //   stage('Transform Data') {
-  //     steps {
-  //       sh '''
-  //       docker exec -t postgresql bash /scripts/etl/transform.sh
-  //       '''
-  //     }
-  //   }
+    stage('Transform Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/transform.sh
+        '''
+      }
+    }
 
-  //   stage('Load Data') {
-  //     steps {
-  //       sh '''
-  //       docker exec -t postgresql bash /scripts/etl/load.sh
-  //       '''
-  //     }
-  //   }
+    stage('Load Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/load.sh
+        '''
+      }
+    }
 
-  //   stage('Refresh Materialized Views') {
-  //     steps {
-  //       sh '''
-  //       docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
-  //       '''
-  //     }
-  //   }
+    stage('Refresh Materialized Views') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+        '''
+      }
+    }
 
-    // stage('Export Data') {
-    //   steps {
-    //     echo "#################### Export Data ####################"
-    //     sh '''
-    //       docker exec -t postgresql bash /scripts/export/export.sh
-    //     '''
-    //   }
-    // }
+    stage('Export Data') {
+      steps {
+        echo "#################### Export Data ####################"
+        sh '''
+          mkdir -pv $POSTGRES_EXPORT_DIR
+          docker exec -t postgresql bash /scripts/export/export.sh
+        '''
+      }
+    }
 
-  //   stage('Upload to S3') {
-  //     steps {
-  //       script{
-  //         withAWS(credentials: env.S3_CREDENTIAL, region: env.AWS_REGION) {
-  //           s3Upload(
-  //             bucket:"toronto-shared-bike-data-warehouse-data-bucket", 
-  //             path:'test', 
-  //             workingDir:'/export',
-  //             includePathPattern:'**/*.csv',
-  //           )
-  //         }
-  //       }
-  //     }
-  //   }
+    stage('Upload to S3') {
+      steps {
+        script{
+          withAWS(credentials: env.S3_CREDENTIAL, region: env.AWS_REGION) {
+            s3Upload(
+              bucket:"toronto-shared-bike-data-warehouse-data-bucket", 
+              path:'test', 
+              workingDir:'/export',
+              includePathPattern:'**/*.csv',
+            )
+          }
+        }
+      }
+    }
   }
 
   post {
@@ -191,22 +192,22 @@ pipeline {
       // cleanWs()
     }
     
-  //   failure {
-  //     emailext (
-  //       to: "tech.arguswatcher@gmail.com",
-  //       subject: "FAILURE: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-  //       body: "The Jenkins pipeline '${env.JOB_NAME}' failed.\n" +
-  //         "Build URL: ${env.BUILD_URL}",
-  //     )
-  //   }
+    failure {
+      emailext (
+        to: "tech.arguswatcher@gmail.com",
+        subject: "FAILURE: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+        body: "The Jenkins pipeline '${env.JOB_NAME}' failed.\n" +
+          "Build URL: ${env.BUILD_URL}",
+      )
+    }
 
-  //   success {
-  //     emailext (
-  //       to: "tech.arguswatcher@gmail.com",
-  //       subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-  //       body: "The Jenkins pipeline '${env.JOB_NAME}' completed successfully.\n" +
-  //         "Build URL: ${env.BUILD_URL}",
-  //     )
-  //   }
+    success {
+      emailext (
+        to: "tech.arguswatcher@gmail.com",
+        subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+        body: "The Jenkins pipeline '${env.JOB_NAME}' completed successfully.\n" +
+          "Build URL: ${env.BUILD_URL}",
+      )
+    }
   }
 }
