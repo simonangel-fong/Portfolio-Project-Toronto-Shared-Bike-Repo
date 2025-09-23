@@ -49,8 +49,8 @@ pipeline {
       steps {
         dir(env.POSTGRES_DIR) {
             sh '''
-              docker compose down
-              docker compose up -d
+              docker compose -f docker-compose.yaml down
+              docker compose -f docker-compose.yaml up -d --build
 
               # Wait until Postgres is ready instead of sleeping blindly
               until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-toronto_shared_bike}"'; do
