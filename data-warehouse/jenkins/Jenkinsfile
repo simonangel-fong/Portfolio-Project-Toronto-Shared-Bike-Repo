@@ -67,7 +67,7 @@ pipeline {
     stage('Extract Data') {
       steps {
         sh '''
-        docker exec -t postgresql bash /scripts/etl/extract.sh
+        docker exec -t postgresql bash -lc '/scripts/etl/extract.sh'
         '''
       }
     }
@@ -75,7 +75,7 @@ pipeline {
     stage('Transform Data') {
       steps {
         sh '''
-        docker exec -t postgresql bash /scripts/etl/transform.sh
+        docker exec -t postgresql bash -lc '/scripts/etl/transform.sh'
         '''
       }
     }
@@ -83,7 +83,7 @@ pipeline {
     stage('Load Data') {
       steps {
         sh '''
-        docker exec -t postgresql bash /scripts/etl/load.sh
+        docker exec -t postgresql bash -lc '/scripts/etl/load.sh'
         '''
       }
     }
@@ -91,7 +91,17 @@ pipeline {
     stage('Refresh Materialized Views') {
       steps {
         sh '''
-        docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+        docker exec -t postgresql bash -lc '/scripts/mv/mv_refresh.sh'
+        '''
+      }
+    }
+
+    stage('Export Data (in container)') {
+      steps {
+        sh '''
+          rm -rf "${EXPORT_DIR}"
+          mkdir -p "${EXPORT_DIR}"
+          docker exec -t postgresql bash -lc '/scripts/export/export.sh'
         '''
       }
     }
@@ -103,17 +113,6 @@ pipeline {
         '''
       }
     }
-
-    stage('Export Data (in container)') {
-      steps {
-        sh '''
-          rm -rf "${EXPORT_DIR}"
-          mkdir -p "${EXPORT_DIR}"
-          docker exec -t postgresql bash -lc 'set -Eeuo pipefail; /scripts/export/export.sh'
-        '''
-      }
-    }
-
 
 
 
