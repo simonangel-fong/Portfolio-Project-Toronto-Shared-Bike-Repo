@@ -146,6 +146,7 @@ pipeline {
     always {
       sh '''
       docker compose -f data-warehouse/postgresql/docker-compose.yaml down
+      docker rm postgresql
       '''
     }
     
