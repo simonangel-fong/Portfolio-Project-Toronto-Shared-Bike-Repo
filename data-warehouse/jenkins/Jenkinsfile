@@ -176,7 +176,7 @@ pipeline {
   //   }
   }
 
-  post {
+  // post {
     // always {
     //   echo "#################### Cleanup PGDB ####################"
     //   sh '''
@@ -206,5 +206,5 @@ pipeline {
   //         "Build URL: ${env.BUILD_URL}",
   //     )
   //   }
-  }
+  // }
 }
