@@ -42,31 +42,30 @@ pipeline {
     // S3_CREDENTIAL = 'toronto_shared_bike'
     POSTGRES_DIR        = 'data-warehouse/postgresql'
     POSTGRES_DATA_DIR   = 'data-warehouse/postgresql/data'
+    POSTGRES_EXPORT_DIR   = 'data-warehouse/postgresql/export'
     CSV_URL = 'https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip'
   }
 
   stages {
 
-    stage('Test-Download CSV Files') {
-      steps {
-        dir(env.POSTGRES_DIR) {
-          sh '''
-            # #####
-            ls -l $POSTGRES_DATA_DIR
-            rm -rfv $POSTGRES_DATA_DIR
-            mkdir -pv $POSTGRES_DATA_DIR
-            curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
+    // stage('Test-Download CSV Files') {
+    //   steps {
+    //     dir(env.POSTGRES_DIR) {
+    //       sh '''
+    //         # #####
+    //         ls -l $POSTGRES_DATA_DIR
+    //         rm -rfv $POSTGRES_DATA_DIR
+    //         mkdir -pv $POSTGRES_DATA_DIR
+    //         curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
 
-            unzip $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DATA_DIR
-            rm -o $POSTGRES_DATA_DIR/csv.zip
-            ls -l
-            du -h
-          '''
-        }
-      }
-    }
-  }
-}
+    //         unzip $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DATA_DIR
+    //         rm -o $POSTGRES_DATA_DIR/csv.zip
+    //         ls -l
+    //         du -h
+    //       '''
+    //     }
+    //   }
+    // }
 
     stage('Start PostgreSQL') {
       steps {
@@ -91,6 +90,10 @@ pipeline {
     stage('Extract Data') {
       steps {
         sh '''
+        ls -l $POSTGRES_EXPORT_DIR
+        ls -ld $POSTGRES_EXPORT_DIR
+        mkdir -pv -l $POSTGRES_EXPORT_DIR
+        ls -ld $POSTGRES_EXPORT_DIR
         docker exec -t postgresql bash /scripts/etl/extract.sh
         '''
       }
@@ -142,7 +145,7 @@ pipeline {
   //       }
   //     }
   //   }
-  // }
+  }
 
   // post {
   //   always {
@@ -169,4 +172,4 @@ pipeline {
   //     )
   //   }
   // }
-// }
+}
