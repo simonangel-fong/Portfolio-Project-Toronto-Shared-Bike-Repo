@@ -55,7 +55,7 @@ pipeline {
     stage('Cleanup Workspace & Checkout') {
         steps {
             echo "#################### Cleans the workspace ####################"
-            // cleanWs()
+            cleanWs()
             
             echo "#################### Checkout ####################"
             checkout scm // Explicitly checks out the SCM after cleaning.
@@ -177,17 +177,17 @@ pipeline {
   }
 
   post {
-    always {
-      echo "#################### Cleanup PGDB ####################"
-      sh '''
-      # docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
-      docker volume ls
-      docker volume prune -f
-      '''
+    // always {
+    //   echo "#################### Cleanup PGDB ####################"
+    //   sh '''
+    //   # docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
+    //   docker volume ls
+    //   docker volume prune -f
+    //   '''
 
-      echo "#################### Cleanup Workspace ####################"
-      // cleanWs()
-    }
+    //   echo "#################### Cleanup Workspace ####################"
+    //   // cleanWs()
+    // }
     
   //   failure {
   //     emailext (
