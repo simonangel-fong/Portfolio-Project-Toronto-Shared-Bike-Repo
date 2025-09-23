@@ -64,7 +64,7 @@ pipeline {
         '''
       }
     }
-    
+
     stage('Upload to S3') {
       steps {
         script{
@@ -87,13 +87,21 @@ pipeline {
       docker compose -f data-warehouse/postgresql/docker-compose.yaml down
       '''
     }
-    success {
-      echo 'Pipeline succeeded! Sending success notification.'
-    // mail to: 'devs@example.com', subject: 'Pipeline Success'
-    }
     failure {
-      echo 'Pipeline failed! Sending failure notification.'
-    // mail to: 'devs@example.com', subject: 'Pipeline Failure'
+      emailext (
+        to: "tech.arguswatcher@gmail.com"
+        subject: "FAILURE: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+        body: "The Jenkins pipeline '${env.JOB_NAME}' failed.\n" +
+          "Build URL: ${env.BUILD_URL}",
+          )
+        }
+    success {
+      emailext (
+        to: "tech.arguswatcher@gmail.com"
+        subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+        body: "The Jenkins pipeline '${env.JOB_NAME}' completed successfully.\n" +
+                      "Build URL: ${env.BUILD_URL}",
+      )
     }
   }
 }
