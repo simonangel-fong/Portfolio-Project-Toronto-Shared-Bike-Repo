@@ -52,8 +52,7 @@ pipeline {
             pwd
             ls
             mkdir -pv data
-            touch test.txt
-            cat "fdfd" > test.txt
+            curl -o data/csv.zip $RAW_URL
           '''
         }
       }
