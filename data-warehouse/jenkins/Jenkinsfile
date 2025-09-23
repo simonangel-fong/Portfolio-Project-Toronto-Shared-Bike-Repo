@@ -53,6 +53,7 @@ pipeline {
           sh '''
             # #####
             ls -l
+            rm -rfv $POSTGRES_DATA_DIR
             mkdir -pv $POSTGRES_DATA_DIR
             curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
 
