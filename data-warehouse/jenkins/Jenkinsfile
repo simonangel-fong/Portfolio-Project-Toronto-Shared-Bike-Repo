@@ -67,7 +67,7 @@ pipeline {
     stage('Extract Data') {
       steps {
         sh '''
-        docker exec -t postgresql bash -lc '/scripts/etl/extract.sh'
+        docker exec -t postgresql bash /scripts/etl/extract.sh
         '''
       }
     }
