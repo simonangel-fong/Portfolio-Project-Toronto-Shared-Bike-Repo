@@ -50,15 +50,13 @@ pipeline {
   }
 
   stages {
-
-    stage('Start PostgreSQL') {
-      stage('Cleanup&Checkout') {
-          steps {
-              cleanWs() // Cleans the workspace.
-              checkout scm // Explicitly checks out the SCM after cleaning.
-              echo "Cleanup & Checkout"
-          }
-      }
+    stage('Cleanup&Checkout') {
+        steps {
+            cleanWs() // Cleans the workspace.
+            checkout scm // Explicitly checks out the SCM after cleaning.
+            echo "Cleanup & Checkout"
+        }
+    }
 
     // stage('Test-Download CSV Files') {
     //   steps {
@@ -78,7 +76,7 @@ pipeline {
     //     }
     //   }
     // }
-
+    stage('Start PostgreSQL') {
       steps {
         dir(env.POSTGRES_DIR) {
           sh '''
