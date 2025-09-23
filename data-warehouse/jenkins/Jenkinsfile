@@ -87,17 +87,17 @@ pipeline {
       }
     }
 
-    stage('Extract Data') {
-      steps {
-        sh '''
-        ls -l $POSTGRES_EXPORT_DIR
-        ls -ld $POSTGRES_EXPORT_DIR
-        mkdir -pv $POSTGRES_EXPORT_DIR
-        ls -ld $POSTGRES_EXPORT_DIR
-        docker exec -t postgresql bash /scripts/etl/extract.sh
-        '''
-      }
-    }
+    // stage('Extract Data') {
+    //   steps {
+    //     sh '''
+    //     ls -l $POSTGRES_EXPORT_DIR
+    //     ls -ld $POSTGRES_EXPORT_DIR
+    //     mkdir -pv $POSTGRES_EXPORT_DIR
+    //     ls -ld $POSTGRES_EXPORT_DIR
+    //     docker exec -t postgresql bash /scripts/etl/extract.sh
+    //     '''
+    //   }
+    // }
 
   //   stage('Transform Data') {
   //     steps {
@@ -123,13 +123,13 @@ pipeline {
   //     }
   //   }
 
-  //   stage('Export Data') {
-  //     steps {
-  //       sh '''
-  //         docker exec -t postgresql bash /scripts/export/export.sh
-  //       '''
-  //     }
-  //   }
+    stage('Export Data') {
+      steps {
+        sh '''
+          docker exec -t postgresql bash /scripts/export/export.sh
+        '''
+      }
+    }
 
   //   stage('Upload to S3') {
   //     steps {
