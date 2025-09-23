@@ -69,6 +69,7 @@ triggers {
         sh '''
           pwd
           ls -l
+          rm -rf $POSTGRES_DATA_DIR
           mkdir -pv $POSTGRES_DATA_DIR
           curl -o $POSTGRES_DIR/csv.zip $CSV_URL
           cd $POSTGRES_DATA_DIR
@@ -186,7 +187,7 @@ triggers {
     always {
       echo "#################### Cleanup PGDB ####################"
       sh '''
-      # docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
+      # docker compose -f data-warehouse/postgresql/docker-compose.yaml down
       docker volume ls
       docker volume prune -f
       '''
