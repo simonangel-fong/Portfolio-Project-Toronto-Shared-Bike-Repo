@@ -64,7 +64,7 @@ pipeline {
     stage('Download CSV Files') {
       steps {
         dir(env.POSTGRES_DIR) {
-          echo "#################### Download CSV zip ####################"
+          echo "####################/n Download CSV zip /n####################"
           sh '''
             mkdir -pv $POSTGRES_DATA_DIR
             curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
@@ -72,7 +72,7 @@ pipeline {
           
           echo "#################### Unzip CSV zip ####################"
           sh '''
-            unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DATA_DIR
+            unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DIR
             rm -f $POSTGRES_DATA_DIR/csv.zip
           '''
 
@@ -176,7 +176,7 @@ pipeline {
       docker volume ls
       docker volume prune -f
       '''
-      
+
       echo "#################### Cleanup Workspace ####################"
       cleanWs()
     }
