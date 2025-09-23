@@ -8,6 +8,7 @@ pipeline {
     POSTGRES_PASSWORD = 'SecurePassword123'
     POSTGRES_DB = 'toronto_shared_bike'
     PGDATA = '/var/lib/postgresql/data/pgdata'
+    POSTGRES_DIR = 'data-warehouse/postgresql'
     S3_PROFILE = 'toronto_shared_bike'
     S3_BUCKET  = 'toronto-shared-bike-data-warehouse-data-bucket'
     RAW_URL = 'https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip'
@@ -18,7 +19,7 @@ pipeline {
   stages {
     stage('Start PostgreSQL') {
       steps {
-        dir('scripts') { 
+        dir(env.POSTGRES_DIR) { 
           sh '''
             docker compose down -v
             docker compose up -d --build
