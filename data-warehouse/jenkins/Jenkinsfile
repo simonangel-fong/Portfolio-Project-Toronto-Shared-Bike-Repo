@@ -80,7 +80,7 @@ pipeline {
           cd $POSTGRES_DATA_DIR
           pwd
           ls -l
-          unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DIR
+          unzip -o $POSTGRES_DIR/csv.zip -d $POSTGRES_DIR
           rm -f $POSTGRES_DIR/csv.zip
           pwd
           ls -l
