@@ -64,33 +64,33 @@ pipeline {
   }
 }
 
-  //   stage('Start PostgreSQL') {
-  //     steps {
-  //       dir(env.POSTGRES_DIR) {
-  //         sh '''
-  //           docker compose -f docker-compose.yaml down
-  //           docker compose -f docker-compose.yaml up -d --build
+    stage('Start PostgreSQL') {
+      steps {
+        dir(env.POSTGRES_DIR) {
+          sh '''
+            docker compose -f docker-compose.yaml down
+            docker compose -f docker-compose.yaml up -d --build
 
-  //           # Wait until Postgres is ready instead of sleeping blindly
-  //           until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-toronto_shared_bike}"'; do
-  //             echo "Waiting for PostgreSQL to become ready..."
-  //             sleep 3
-  //           done
+            # Wait until Postgres is ready instead of sleeping blindly
+            until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-toronto_shared_bike}"'; do
+              echo "Waiting for PostgreSQL to become ready..."
+              sleep 3
+            done
 
-  //           docker logs --tail=100 postgresql || true
-  //           docker ps
-  //         '''
-  //       }
-  //     }
-  //   }
+            docker logs --tail=100 postgresql || true
+            docker ps
+          '''
+        }
+      }
+    }
 
-  //   stage('Extract Data') {
-  //     steps {
-  //       sh '''
-  //       docker exec -t postgresql bash /scripts/etl/extract.sh
-  //       '''
-  //     }
-  //   }
+    stage('Extract Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/extract.sh
+        '''
+      }
+    }
 
   //   stage('Transform Data') {
   //     steps {
