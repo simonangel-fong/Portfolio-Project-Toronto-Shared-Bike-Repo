@@ -63,37 +63,37 @@ pipeline {
       }
     }
 
-    // stage('Extract Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/extract.sh
-    //     '''
-    //   }
-    // }
+    stage('Extract Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/extract.sh
+        '''
+      }
+    }
 
-    // stage('Transform Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/transform.sh
-    //     '''
-    //   }
-    // }
+    stage('Transform Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/transform.sh
+        '''
+      }
+    }
 
-    // stage('Load Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/load.sh
-    //     '''
-    //   }
-    // }
+    stage('Load Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/load.sh
+        '''
+      }
+    }
 
-    // stage('Refresh Materialized Views') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
-    //     '''
-    //   }
-    // }
+    stage('Refresh Materialized Views') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+        '''
+      }
+    }
 
     stage('Export Data') {
       steps {
@@ -126,22 +126,22 @@ pipeline {
       '''
     }
     
-  //   failure {
-  //     emailext (
-  //       to: "tech.arguswatcher@gmail.com",
-  //       subject: "FAILURE: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-  //       body: "The Jenkins pipeline '${env.JOB_NAME}' failed.\n" +
-  //         "Build URL: ${env.BUILD_URL}",
-  //     )
-  //   }
+    failure {
+      emailext (
+        to: "tech.arguswatcher@gmail.com",
+        subject: "FAILURE: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+        body: "The Jenkins pipeline '${env.JOB_NAME}' failed.\n" +
+          "Build URL: ${env.BUILD_URL}",
+      )
+    }
 
-  //   success {
-  //     emailext (
-  //       to: "tech.arguswatcher@gmail.com",
-  //       subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-  //       body: "The Jenkins pipeline '${env.JOB_NAME}' completed successfully.\n" +
-  //         "Build URL: ${env.BUILD_URL}",
-  //     )
-  //   }
+    success {
+      emailext (
+        to: "tech.arguswatcher@gmail.com",
+        subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+        body: "The Jenkins pipeline '${env.JOB_NAME}' completed successfully.\n" +
+          "Build URL: ${env.BUILD_URL}",
+      )
+    }
   }
 }
