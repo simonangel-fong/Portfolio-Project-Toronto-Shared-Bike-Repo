@@ -53,27 +53,31 @@ pipeline {
 
     stage('Cleanup Workspace & Checkout') {
         steps {
-            echo "########## Cleans the workspace ##########"
+            echo "#################### Cleans the workspace ####################"
             cleanWs()
             
-            echo "########## Checkout ##########"
+            echo "#################### Checkout ####################"
             checkout scm // Explicitly checks out the SCM after cleaning.
-
         }
     }
 
     stage('Download CSV Files') {
       steps {
         dir(env.POSTGRES_DIR) {
+          echo "#################### Download CSV zip ####################"
           sh '''
-            echo "########## Download CSV zip ##########"
             mkdir -pv $POSTGRES_DATA_DIR
             curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
-
-            echo "########## Unzip CSV zip ##########"
+          '''
+          
+          echo "#################### Unzip CSV zip ####################"
+          sh '''
             unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DATA_DIR
             rm -f $POSTGRES_DATA_DIR/csv.zip
-            
+          '''
+
+          echo "#################### Confirm ####################"
+          sh '''
             ls -l $POSTGRES_DATA_DIR
             du -h $POSTGRES_DATA_DIR
           '''
@@ -81,37 +85,39 @@ pipeline {
       }
     }
 
-    // stage('Start PostgreSQL') {
-    //   steps {
-    //     dir(env.POSTGRES_DIR) {
-    //       sh '''
-    //         docker compose -f docker-compose.yaml down
-    //         docker compose -f docker-compose.yaml up -d --build
+    stage('Start PostgreSQL') {
+      steps {
+        dir(env.POSTGRES_DIR) {
+          
+          echo "#################### Spin up PGDB ####################"
+          sh '''
+            docker compose -f docker-compose.yaml down
+            docker compose -f docker-compose.yaml up -d --build
 
-    //         # Wait until Postgres is ready instead of sleeping blindly
-    //         until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-toronto_shared_bike}"'; do
-    //           echo "Waiting for PostgreSQL to become ready..."
-    //           sleep 3
-    //         done
+            # Wait until Postgres is ready instead of sleeping blindly
+            until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-toronto_shared_bike}"'; do
+              echo "Waiting for PostgreSQL to become ready..."
+              sleep 3
+            done
+          '''
+          
+          echo "#################### Confirm PGDB ####################"
+          sh '''
+            docker ps
+            docker logs --tail=100 postgresql || true
+          '''
+        }
+      }
+    }
 
-    //         docker logs --tail=100 postgresql || true
-    //         docker ps
-    //       '''
-    //     }
-    //   }
-    // }
-
-    // stage('Extract Data') {
-    //   steps {
-    //     sh '''
-    //     ls -l $POSTGRES_EXPORT_DIR
-    //     ls -ld $POSTGRES_EXPORT_DIR
-    //     mkdir -pv $POSTGRES_EXPORT_DIR
-    //     ls -ld $POSTGRES_EXPORT_DIR
-    //     docker exec -t postgresql bash /scripts/etl/extract.sh
-    //     '''
-    //   }
-    // }
+    stage('Extract Data') {
+      steps {
+        echo "#################### Extract Data ####################"
+        sh '''
+          docker exec -t postgresql bash /scripts/etl/extract.sh
+        '''
+      }
+    }
 
   //   stage('Transform Data') {
   //     steps {
@@ -164,11 +170,14 @@ pipeline {
 
   post {
     always {
+      echo "#################### Cleanup PGDB ####################"
       sh '''
       docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
       docker volume ls
       docker volume prune -f
       '''
+      
+      echo "#################### Cleanup Workspace ####################"
       cleanWs()
     }
     
