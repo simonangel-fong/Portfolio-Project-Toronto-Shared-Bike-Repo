@@ -2,11 +2,18 @@ pipeline {
   agent any
 
   options {
-  //   disableConcurrentBuilds()
+    // limit only one instance
+    disableConcurrentBuilds()
+    // show timestamp for event
     timestamps()
-  //   buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '10'))
+    // discard old builds
+    buildDiscarder(
+      logRotator(
+        numToKeepStr: '30',   // maximum of the last 30 build logs
+        artifactNumToKeepStr: '10'    // maximum of the last 10 sets of build artifacts
+      )
+    )  
     // timeout(time: 60, unit: 'MINUTES')
-    ansiColor('xterm')
   }
 
   triggers {
