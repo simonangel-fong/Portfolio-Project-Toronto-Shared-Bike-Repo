@@ -66,15 +66,19 @@ pipeline {
         dir(env.POSTGRES_DIR) {
           echo "#################### Download CSV zip ####################"
           sh '''
-            pwd
             mkdir -pv $POSTGRES_DATA_DIR
-            # curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
+            curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
+            cd $POSTGRES_DATA_DIR
+            pwd
+            ls -l
           '''
           
           echo "#################### Unzip CSV zip ####################"
           sh '''
-            # unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DIR
-            # rm -f $POSTGRES_DATA_DIR/csv.zip
+            unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DIR
+            rm -f $POSTGRES_DATA_DIR/csv.zip
+            cd $POSTGRES_DATA_DIR
+            pwd
             ls -l
           '''
 
