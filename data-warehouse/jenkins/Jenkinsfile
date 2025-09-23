@@ -52,7 +52,7 @@ pipeline {
         dir(env.POSTGRES_DIR) {
           sh '''
             # #####
-            ls -l
+            ls -l $POSTGRES_DATA_DIR
             rm -rfv $POSTGRES_DATA_DIR
             mkdir -pv $POSTGRES_DATA_DIR
             curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
