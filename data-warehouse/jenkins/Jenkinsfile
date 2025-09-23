@@ -75,21 +75,23 @@ pipeline {
           ls -l
         '''
           
-          // echo "#################### Unzip CSV zip ####################"
-          // sh '''
-          //   unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DIR
-          //   rm -f $POSTGRES_DATA_DIR/csv.zip
-          //   cd $POSTGRES_DATA_DIR
-          //   pwd
-          //   ls -l
-          // '''
+        echo "#################### Unzip CSV zip ####################"
+        sh '''
+          cd $POSTGRES_DATA_DIR
+          pwd
+          ls -l
+          unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DIR
+          rm -f $POSTGRES_DATA_DIR/csv.zip
+          pwd
+          ls -l
+        '''
 
-          // echo "#################### Confirm ####################"
-          // sh '''
-          //   ls -l $POSTGRES_DATA_DIR
-          //   pwd
-          //   du -h $POSTGRES_DATA_DIR
-          // '''
+        echo "#################### Confirm ####################"
+        sh '''
+          ls -l $POSTGRES_DATA_DIR
+          pwd
+          du -h $POSTGRES_DATA_DIR
+        '''
       }
     }
 
