@@ -3,10 +3,10 @@ pipeline {
 
   options {
   //   disableConcurrentBuilds()
-  //   timestamps()
+    timestamps()
   //   buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '10'))
-    timeout(time: 60, unit: 'MINUTES')
-  //   ansiColor('xterm')
+    // timeout(time: 60, unit: 'MINUTES')
+    ansiColor('xterm')
   }
 
   triggers {
