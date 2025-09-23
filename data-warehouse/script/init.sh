@@ -47,6 +47,10 @@ git clone https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bi
 cd ~/project-shared-bike
 git checkout feature/dw
 bash ~/project-shared-bike/data-warehouse/script/install.sh
+bash ~/project-shared-bike/data-warehouse/script/get_raw.sh
+
+sudo mkdir -pv /export
+sudo chown 999:999 /export
 
 # curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 # unzip awscliv2.zip
