@@ -99,6 +99,7 @@ pipeline {
       steps {
         sh '''
           mkdir -pv "${EXPORT_DIR}"
+          chown 999:999 "${EXPORT_DIR}"
           docker exec -t postgresql bash /scripts/export/export.sh
         '''
       }
