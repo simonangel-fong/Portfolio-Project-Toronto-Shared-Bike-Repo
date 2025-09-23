@@ -42,6 +42,7 @@ pipeline {
     // S3_CREDENTIAL = 'toronto_shared_bike'
     POSTGRES_DIR        = 'data-warehouse/postgresql'
     POSTGRES_DATA_DIR   = 'data-warehouse/postgresql/data'
+    CSV_URL = 'https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip'
   }
 
   stages {
@@ -50,19 +51,10 @@ pipeline {
       steps {
         dir(env.POSTGRES_DIR) {
           sh '''
-            echo
-            echo "##############################"
-            echo "Step: Download csv zip"
-            echo "##############################"
-            echo
+            # #####
             mkdir -pv $POSTGRES_DATA_DIR
-            curl -o $POSTGRES_DATA_DIR/csv.zip $RAW_URL
+            curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
 
-            echo
-            echo "##############################"
-            echo "Unzip..."
-            echo "##############################"
-            echo
             unzip $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DATA_DIR
             rm $POSTGRES_DATA_DIR/csv.zip
           '''
