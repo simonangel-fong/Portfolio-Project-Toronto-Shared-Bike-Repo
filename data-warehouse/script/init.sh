@@ -1,8 +1,19 @@
 #!/bin/bash
 
+set -euo pipefail
+
+echo
+echo "##############################"
+echo "Update apt"
+echo "##############################"
+echo
 sudo apt update && sudo apt upgrade -y
 
-# set ip a
+echo
+echo "##############################"
+echo "Set IP"
+echo "##############################"
+echo
 sudo tee /etc/netplan/01-netcfg.yaml << EOF
 network:
   version: 2
@@ -11,7 +22,7 @@ network:
     ens33:
       dhcp4: no
       addresses:
-        - 192.168.100.110/24 
+        - 192.168.100.110/24
       routes:
         - to: default
           via: 192.168.100.254
@@ -22,7 +33,11 @@ EOF
 sudo chmod 600 01-netcfg.yaml
 sudo netplan apply
 
-# #############################
+echo
+echo "##############################"
+echo "Git Clone Repo"
+echo "##############################"
+echo
 sudo apt install -y git
 rm -rf ~/project-shared-bike
 mkdir -pv ~/project-shared-bike
@@ -32,8 +47,8 @@ cd ~/project-shared-bike
 git checkout feature/dw
 bash ~/project-shared-bike/data-warehouse/script/install.sh
 
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
+# curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+# unzip awscliv2.zip
+# sudo ./aws/install
 
-aws --version
+# aws --version
