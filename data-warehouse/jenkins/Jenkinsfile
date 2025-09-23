@@ -53,9 +53,16 @@ pipeline {
 
     stage('Cleanup Workspace & Checkout') {
         steps {
-            cleanWs() // Cleans the workspace.
+            echo "##############################"
+            echo "Cleans the workspace"
+            echo "##############################"
+            cleanWs()
+            
+            echo "##############################"
+            echo "Checkout"
+            echo "##############################"
             checkout scm // Explicitly checks out the SCM after cleaning.
-            echo "Cleanup & Checkout"
+
         }
     }
 
@@ -64,12 +71,12 @@ pipeline {
         dir(env.POSTGRES_DIR) {
           sh '''
             mkdir -pv $POSTGRES_DATA_DIR
-            curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
+            # curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
 
-            unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DATA_DIR
-            rm -f $POSTGRES_DATA_DIR/csv.zip
-            ls -l
-            du -h
+            # unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DATA_DIR
+            # rm -f $POSTGRES_DATA_DIR/csv.zip
+            ls -l $POSTGRES_DATA_DIR
+            du -h $POSTGRES_DATA_DIR
           '''
         }
       }
