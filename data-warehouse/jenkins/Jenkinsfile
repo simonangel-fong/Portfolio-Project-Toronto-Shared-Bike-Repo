@@ -22,9 +22,9 @@ pipeline {
     skipDefaultCheckout(true)
   }
 
-  triggers {
-    cron 'H H/4 * * *'    // run every four hours
-  }
+triggers {
+  cron 'H 4 * * *'    // every 4 a.m.
+}
 
   environment {
     POSTGRES_USER = 'postgres'
@@ -32,7 +32,6 @@ pipeline {
     POSTGRES_DB = 'toronto_shared_bike'
     PGDATA = '/var/lib/postgresql/data/pgdata'
     // S3_PROFILE = 'toronto_shared_bike'
-    // S3_BUCKET  = 'toronto-shared-bike-data-warehouse-data-bucket'
     // RAW_URL = 'https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip'
     // S3_PREFIX  = "mv" 
     // EXPORT_DIR = '/export'
@@ -47,53 +46,55 @@ pipeline {
     POSTGRES_EXPORT_DIR = '/var/lib/jenkins/workspace/etl-pipeline/data-warehouse/postgresql/export'
     POSTGRES_DOCKE_FILE = '/var/lib/jenkins/workspace/etl-pipeline/data-warehouse/postgresql/docker-compose.yaml'
     CSV_URL = 'https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip'
+    S3_BUCKET  = 'toronto-shared-bike-data-warehouse-data-bucket'
+    S3_BUCKET_PREFIX  = 'test'
 
   }
 
   stages {
 
-    stage('Cleanup Workspace & Checkout') {
-        steps {
-            echo "#################### Cleans the workspace ####################"
-            cleanWs()
+    // stage('Cleanup Workspace & Checkout') {
+    //     steps {
+    //         echo "#################### Cleans the workspace ####################"
+    //         cleanWs()
             
-            echo "#################### Checkout ####################"
-            checkout scm // Explicitly checks out the SCM after cleaning.
-        }
-    }
+    //         echo "#################### Checkout ####################"
+    //         checkout scm // Explicitly checks out the SCM after cleaning.
+    //     }
+    // }
 
-    stage('Download CSV Files') {
-      steps {
-        echo "#################### Download CSV zip ####################"
-        sh '''
-          pwd
-          ls -l
-          mkdir -pv $POSTGRES_DATA_DIR
-          curl -o $POSTGRES_DIR/csv.zip $CSV_URL
-          cd $POSTGRES_DATA_DIR
-          pwd
-          ls -l
-        '''
+    // stage('Download CSV Files') {
+    //   steps {
+    //     echo "#################### Download CSV zip ####################"
+    //     sh '''
+    //       pwd
+    //       ls -l
+    //       mkdir -pv $POSTGRES_DATA_DIR
+    //       curl -o $POSTGRES_DIR/csv.zip $CSV_URL
+    //       cd $POSTGRES_DATA_DIR
+    //       pwd
+    //       ls -l
+    //     '''
           
-        echo "#################### Unzip CSV zip ####################"
-        sh '''
-          cd $POSTGRES_DATA_DIR
-          pwd
-          ls -l
-          unzip -o $POSTGRES_DIR/csv.zip -d $POSTGRES_DIR
-          rm -f $POSTGRES_DIR/csv.zip
-          pwd
-          ls -l
-        '''
+    //     echo "#################### Unzip CSV zip ####################"
+    //     sh '''
+    //       cd $POSTGRES_DATA_DIR
+    //       pwd
+    //       ls -l
+    //       unzip -o $POSTGRES_DIR/csv.zip -d $POSTGRES_DIR
+    //       rm -f $POSTGRES_DIR/csv.zip
+    //       pwd
+    //       ls -l
+    //     '''
 
-        echo "#################### Confirm ####################"
-        sh '''
-          ls -l $POSTGRES_DATA_DIR
-          pwd
-          du -h $POSTGRES_DATA_DIR
-        '''
-      }
-    }
+    //     echo "#################### Confirm ####################"
+    //     sh '''
+    //       ls -l $POSTGRES_DATA_DIR
+    //       pwd
+    //       du -h $POSTGRES_DATA_DIR
+    //     '''
+    //   }
+    // }
 
     stage('Start PostgreSQL') {
       steps {
@@ -120,44 +121,46 @@ pipeline {
       }
     }
 
-    stage('Extract Data') {
-      steps {
-        echo "#################### Extract Data ####################"
-        sh '''
-          docker exec -t postgresql bash /scripts/etl/extract.sh
-        '''
-      }
-    }
+    // stage('Extract Data') {
+    //   steps {
+    //     echo "#################### Extract Data ####################"
+    //     sh '''
+    //       docker exec -t postgresql bash /scripts/etl/extract.sh
+    //     '''
+    //   }
+    // }
 
-    stage('Transform Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/etl/transform.sh
-        '''
-      }
-    }
+    // stage('Transform Data') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/etl/transform.sh
+    //     '''
+    //   }
+    // }
 
-    stage('Load Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/etl/load.sh
-        '''
-      }
-    }
+    // stage('Load Data') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/etl/load.sh
+    //     '''
+    //   }
+    // }
 
-    stage('Refresh Materialized Views') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
-        '''
-      }
-    }
+    // stage('Refresh Materialized Views') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+    //     '''
+    //   }
+    // }
 
     stage('Export Data') {
       steps {
         echo "#################### Export Data ####################"
         sh '''
           mkdir -pv $POSTGRES_EXPORT_DIR
+          ls -ld $POSTGRES_EXPORT_DIR
+          docker compose exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_hour) TO STDOUT WITH CSV HEADER"
           docker exec -t postgresql bash /scripts/export/export.sh
         '''
       }
@@ -168,9 +171,9 @@ pipeline {
         script{
           withAWS(credentials: env.S3_CREDENTIAL, region: env.AWS_REGION) {
             s3Upload(
-              bucket:"toronto-shared-bike-data-warehouse-data-bucket", 
-              path:'test', 
-              workingDir:'/export',
+              bucket: env.S3_BUCKET, 
+              path: env.S3_BUCKET_PREFIX, 
+              workingDir: env.POSTGRES_EXPORT_DIR,
               includePathPattern:'**/*.csv',
             )
           }
