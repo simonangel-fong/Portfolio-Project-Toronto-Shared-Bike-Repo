@@ -92,7 +92,7 @@ pipeline {
         sh '''
         ls -l $POSTGRES_EXPORT_DIR
         ls -ld $POSTGRES_EXPORT_DIR
-        mkdir -pv -l $POSTGRES_EXPORT_DIR
+        mkdir -pv $POSTGRES_EXPORT_DIR
         ls -ld $POSTGRES_EXPORT_DIR
         docker exec -t postgresql bash /scripts/etl/extract.sh
         '''
