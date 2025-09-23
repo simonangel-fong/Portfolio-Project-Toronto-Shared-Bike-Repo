@@ -1,13 +1,13 @@
 pipeline {
   agent any
 
-  // options {
+  options {
   //   disableConcurrentBuilds()
   //   timestamps()
   //   buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '10'))
-  //   timeout(time: 60, unit: 'MINUTES')
+    timeout(time: 60, unit: 'MINUTES')
   //   ansiColor('xterm')
-  // }
+  }
 
   triggers {
     cron 'H H/4 * * *'
