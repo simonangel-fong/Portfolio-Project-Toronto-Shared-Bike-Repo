@@ -69,7 +69,7 @@ pipeline {
           pwd
           ls -l
           mkdir -pv $POSTGRES_DATA_DIR
-          curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
+          curl -o $POSTGRES_DIR/csv.zip $CSV_URL
           cd $POSTGRES_DATA_DIR
           pwd
           ls -l
@@ -81,7 +81,7 @@ pipeline {
           pwd
           ls -l
           unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DIR
-          rm -f $POSTGRES_DATA_DIR/csv.zip
+          rm -f $POSTGRES_DIR/csv.zip
           pwd
           ls -l
         '''
