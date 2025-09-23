@@ -63,32 +63,30 @@ pipeline {
 
     stage('Download CSV Files') {
       steps {
-        dir(env.POSTGRES_DIR) {
-          echo "#################### Download CSV zip ####################"
-          sh '''
-            mkdir -pv $POSTGRES_DATA_DIR
-            curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
-            cd $POSTGRES_DATA_DIR
-            pwd
-            ls -l
-          '''
+        echo "#################### Download CSV zip ####################"
+        sh '''
+          mkdir -pv $POSTGRES_DATA_DIR
+          curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
+          cd $POSTGRES_DATA_DIR
+          pwd
+          ls -l
+        '''
           
-          echo "#################### Unzip CSV zip ####################"
-          sh '''
-            unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DIR
-            rm -f $POSTGRES_DATA_DIR/csv.zip
-            cd $POSTGRES_DATA_DIR
-            pwd
-            ls -l
-          '''
+        echo "#################### Unzip CSV zip ####################"
+        sh '''
+          unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DIR
+          rm -f $POSTGRES_DATA_DIR/csv.zip
+          cd $POSTGRES_DATA_DIR
+          pwd
+          ls -l
+        '''
 
-          echo "#################### Confirm ####################"
-          sh '''
-            ls -l $POSTGRES_DATA_DIR
-            pwd
-            du -h $POSTGRES_DATA_DIR
-          '''
-        }
+        echo "#################### Confirm ####################"
+        sh '''
+          ls -l $POSTGRES_DATA_DIR
+          pwd
+          du -h $POSTGRES_DATA_DIR
+        '''
       }
     }
 
