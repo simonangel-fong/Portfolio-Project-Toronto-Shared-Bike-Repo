@@ -147,12 +147,12 @@ pipeline {
   //   }
   }
 
-  // post {
-  //   always {
-  //     sh '''
-  //     docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
-  //     '''
-  //   }
+  post {
+    always {
+      sh '''
+      docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
+      '''
+    }
     
   //   failure {
   //     emailext (
@@ -171,5 +171,5 @@ pipeline {
   //         "Build URL: ${env.BUILD_URL}",
   //     )
   //   }
-  // }
+  }
 }
