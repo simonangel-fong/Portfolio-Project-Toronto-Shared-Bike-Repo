@@ -12,24 +12,27 @@ pipeline {
         numToKeepStr: '30',   // maximum of the last 30 build logs
         artifactNumToKeepStr: '10'    // maximum of the last 10 sets of build artifacts
       )
-    )  
-    // timeout(time: 60, unit: 'MINUTES')
+    )
+    // set a timeout for the entire pipeline run
+    timeout(time: 60, unit: 'MINUTES')
   }
 
   triggers {
-    cron 'H H/4 * * *'
+    cron 'H H/4 * * *'    // run every four hours
   }
+
   environment {
     POSTGRES_USER = 'postgres'
     POSTGRES_PASSWORD = 'SecurePassword123'
     POSTGRES_DB = 'toronto_shared_bike'
     PGDATA = '/var/lib/postgresql/data/pgdata'
-    POSTGRES_DIR = 'data-warehouse/postgresql'
     S3_PROFILE = 'toronto_shared_bike'
     S3_BUCKET  = 'toronto-shared-bike-data-warehouse-data-bucket'
     RAW_URL = 'https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip'
     S3_PREFIX  = "mv" 
     EXPORT_DIR = '/export'
+    
+    POSTGRES_DIR = 'data-warehouse/postgresql'
   }
 
   stages {
@@ -47,17 +50,25 @@ pipeline {
       }
     }
 
-    // stage('Start PostgreSQL') {
-    //   steps {
-    //     dir(env.POSTGRES_DIR) { 
-    //       sh '''
-    //         docker compose up -d --build
-    //         sleep 30
-    //         docker logs postgresql
-    //       '''
-    //     }
-    //   }
-    // }
+    stage('Start PostgreSQL') {
+      steps {
+        dir(env.POSTGRES_DIR) {
+          sh '''
+            set -Eeuo pipefail
+            docker compose up -d --build
+
+            # Wait until Postgres is ready instead of sleeping blindly
+            until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-postgres}"'; do
+              echo "Waiting for PostgreSQL to become ready..."
+              sleep 3
+            done
+
+            docker ps
+            docker logs --tail=100 postgresql || true
+          '''
+        }
+      }
+    }
 
     // stage('Extract Data') {
     //   steps {
