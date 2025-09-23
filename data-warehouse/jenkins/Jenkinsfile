@@ -102,7 +102,7 @@ pipeline {
       steps {
         sh '''
           rm -rf "${EXPORT_DIR}"
-          mkdir -p "${EXPORT_DIR}"
+          mkdir -pv "${EXPORT_DIR}"
           docker exec -t postgresql bash /scripts/export/export.sh
         '''
       }
