@@ -49,6 +49,7 @@ pipeline {
       steps {
         dir(env.POSTGRES_DIR) {
             sh '''
+              docker compose down
               docker compose up -d
 
               # Wait until Postgres is ready instead of sleeping blindly
