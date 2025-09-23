@@ -57,6 +57,8 @@ pipeline {
         }
       }
     }
+  }
+}
 
   //   stage('Start PostgreSQL') {
   //     steps {
@@ -159,4 +161,4 @@ pipeline {
   //     )
   //   }
   // }
-}
+// }
