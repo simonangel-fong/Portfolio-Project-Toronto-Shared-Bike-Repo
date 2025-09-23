@@ -1,7 +1,16 @@
 pipeline {
   agent any
+
+  options {
+    disableConcurrentBuilds()
+    timestamps()
+    buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '10'))
+    timeout(time: 60, unit: 'MINUTES')
+    ansiColor('xterm')
+  }
+
   triggers {
-    cron 'H H/4 * * *'
+    cron 'H H/4 * * *'    // every 4 hours
   }
   environment {
     POSTGRES_USER = 'postgres'
@@ -17,98 +26,103 @@ pipeline {
   }
 
   stages {
-    
-    stage('Start PostgreSQL') {
+    stage('Checkout') {
       steps {
-        dir(env.POSTGRES_DIR) { 
-          sh '''
-            docker compose up -d --build
-            sleep 30
-            docker logs postgresql
-          '''
-        }
+        checkout scm    // SCM checkout
       }
     }
 
-    stage('Extract Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/etl/extract.sh
-        '''
-      }
-    }
+    // stage('Start PostgreSQL') {
+    //   steps {
+    //     dir(env.POSTGRES_DIR) { 
+    //       sh '''
+    //         docker compose up -d --build
+    //         sleep 30
+    //         docker logs postgresql
+    //       '''
+    //     }
+    //   }
+    // }
 
-    stage('Transform Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/etl/transform.sh
-        '''
-      }
-    }
+    // stage('Extract Data') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/etl/extract.sh
+    //     '''
+    //   }
+    // }
 
-    stage('Load Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/etl/load.sh
-        '''
-      }
-    }
+    // stage('Transform Data') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/etl/transform.sh
+    //     '''
+    //   }
+    // }
 
-    stage('Refresh MV') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
-        '''
-      }
-    }
+    // stage('Load Data') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/etl/load.sh
+    //     '''
+    //   }
+    // }
 
-    stage('Export Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/export/export.sh
-        '''
-      }
-    }
+    // stage('Refresh MV') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+    //     '''
+    //   }
+    // }
 
-    stage('Upload to S3') {
-      steps {
-        script{
-          withAWS(credentials: 'toronto_shared_bike', region: 'ca-central-1') {
-            s3Upload(
-              bucket:"toronto-shared-bike-data-warehouse-data-bucket", 
-              path:'test', 
-              workingDir:'/export',
-              includePathPattern:'**/*.csv',
-            )
-          }
-        }
-      }
-    }
+    // stage('Export Data') {
+    //   steps {
+    //     sh '''
+    //     docker exec -t postgresql bash /scripts/export/export.sh
+    //     '''
+    //   }
+    // }
+
+    // stage('Upload to S3') {
+    //   steps {
+    //     script{
+    //       withAWS(credentials: 'toronto_shared_bike', region: 'ca-central-1') {
+    //         s3Upload(
+    //           bucket:"toronto-shared-bike-data-warehouse-data-bucket", 
+    //           path:'test', 
+    //           workingDir:'/export',
+    //           includePathPattern:'**/*.csv',
+    //         )
+    //       }
+    //     }
+    //   }
+    // }
   }
 
-  post {
-    always {
-      sh '''
-      docker compose -f data-warehouse/postgresql/docker-compose.yaml down
-      '''
-    }
+  // post {
+  //   always {
+  //     sh '''
+  //     docker compose -f data-warehouse/postgresql/docker-compose.yaml down
+  //     '''
+  //   }
     
-    failure {
-      emailext (
-        to: "tech.arguswatcher@gmail.com",
-        subject: "FAILURE: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-        body: "The Jenkins pipeline '${env.JOB_NAME}' failed.\n" +
-          "Build URL: ${env.BUILD_URL}",
-      )
-    }
+  //   failure {
+  //     emailext (
+  //       to: "tech.arguswatcher@gmail.com",
+  //       subject: "FAILURE: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+  //       body: "The Jenkins pipeline '${env.JOB_NAME}' failed.\n" +
+  //         "Build URL: ${env.BUILD_URL}",
+  //     )
+  //   }
 
-    success {
-      emailext (
-        to: "tech.arguswatcher@gmail.com",
-        subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-        body: "The Jenkins pipeline '${env.JOB_NAME}' completed successfully.\n" +
-          "Build URL: ${env.BUILD_URL}",
-      )
-    }
-  }
+  //   success {
+  //     emailext (
+  //       to: "tech.arguswatcher@gmail.com",
+  //       subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+  //       body: "The Jenkins pipeline '${env.JOB_NAME}' completed successfully.\n" +
+  //         "Build URL: ${env.BUILD_URL}",
+  //     )
+  //   }
+  // }
 }
