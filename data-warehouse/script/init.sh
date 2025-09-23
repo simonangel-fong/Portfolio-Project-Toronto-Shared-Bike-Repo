@@ -14,6 +14,7 @@ echo "##############################"
 echo "Set IP"
 echo "##############################"
 echo
+sudo touch /etc/netplan/01-netcfg.yaml
 sudo tee /etc/netplan/01-netcfg.yaml << EOF
 network:
   version: 2
@@ -30,7 +31,7 @@ network:
         addresses: [192.168.100.254, 8.8.8.8]
 EOF
 
-sudo chmod 600 01-netcfg.yaml
+sudo chmod 600 /etc/netplan/01-netcfg.yaml
 sudo netplan apply
 
 echo
