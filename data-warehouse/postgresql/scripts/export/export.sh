@@ -14,7 +14,7 @@ DB_USER="postgres"
 DB_NAME="toronto_shared_bike"
 SCHEMA_NAME="dw_schema"
 MV_LIST=("mv_trip_user_year_hour" "mv_trip_user_year_month" "mv_top_station_user_year" "mv_station_year" "mv_bike_year")
-EXPORT_PATH="/export"
+EXPORT_PATH="./export"
 
 echo
 echo "##############################"
