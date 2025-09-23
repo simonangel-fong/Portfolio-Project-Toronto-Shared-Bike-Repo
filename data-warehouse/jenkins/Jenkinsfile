@@ -44,8 +44,8 @@ pipeline {
     // AWS_REGION = 'ca-central-1'
     // S3_CREDENTIAL = 'toronto_shared_bike'
     POSTGRES_DIR        = 'data-warehouse/postgresql'
-    POSTGRES_DATA_DIR   = 'data-warehouse/postgresql/data'
-    POSTGRES_EXPORT_DIR   = 'data-warehouse/postgresql/export'
+    POSTGRES_DATA_DIR   = 'data'
+    POSTGRES_EXPORT_DIR   = 'export'
     CSV_URL = 'https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip'
   }
 
@@ -63,30 +63,34 @@ pipeline {
 
     stage('Download CSV Files') {
       steps {
-        echo "#################### Download CSV zip ####################"
-        sh '''
-          mkdir -pv $POSTGRES_DATA_DIR
-          curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
-          cd $POSTGRES_DATA_DIR
-          pwd
-          ls -l
-        '''
+        dir(env.POSTGRES_DIR) {
+          echo "#################### Download CSV zip ####################"
+          sh '''
+            pwd
+            ls -l
+            mkdir -pv $POSTGRES_DATA_DIR
+            curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
+            cd $POSTGRES_DATA_DIR
+            pwd
+            ls -l
+          '''
           
-        echo "#################### Unzip CSV zip ####################"
-        sh '''
-          unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DIR
-          rm -f $POSTGRES_DATA_DIR/csv.zip
-          cd $POSTGRES_DATA_DIR
-          pwd
-          ls -l
-        '''
+          echo "#################### Unzip CSV zip ####################"
+          sh '''
+            unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DIR
+            rm -f $POSTGRES_DATA_DIR/csv.zip
+            cd $POSTGRES_DATA_DIR
+            pwd
+            ls -l
+          '''
 
-        echo "#################### Confirm ####################"
-        sh '''
-          ls -l $POSTGRES_DATA_DIR
-          pwd
-          du -h $POSTGRES_DATA_DIR
-        '''
+          echo "#################### Confirm ####################"
+          sh '''
+            ls -l $POSTGRES_DATA_DIR
+            pwd
+            du -h $POSTGRES_DATA_DIR
+          '''
+        }
       }
     }
 
