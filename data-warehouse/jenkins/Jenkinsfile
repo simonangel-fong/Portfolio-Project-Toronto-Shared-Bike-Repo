@@ -32,7 +32,10 @@ pipeline {
     S3_PREFIX  = "mv" 
     EXPORT_DIR = '/export'
     
+    COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_NUMBER}"
+    PRJECT_NAME = 'toronto_shared_bike'
     POSTGRES_DIR = 'data-warehouse/postgresql'
+    EXPORT_DIR = 'data-warehouse/postgresql/export'
   }
 
   stages {
@@ -45,19 +48,51 @@ pipeline {
     stage('Start PostgreSQL') {
       steps {
         dir(env.POSTGRES_DIR) {
-          sh '''
-            docker compose up -d --build
+            sh '''
+              docker compose up -d --build
 
-            # Wait until Postgres is ready instead of sleeping blindly
-            until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-postgres}"'; do
-              echo "Waiting for PostgreSQL to become ready..."
-              sleep 3
-            done
+              # Wait until Postgres is ready instead of sleeping blindly
+              until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-toronto_shared_bike}"'; do
+                echo "Waiting for PostgreSQL to become ready..."
+                sleep 3
+              done
 
-            docker ps
-            docker logs --tail=100 postgresql || true
-          '''
+              docker logs --tail=100 postgresql || true
+              docker ps
+            '''
         }
+      }
+    }
+
+    stage('Extract Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/extract.sh
+        '''
+      }
+    }
+
+    stage('Transform Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/transform.sh
+        '''
+      }
+    }
+
+    stage('Load Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/load.sh
+        '''
+      }
+    }
+
+    stage('Refresh Materialized Views') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+        '''
       }
     }
 
@@ -69,37 +104,20 @@ pipeline {
       }
     }
 
-    // stage('Extract Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/extract.sh
-    //     '''
-    //   }
-    // }
+    stage('Export Data (in container)') {
+      steps {
+        sh '''
+          rm -rf "${EXPORT_DIR}"
+          mkdir -p "${EXPORT_DIR}"
+          docker exec -t postgresql bash -lc 'set -Eeuo pipefail; /scripts/export/export.sh'
+        '''
+      }
+    }
 
-    // stage('Transform Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/transform.sh
-    //     '''
-    //   }
-    // }
 
-    // stage('Load Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/load.sh
-    //     '''
-    //   }
-    // }
 
-    // stage('Refresh MV') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
-    //     '''
-    //   }
-    // }
+
+
 
     // stage('Export Data') {
     //   steps {
