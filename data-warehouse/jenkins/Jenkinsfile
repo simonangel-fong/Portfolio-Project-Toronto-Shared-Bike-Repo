@@ -9,8 +9,10 @@ pipeline {
     // discard old builds
     buildDiscarder(
       logRotator(
-        numToKeepStr: '30',   // maximum of the last 30 build logs
-        artifactNumToKeepStr: '10'    // maximum of the last 10 sets of build artifacts
+        // maximum number of the last build logs
+        numToKeepStr: '10',   
+        // maximum number of the last sets of build artifacts
+        artifactNumToKeepStr: '5'   
       )
     )
     // set a timeout for the entire pipeline run
@@ -43,105 +45,118 @@ pipeline {
 
   stages {
 
-    stage('Start PostgreSQL') {
+    stage('Test') {
       steps {
         dir(env.POSTGRES_DIR) {
           sh '''
-            docker compose -f docker-compose.yaml down
-            docker compose -f docker-compose.yaml up -d --build
-
-            # Wait until Postgres is ready instead of sleeping blindly
-            until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-toronto_shared_bike}"'; do
-              echo "Waiting for PostgreSQL to become ready..."
-              sleep 3
-            done
-
-            docker logs --tail=100 postgresql || true
-            docker ps
+            pwd
+            ls
+            mkdir -pv data
+            cat "fdfd" > test.txt
           '''
         }
       }
     }
 
-    stage('Extract Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/etl/extract.sh
-        '''
-      }
-    }
+  //   stage('Start PostgreSQL') {
+  //     steps {
+  //       dir(env.POSTGRES_DIR) {
+  //         sh '''
+  //           docker compose -f docker-compose.yaml down
+  //           docker compose -f docker-compose.yaml up -d --build
 
-    stage('Transform Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/etl/transform.sh
-        '''
-      }
-    }
+  //           # Wait until Postgres is ready instead of sleeping blindly
+  //           until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-toronto_shared_bike}"'; do
+  //             echo "Waiting for PostgreSQL to become ready..."
+  //             sleep 3
+  //           done
 
-    stage('Load Data') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/etl/load.sh
-        '''
-      }
-    }
+  //           docker logs --tail=100 postgresql || true
+  //           docker ps
+  //         '''
+  //       }
+  //     }
+  //   }
 
-    stage('Refresh Materialized Views') {
-      steps {
-        sh '''
-        docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
-        '''
-      }
-    }
+  //   stage('Extract Data') {
+  //     steps {
+  //       sh '''
+  //       docker exec -t postgresql bash /scripts/etl/extract.sh
+  //       '''
+  //     }
+  //   }
 
-    stage('Export Data') {
-      steps {
-        sh '''
-          docker exec -t postgresql bash /scripts/export/export.sh
-        '''
-      }
-    }
+  //   stage('Transform Data') {
+  //     steps {
+  //       sh '''
+  //       docker exec -t postgresql bash /scripts/etl/transform.sh
+  //       '''
+  //     }
+  //   }
 
-    stage('Upload to S3') {
-      steps {
-        script{
-          withAWS(credentials: env.S3_CREDENTIAL, region: env.AWS_REGION) {
-            s3Upload(
-              bucket:"toronto-shared-bike-data-warehouse-data-bucket", 
-              path:'test', 
-              workingDir:'/export',
-              includePathPattern:'**/*.csv',
-            )
-          }
-        }
-      }
-    }
-  }
+  //   stage('Load Data') {
+  //     steps {
+  //       sh '''
+  //       docker exec -t postgresql bash /scripts/etl/load.sh
+  //       '''
+  //     }
+  //   }
 
-  post {
-    always {
-      sh '''
-      docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
-      '''
-    }
+  //   stage('Refresh Materialized Views') {
+  //     steps {
+  //       sh '''
+  //       docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+  //       '''
+  //     }
+  //   }
+
+  //   stage('Export Data') {
+  //     steps {
+  //       sh '''
+  //         docker exec -t postgresql bash /scripts/export/export.sh
+  //       '''
+  //     }
+  //   }
+
+  //   stage('Upload to S3') {
+  //     steps {
+  //       script{
+  //         withAWS(credentials: env.S3_CREDENTIAL, region: env.AWS_REGION) {
+  //           s3Upload(
+  //             bucket:"toronto-shared-bike-data-warehouse-data-bucket", 
+  //             path:'test', 
+  //             workingDir:'/export',
+  //             includePathPattern:'**/*.csv',
+  //           )
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+
+  // post {
+  //   always {
+  //     sh '''
+  //     docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
+  //     '''
+  //   }
     
-    failure {
-      emailext (
-        to: "tech.arguswatcher@gmail.com",
-        subject: "FAILURE: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-        body: "The Jenkins pipeline '${env.JOB_NAME}' failed.\n" +
-          "Build URL: ${env.BUILD_URL}",
-      )
-    }
+  //   failure {
+  //     emailext (
+  //       to: "tech.arguswatcher@gmail.com",
+  //       subject: "FAILURE: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+  //       body: "The Jenkins pipeline '${env.JOB_NAME}' failed.\n" +
+  //         "Build URL: ${env.BUILD_URL}",
+  //     )
+  //   }
 
-    success {
-      emailext (
-        to: "tech.arguswatcher@gmail.com",
-        subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-        body: "The Jenkins pipeline '${env.JOB_NAME}' completed successfully.\n" +
-          "Build URL: ${env.BUILD_URL}",
-      )
-    }
-  }
+  //   success {
+  //     emailext (
+  //       to: "tech.arguswatcher@gmail.com",
+  //       subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+  //       body: "The Jenkins pipeline '${env.JOB_NAME}' completed successfully.\n" +
+  //         "Build URL: ${env.BUILD_URL}",
+  //     )
+  //   }
+  // }
 }
