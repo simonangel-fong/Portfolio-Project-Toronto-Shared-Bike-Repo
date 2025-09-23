@@ -51,7 +51,7 @@ pipeline {
 
   stages {
 
-    stage('Cleanup&Checkout') {
+    stage('Cleanup Workspace & Checkout') {
         steps {
             cleanWs() // Cleans the workspace.
             checkout scm // Explicitly checks out the SCM after cleaning.
@@ -59,18 +59,15 @@ pipeline {
         }
     }
 
-    stage('Test-Download CSV Files') {
+    stage('Download CSV Files') {
       steps {
         dir(env.POSTGRES_DIR) {
           sh '''
-            # #####
-            ls -l $POSTGRES_DATA_DIR
-            rm -rfv $POSTGRES_DATA_DIR
             mkdir -pv $POSTGRES_DATA_DIR
             curl -o $POSTGRES_DATA_DIR/csv.zip $CSV_URL
 
-            unzip $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DATA_DIR
-            rm -o $POSTGRES_DATA_DIR/csv.zip
+            unzip -o $POSTGRES_DATA_DIR/csv.zip -d $POSTGRES_DATA_DIR
+            rm -f $POSTGRES_DATA_DIR/csv.zip
             ls -l
             du -h
           '''
@@ -134,14 +131,14 @@ pipeline {
   //     }
   //   }
 
-    stage('Export Data') {
-      steps {
-        sh '''
-          docker exec -t postgresql bash /scripts/export/export.sh
+    // stage('Export Data') {
+    //   steps {
+    //     sh '''
+    //       docker exec -t postgresql bash /scripts/export/export.sh
 
-        '''
-      }
-    }
+    //     '''
+    //   }
+    // }
 
   //   stage('Upload to S3') {
   //     steps {
@@ -164,7 +161,7 @@ pipeline {
       sh '''
       docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
       docker volume ls
-      docker volume prune
+      docker volume prune -f
       '''
       cleanWs()
     }
