@@ -19,7 +19,7 @@ pipeline {
     timeout(time: 60, unit: 'MINUTES')
 
     //Prevents Jenkins from automatically checking out the SCM.
-    // skipDefaultCheckout(true)
+    skipDefaultCheckout(true)
   }
 
 triggers {
