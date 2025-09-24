@@ -46,49 +46,39 @@ triggers {
 
   stages {
 
-    // stage('Cleanup Workspace & Checkout') {
-    //     steps {
-    //         echo "#################### Cleans the workspace ####################"
-    //         cleanWs()
+    stage('Cleanup Workspace & Checkout') {
+        steps {
+            echo "#################### Cleans the workspace ####################"
+            cleanWs()
             
-    //         echo "#################### Checkout ####################"
-    //         checkout scm // Explicitly checks out the SCM after cleaning.
-    //     }
-    // }
+            echo "#################### Checkout ####################"
+            checkout scm // Explicitly checks out the SCM after cleaning.
+        }
+    }
 
-    // stage('Download CSV Files') {
-    //   steps {
-    //     echo "#################### Download CSV zip ####################"
-    //     sh '''
-    //       pwd
-    //       ls -l
-    //       rm -rf $POSTGRES_DATA_DIR
-    //       mkdir -pv $POSTGRES_DATA_DIR
-    //       curl -o $POSTGRES_DIR/csv.zip $CSV_URL
-    //       cd $POSTGRES_DATA_DIR
-    //       pwd
-    //       ls -l
-    //     '''
+    stage('Download CSV Files') {
+      steps {
+        echo "#################### Download CSV zip ####################"
+        sh '''
+          rm -rf $POSTGRES_DATA_DIR
+          mkdir -pv $POSTGRES_DATA_DIR
+          ls -dl $POSTGRES_DATA_DIR
+
+          curl -o $POSTGRES_DIR/csv.zip $CSV_URL
+          ls -l $POSTGRES_DIR/csv.zip
+        '''
           
-    //     echo "#################### Unzip CSV zip ####################"
-    //     sh '''
-    //       cd $POSTGRES_DATA_DIR
-    //       pwd
-    //       ls -l
-    //       unzip -o $POSTGRES_DIR/csv.zip -d $POSTGRES_DIR
-    //       rm -f $POSTGRES_DIR/csv.zip
-    //       pwd
-    //       ls -l
-    //     '''
+        echo "#################### Unzip CSV zip ####################"
+        sh '''
+          unzip -o $POSTGRES_DIR/csv.zip -d $POSTGRES_DIR
+          ls -l $POSTGRES_DATA_DIR
+          du -h $POSTGRES_DATA_DIR
 
-    //     echo "#################### Confirm ####################"
-    //     sh '''
-    //       ls -l $POSTGRES_DATA_DIR
-    //       pwd
-    //       du -h $POSTGRES_DATA_DIR
-    //     '''
-    //   }
-    // }
+          rm -f $POSTGRES_DIR/csv.zip
+          ls -l $POSTGRES_DIR/csv.zip
+        '''
+      }
+    }
 
     stage('Start PostgreSQL') {
       steps {
@@ -99,10 +89,10 @@ triggers {
             docker compose -f docker-compose.yaml down -v
             docker compose -f docker-compose.yaml up -d --build
 
-            # Wait until Postgres is ready instead of sleeping blindly
+            # Wait until Postgres is ready
             until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-toronto_shared_bike}"'; do
               echo "Waiting for PostgreSQL to become ready..."
-              sleep 3
+              sleep 1
             done
           '''
           
@@ -115,38 +105,38 @@ triggers {
       }
     }
 
-    // stage('Extract Data') {
-    //   steps {
-    //     echo "#################### Extract Data ####################"
-    //     sh '''
-    //       docker exec -t postgresql bash /scripts/etl/extract.sh
-    //     '''
-    //   }
-    // }
+    stage('Extract Data') {
+      steps {
+        echo "#################### Extract Data ####################"
+        sh '''
+          docker exec -t postgresql bash /scripts/etl/extract.sh
+        '''
+      }
+    }
 
-    // stage('Transform Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/transform.sh
-    //     '''
-    //   }
-    // }
+    stage('Transform Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/transform.sh
+        '''
+      }
+    }
 
-    // stage('Load Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/load.sh
-    //     '''
-    //   }
-    // }
+    stage('Load Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/load.sh
+        '''
+      }
+    }
 
-    // stage('Refresh Materialized Views') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
-    //     '''
-    //   }
-    // }
+    stage('Refresh Materialized Views') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+        '''
+      }
+    }
 
     stage('Export Data') {
       steps {
