@@ -159,8 +159,8 @@ triggers {
       steps {
         echo "#################### Export Data ####################"
         sh '''
+          rm -rfv $POSTGRES_EXPORT_DIR
           mkdir -pv $POSTGRES_EXPORT_DIR
-          sudo chown jenkins:jenkins $POSTGRES_EXPORT_DIR
           ls -ld $POSTGRES_EXPORT_DIR
           docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_hour) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_trip_user_year_hour.csv
         '''
