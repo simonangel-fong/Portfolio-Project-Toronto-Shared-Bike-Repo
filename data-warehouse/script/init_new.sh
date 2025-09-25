@@ -33,5 +33,5 @@ echo "##############################"
 echo
 sudo apt install -y git
 sudo -H -u dw_admin bash -c 'git clone https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git /home/dw_admin/project' 
-sudo -H -u dw_admin bash -c 'cd /home/dw_admin/project; git checkout feature/dw' 
-sudo -H -u dw_admin bash -c 'cd /home/dw_admin/project; ls data-warehouse/jenkins' 
+
+sudo bash  /home/dw_admin/project/data-warehouse/script/install.sh
