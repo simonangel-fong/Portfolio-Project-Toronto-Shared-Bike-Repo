@@ -1,13 +1,16 @@
 pipeline {
     agent {
-        docker { image 'postgres:15' }
+        docker { 
+            image 'postgres:15' 
+            args '--name postgresql -v /var/jenkins_home/workspace/docker-agent-test:/data -v pgdata:/var/lib/postgresql -v ./scripts/setup:/docker-entrypoint-initdb.d -e POSTGRES_USER=${POSTGRES_USER:-postgres} -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-SecurePassword123} -e POSTGRES_DB=${POSTGRES_DB:-toronto_shared_bike}'
+        }
     }
     stages {
         stage('Test') {
             steps {
                 sh '''
-                    pwd
-                    hostname
+                    whoami
+                    bash data-warehouse/postgresql/scripts/setup/01_create_dir.sh
                 '''
             }
         }
