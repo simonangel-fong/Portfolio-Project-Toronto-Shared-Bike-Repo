@@ -15,7 +15,7 @@ jenkins:
       launcher:
         ssh:
           credentialsId: "jenkins_ssh"
-          host: "192.168.100.110"
+          host: "localhost"
           port: 22
           sshHostKeyVerificationStrategy:
             manuallyTrustedKeyVerificationStrategy:
