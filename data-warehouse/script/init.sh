@@ -2,7 +2,12 @@
 
 set -euo pipefail
 
-PROJECT_DIR=/home/ubuntuadmin/project_shared_bike
+HOST_IP=192.168.100.110
+HOST_IP_MASK=24
+HOST_GATEWAY=192.168.100.254
+
+USER_HOME=/home/ubuntuadmin
+PROJECT_DIR=$USER_HOME/project_shared_bike
 GITHUB_REPO=https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git
 
 echo
@@ -10,7 +15,7 @@ echo "##############################"
 echo "Update apt"
 echo "##############################"
 echo
-sudo apt update && sudo apt upgrade -y
+sudo apt-get update && sudo apt-get upgrade -y
 
 echo
 echo "##############################"
@@ -26,12 +31,12 @@ network:
     ens33:
       dhcp4: no
       addresses:
-        - 192.168.100.110/24
+        - $HOST_IP/$HOST_IP_MASK
       routes:
         - to: default
-          via: 192.168.100.254
+          via: $HOST_GATEWAY
       nameservers:
-        addresses: [192.168.100.254, 8.8.8.8]
+        addresses: [$HOST_GATEWAY, 8.8.8.8]
 EOF
 
 sudo chmod 600 /etc/netplan/01-netcfg.yaml
@@ -49,6 +54,9 @@ git clone $GITHUB_REPO $PROJECT_DIR
 
 cd $PROJECT_DIR
 git checkout feature/dw
+# install package
 bash $PROJECT_DIR/data-warehouse/script/install.sh
-bash $PROJECT_DIR/data-warehouse/script/start_prom.sh
+# start prometheus
+bash $PROJECT_DIR/data-warehouse/script/start_monitor_docker.sh
+# start jenkins
 bash $PROJECT_DIR/data-warehouse/script/start_jenkins.sh
