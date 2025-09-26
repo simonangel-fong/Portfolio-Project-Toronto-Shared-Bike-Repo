@@ -1,6 +1,27 @@
 pipeline {
   agent any
 
+  options {
+    // limit only one instance
+    disableConcurrentBuilds()
+    // show timestamp for event
+    timestamps()
+    // discard old builds
+    buildDiscarder(
+      logRotator(
+        // maximum number of the last build logs
+        numToKeepStr: '10',   
+        // maximum number of the last sets of build artifacts
+        artifactNumToKeepStr: '5'   
+      )
+    )
+    // set a timeout for the entire pipeline run
+    timeout(time: 60, unit: 'MINUTES')
+
+    //Prevents Jenkins from automatically checking out the SCM.
+    skipDefaultCheckout(true)
+  }
+
   environment {
     POSTGRES_USER = credentials('postgres_user')
     POSTGRES_PASSWORD = credentials('postgres_password')
