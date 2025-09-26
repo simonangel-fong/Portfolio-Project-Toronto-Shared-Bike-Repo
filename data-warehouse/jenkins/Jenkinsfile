@@ -27,18 +27,19 @@ pipeline {
 
     stage('Start PostgreSQL') {
       steps {
-          
-        echo "#################### Spin up PGDB ####################"
-        sh '''
-        docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
-        docker compose -f data-warehouse/postgresql/docker-compose.yaml up
-        '''
-        
-        echo "#################### Confirm PGDB ####################"
-        sh '''
-          docker ps
-          docker logs --tail=100 postgresql || true
-        '''
+        dir('data-warehouse/postgresql'){
+          echo "#################### Spin up PGDB ####################"
+          sh '''
+            docker compose down
+            docker compose up -d
+          '''
+
+          echo "#################### Confirm PGDB ####################"
+          sh '''
+            docker ps
+            docker logs --tail=100 postgresql || true
+          '''
+        }
       }
     }
   }
