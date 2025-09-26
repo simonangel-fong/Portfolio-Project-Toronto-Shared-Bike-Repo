@@ -3,7 +3,6 @@ pipeline {
 
   environment {
     POSTGRES_USER = credentials('postgres_user')
-    POSTGRES_DB = credentials('postgres_db')
   }
 
   stages {
@@ -19,6 +18,7 @@ pipeline {
             sh """
               ls
               pwd
+              echo "${POSTGRES_USER}"
             """
         }
     }
