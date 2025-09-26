@@ -10,7 +10,7 @@ DIR_HOME=/home/ubuntuadmin
 DIR_PROJECT=$DIR_HOME/project_shared_bike
 GITHUB_REPO=https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git
 
-SCRIPT_INIT=$DIR_PROJECT/data-warehouse/script/install.sh
+SCRIPT_STALL=$DIR_PROJECT/data-warehouse/script/install.sh
 SCRIPT_MONITOR=$DIR_PROJECT/data-warehouse/script/start_monitor_docker.sh
 SCRIPT_JENKINS=$DIR_PROJECT/data-warehouse/script/start_jenkins.sh
 
@@ -59,7 +59,10 @@ git clone $GITHUB_REPO $DIR_PROJECT
 cd $DIR_PROJECT
 git checkout feature/dw
 # install package
-bash $SCRIPT_INIT
+bash $SCRIPT_STALL
+
+sudo usermod -aG docker $USER
+
 # start prometheus
 bash $SCRIPT_MONITOR
 # # start jenkins
