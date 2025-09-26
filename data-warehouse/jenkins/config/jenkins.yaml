@@ -1,13 +1,13 @@
 jenkins:
   systemMessage: "Project Toronto Shared Bike - Jenkins Dashboard"
 
-#   securityRealm:
-#     local:
-#       allowsSignup: false
-#       enableCaptcha: false
-#       users:
-#       - id: ${JENKINS_ADMIN_ID}
-#         password: ${JENKINS_ADMIN_PASSWORD}
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+      - id: ${JENKINS_ADMIN_ID}
+        password: ${JENKINS_ADMIN_PASSWORD}
 
 #   nodes:
 #   - permanent:
