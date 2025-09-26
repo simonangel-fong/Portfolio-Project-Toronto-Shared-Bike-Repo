@@ -50,7 +50,7 @@ tool:
 
 jobs:
   - script: >
-      pipelineJob('docker_agent_test') {
+      pipelineJob('docker-agent-test') {
         definition {
           cpsScm {
             scm {
@@ -61,7 +61,7 @@ jobs:
                 branch('feature/dw')
               }
             }
-            scriptPath('data-warehouse/jenkins/test.groovy')
+            scriptPath('data-warehouse/jenkins/Jenksfile')
           }
         }
       }
