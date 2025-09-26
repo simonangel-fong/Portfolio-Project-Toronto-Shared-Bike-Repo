@@ -15,62 +15,12 @@ pipeline {
             
             echo "#################### Checkout ####################"
             checkout scm // Explicitly checks out the SCM after cleaning.
+
+            sh """
+              ls
+              pwd
+            """
         }
-    }
-
-    stage('Download CSV Files') {
-      steps {
-        echo "#################### Download CSV zip ####################"
-        sh '''
-          rm -rf data-warehouse/postgresql/data
-          mkdir -pv data-warehouse/postgresql/data
-          ls -dl data-warehouse/postgresql/data
-
-          curl -o data-warehouse/postgresql/csv.zip https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip
-          ls -l data-warehouse/postgresql/csv.zip
-        '''
-          
-        echo "#################### Unzip CSV zip ####################"
-        sh '''
-          unzip -o data-warehouse/postgresql/csv.zip -d data-warehouse/postgresql
-          ls -l data-warehouse/postgresql/data
-          du -h data-warehouse/postgresql/data
-
-          rm -fv data-warehouse/postgresql/csv.zip
-        '''
-      }
-    }
-
-    stage('Start PostgreSQL') {
-      steps {
-          
-          echo "#################### Spin up PGDB ####################"
-          sh '''
-            docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
-            docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
-
-            # Wait until Postgres is ready
-            until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER}" -d "${POSTGRES_DB}"'; do
-              echo "Waiting for PostgreSQL to become ready..."
-              sleep 10
-            done
-          '''
-          
-          echo "#################### Confirm PGDB ####################"
-          sh '''
-            docker ps
-            docker logs --tail=100 postgresql || true
-          '''
-      }
-    }
-
-    stage('Extract Data') {
-      steps {
-        echo "#################### Extract Data ####################"
-        sh '''
-          docker exec -t postgresql bash /scripts/etl/extract.sh
-        '''
-      }
     }
   }
 }
