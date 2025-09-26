@@ -7,7 +7,7 @@ HOST_IP_MASK=24
 HOST_GATEWAY=192.168.100.254
 
 DIR_HOME=/home/ubuntuadmin
-DIR_PROJECT=$USER_HOME/project_shared_bike
+DIR_PROJECT=$DIR_HOME/project_shared_bike
 GITHUB_REPO=https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git
 
 SCRIPT_INIT=$DIR_PROJECT/data-warehouse/script/install.sh
@@ -62,5 +62,5 @@ git checkout feature/dw
 bash $SCRIPT_INIT
 # start prometheus
 bash $SCRIPT_MONITOR
-# start jenkins
-bash $SCRIPT_JENKINS
+# # start jenkins
+# bash $SCRIPT_JENKINS

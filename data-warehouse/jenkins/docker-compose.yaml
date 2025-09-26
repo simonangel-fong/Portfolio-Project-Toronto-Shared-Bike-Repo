@@ -8,13 +8,13 @@ volumes:
 services:
   jenkins:
     container_name: jenkins
-    build: .
-    # image: jenkins/jenkins:2.516.3-jdk21
+    # build: .
+    image: jenkins/jenkins:2.516.3-jdk21
     restart: unless-stopped
-    environment:
-      - JENKINS_ADMIN_ID=${JENKINS_ADMIN_ID:-admin}
-      - JENKINS_ADMIN_PASSWORD=${JENKINS_ADMIN_PASSWORD:-admin}
-      - SSH_PRIVATE_KEY=${SSH_PRIVATE_KEY:-""}
+    # environment:
+    #   - JENKINS_ADMIN_ID=${JENKINS_ADMIN_ID:-admin}
+    #   - JENKINS_ADMIN_PASSWORD=${JENKINS_ADMIN_PASSWORD:-admin}
+    #   - SSH_PRIVATE_KEY=${SSH_PRIVATE_KEY:-""}
     volumes:
       - jenkins_data:/var/jenkins_home
     networks:

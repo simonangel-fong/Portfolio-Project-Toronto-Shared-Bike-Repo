@@ -13,13 +13,13 @@ RUN apt-get update && apt-get install -y docker-ce-cli
 
 USER jenkins
 
-# # disable setup wizard
-# ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
+# disable setup wizard
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
 
-# # Setup Configuration as Code (CasC)
-# ENV CASC_JENKINS_CONFIG="/var/jenkins_home/casc_configs/jenkins.yaml" 
-# COPY --chown=jenkins:jenkins ./config/jenkins.yaml /var/jenkins_home/casc_configs/jenkins.yaml
+# Setup Configuration as Code (CasC)
+ENV CASC_JENKINS_CONFIG="/var/jenkins_home/casc_configs/jenkins.yaml" 
+COPY --chown=jenkins:jenkins ./config/jenkins.yaml /var/jenkins_home/casc_configs/jenkins.yaml
 
-# # Install Jenkins plugins
-# COPY --chown=jenkins:jenkins ./config/plugins.txt /usr/share/jenkins/ref/plugins.txt
-# RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
+# Install Jenkins plugins
+COPY --chown=jenkins:jenkins ./config/plugins.txt /usr/share/jenkins/ref/plugins.txt
+RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
