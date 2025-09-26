@@ -9,22 +9,6 @@ jenkins:
       - id: ${JENKINS_ADMIN_ID}
         password: ${JENKINS_ADMIN_PASSWORD}
 
-#   nodes:
-#   - permanent:
-#       labelString: "ubuntu_agent"
-#       launcher:
-#         ssh:
-#           credentialsId: "jenkins_ssh"
-#           host: "localhost"
-#           port: 22
-#           sshHostKeyVerificationStrategy:
-#             manuallyTrustedKeyVerificationStrategy:
-#               requireInitialManualTrust: false
-#       name: "ubuntu_agent"
-#       numExecutors: 2
-#       remoteFS: "/home/jenkins/agent"
-#       retentionStrategy: "always"
-
 # credentials:
 #   system:
 #     domainCredentials:
