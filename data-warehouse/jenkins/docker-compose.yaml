@@ -15,7 +15,9 @@ services:
     environment:
       - JENKINS_ADMIN_ID=${JENKINS_ADMIN_ID:-admin}
       - JENKINS_ADMIN_PASSWORD=${JENKINS_ADMIN_PASSWORD:-admin}
-      - SSH_PRIVATE_KEY=${SSH_PRIVATE_KEY:-""}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-SecurePassword123}
+      - POSTGRES_DB=${POSTGRES_DB:-toronto_shared_bike}
     volumes:
       - jenkins_data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock

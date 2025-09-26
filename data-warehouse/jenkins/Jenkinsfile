@@ -27,8 +27,8 @@ pipeline {
   }
 
   environment {
-    POSTGRES_USER = 'postgres'
-    POSTGRES_PASSWORD = 'SecurePassword123'
+    // POSTGRES_USER = 'postgres'
+    // POSTGRES_PASSWORD = 'SecurePassword123'
     POSTGRES_DB = 'toronto_shared_bike'
     PGDATA = '/var/lib/postgresql/data/pgdata'
 
@@ -47,15 +47,15 @@ pipeline {
 
   stages {
 
-    stage('Cleanup Workspace & Checkout') {
-        steps {
-            echo "#################### Cleans the workspace ####################"
-            cleanWs()
+    // stage('Cleanup Workspace & Checkout') {
+    //     steps {
+    //         echo "#################### Cleans the workspace ####################"
+    //         cleanWs()
             
-            echo "#################### Checkout ####################"
-            checkout scm // Explicitly checks out the SCM after cleaning.
-        }
-    }
+    //         echo "#################### Checkout ####################"
+    //         checkout scm // Explicitly checks out the SCM after cleaning.
+    //     }
+    // }
 
     stage('Download CSV Files') {
       steps {
@@ -103,14 +103,14 @@ pipeline {
       }
     }
 
-    // stage('Extract Data') {
-    //   steps {
-    //     echo "#################### Extract Data ####################"
-    //     sh '''
-    //       docker exec -t postgresql bash /scripts/etl/extract.sh
-    //     '''
-    //   }
-    // }
+    stage('Extract Data') {
+      steps {
+        echo "#################### Extract Data ####################"
+        sh '''
+          docker exec -t postgresql bash /scripts/etl/extract.sh
+        '''
+      }
+    }
 
     // stage('Transform Data') {
     //   steps {
