@@ -31,13 +31,7 @@ pipeline {
         echo "#################### Spin up PGDB ####################"
         sh '''
         docker compose -f data-warehouse/postgresql/docker-compose.yaml down -v
-        docker compose -f data-warehouse/postgresql/docker-compose.yaml up -d --build
-
-          # Wait until Postgres is ready
-          until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-toronto_shared_bike}"'; do
-            echo "Waiting for PostgreSQL to become ready..."
-            sleep 10
-          done
+        docker compose -f data-warehouse/postgresql/docker-compose.yaml up
         '''
         
         echo "#################### Confirm PGDB ####################"
