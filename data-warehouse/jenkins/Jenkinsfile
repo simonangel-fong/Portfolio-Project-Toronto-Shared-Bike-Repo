@@ -30,7 +30,7 @@ pipeline {
         dir('data-warehouse/postgresql'){
           echo "#################### Spin up PGDB ####################"
           sh '''
-            docker compose down
+            docker compose down -v
             docker compose up -d
           '''
 
