@@ -48,6 +48,7 @@ cd ~/project_shared_bike
 git checkout feature/dw
 bash ~/project_shared_bike/data-warehouse/script/install.sh
 bash ~/project_shared_bike/data-warehouse/script/start_prom.sh
+bash ~/project_shared_bike/data-warehouse/script/start_jenkins.sh
 
 # sudo mkdir -pv /project/export
 # sudo chown 999:999 /project/export
