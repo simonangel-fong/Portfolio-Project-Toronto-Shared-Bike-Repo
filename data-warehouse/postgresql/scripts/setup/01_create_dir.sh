@@ -23,4 +23,4 @@ do
     mkdir -pv $DIR_PATH
 done
 
-chown -vR postgres:postgres ${DB_PATH}
+# chown -vR postgres:postgres ${DB_PATH}

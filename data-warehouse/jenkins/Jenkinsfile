@@ -6,7 +6,6 @@ pipeline {
         stage('Test') {
             steps {
                 sh '''
-                    ping -c4 8.8.8.8
                     pwd
                     hostname
                 '''
