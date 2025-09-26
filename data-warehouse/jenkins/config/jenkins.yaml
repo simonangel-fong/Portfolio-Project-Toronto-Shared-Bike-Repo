@@ -9,18 +9,18 @@ jenkins:
       - id: ${JENKINS_ADMIN_ID}
         password: ${JENKINS_ADMIN_PASSWORD}
 
-credentials:
-  system:
-    domainCredentials:
-    - credentials:
-      - secretText:
-          scope: GLOBAL
-          id: "POSTGRES_USER"
-          secret: "${POSTGRES_USER}"
-      - secretText:
-          scope: GLOBAL
-          id: "POSTGRES_PASSWORD"
-          secret: "${POSTGRES_PASSWORD}"
+# credentials:
+#   system:
+#     domainCredentials:
+#     - credentials:
+#       - secretText:
+#           scope: GLOBAL
+#           id: "POSTGRES_USER"
+#           secret: "${POSTGRES_USER}"
+#       - secretText:
+#           scope: GLOBAL
+#           id: "POSTGRES_PASSWORD"
+#           secret: "${POSTGRES_PASSWORD}"
 
 tool:
   git:
