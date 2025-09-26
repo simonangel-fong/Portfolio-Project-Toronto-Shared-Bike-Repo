@@ -4,16 +4,13 @@ pipeline {
   stages {
 
     stage('Cleanup Workspace & Checkout') {
-      steps {
-          echo "#################### Checkout ####################"
-          checkout scm // Explicitly checks out the SCM after cleaning.
-          
-          echo "#################### Cleans the workspace ####################"
-          sh '''
-            ls
-            pwd
-          '''
-      }
+        steps {
+            echo "#################### Cleans the workspace ####################"
+            cleanWs()
+            
+            echo "#################### Checkout ####################"
+            checkout scm // Explicitly checks out the SCM after cleaning.
+        }
     }
 
     stage('Download CSV Files') {
