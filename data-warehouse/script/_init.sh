@@ -34,4 +34,21 @@ echo
 sudo apt install -y git
 sudo -H -u dw_admin bash -c 'git clone https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git /home/dw_admin/project' 
 
-sudo bash  /home/dw_admin/project/data-warehouse/script/install.sh
+echo
+echo "##############################"
+echo "Install packages"
+echo "##############################"
+echo
+sudo bash /home/dw_admin/project/data-warehouse/script/install.sh
+sudo sudo usermod -aG docker $USER
+sudo sudo usermod -aG docker dw_admin
+
+echo
+echo "##############################"
+echo "Start Jenkins"
+echo "##############################"
+echo
+sudo -H -u dw_admin bash -c 'cd /home/dw_admin/project/data-warehouse/jenkins; git checkout feature/dw; git pull; docker compose up -d'
+
+ssh-keygen -t rsa -f ~/.ssh/jenkins -q -N ""
+ssh-copy-id -i ~/.ssh/jenkins.pub dw_admin@localhost

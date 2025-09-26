@@ -128,3 +128,9 @@ useradd -m -s /bin/bash jenkins || true
 mkdir -p /home/jenkins/agent && chown -R jenkins:jenkins /home/jenkins
 ```
 
+
+dockerfile
+
+```sh
+docker run -e POSTGRES_USER="postgres" -e POSTGRES_PASSWORD="SecurePassword123" -e POSTGRES_DB="toronto_shared_bike" -v ./scripts/setup:/docker-entrypoint-initdb.d -v ./scripts:/scripts --name "dw" -d postgres:15
+```

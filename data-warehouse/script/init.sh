@@ -40,17 +40,17 @@ echo "Git Clone Repo"
 echo "##############################"
 echo
 sudo apt install -y git
-rm -rf ~/project-shared-bike
-mkdir -pv ~/project-shared-bike
-git clone https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git ~/project-shared-bike
+rm -rf ~/project_shared_bike
+mkdir -pv ~/project_shared_bike
+git clone https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git ~/project_shared_bike
 
-cd ~/project-shared-bike
+cd ~/project_shared_bike
 git checkout feature/dw
-bash ~/project-shared-bike/data-warehouse/script/install.sh
-bash ~/project-shared-bike/data-warehouse/script/get_raw.sh
+bash ~/project_shared_bike/data-warehouse/script/install.sh
+bash ~/project_shared_bike/data-warehouse/script/start_prom.sh
 
-sudo mkdir -pv /project/export
-sudo chown 999:999 /project/export
+# sudo mkdir -pv /project/export
+# sudo chown 999:999 /project/export
 
 # curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 # unzip awscliv2.zip
