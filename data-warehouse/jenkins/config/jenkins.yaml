@@ -50,18 +50,18 @@ tool:
 
 jobs:
   - script: >
-      pipelineJob('docker-agent-test') {
+      pipelineJob('my_repo_pipeline') {
         definition {
           cpsScm {
             scm {
               git {
                 remote {
-                  url('https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git')
+                  url('https://github.com/simonangel-fong/Tutorial-Jenkins.git')
                 }
-                branch('feature/dw')
+                branch('*/master')
               }
             }
-            scriptPath('data-warehouse/jenkins/Jenksfile')
+            scriptPath('module-docker-compose-JCasC/pipeline/Jenkinsfile')
           }
         }
       }
