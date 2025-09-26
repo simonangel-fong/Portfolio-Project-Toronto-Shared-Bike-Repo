@@ -9,7 +9,6 @@ services:
   jenkins:
     container_name: jenkins
     build: .
-    image: myjenkins
     # image: jenkins/jenkins:2.516.3-jdk21
     restart: unless-stopped
     environment:
