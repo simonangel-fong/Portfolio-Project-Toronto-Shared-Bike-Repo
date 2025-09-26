@@ -3,25 +3,27 @@ pipeline {
 
   environment {
     POSTGRES_USER = credentials('postgres_user')
+    POSTGRES_PASSWORD = credentials('postgres_password')
+    POSTGRES_DB = credentials('postgres_db')
   }
 
   stages {
 
-    stage('Cleanup Workspace & Checkout') {
-      steps {
-        echo "#################### Cleans the workspace ####################"
-        cleanWs()
+    // stage('Cleanup Workspace & Checkout') {
+    //   steps {
+    //     echo "#################### Cleans the workspace ####################"
+    //     cleanWs()
         
-        echo "#################### Checkout ####################"
-        checkout scm // Explicitly checks out the SCM after cleaning.
+    //     echo "#################### Checkout ####################"
+    //     checkout scm // Explicitly checks out the SCM after cleaning.
 
-        sh """
-          ls
-          pwd
-          echo "${POSTGRES_USER}"
-        """
-      }
-    }
+    //     sh """
+    //       ls
+    //       pwd
+    //       echo "${POSTGRES_USER}"
+    //     """
+    //   }
+    // }
 
     stage('Start PostgreSQL') {
       steps {
