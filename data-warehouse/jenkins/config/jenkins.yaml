@@ -16,11 +16,11 @@ credentials:
       - string:
           id: "POSTGRES_PASSWORD"
           scope: GLOBAL
-          secret: "SecurePassword123"
+          secret: ${POSTGRES_PASSWORD}
       - string:
           id: "POSTGRES_USER"
           scope: GLOBAL
-          secret: "postgres"
+          secret: ${POSTGRES_USER}
 
 tool:
   git:
