@@ -6,9 +6,13 @@ HOST_IP=192.168.100.110
 HOST_IP_MASK=24
 HOST_GATEWAY=192.168.100.254
 
-USER_HOME=/home/ubuntuadmin
-PROJECT_DIR=$USER_HOME/project_shared_bike
+DIR_HOME=/home/ubuntuadmin
+DIR_PROJECT=$USER_HOME/project_shared_bike
 GITHUB_REPO=https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git
+
+SCRIPT_INIT=$DIR_PROJECT/data-warehouse/script/install.sh
+SCRIPT_MONITOR=$DIR_PROJECT/data-warehouse/script/start_monitor_docker.sh
+SCRIPT_JENKINS=$DIR_PROJECT/data-warehouse/script/start_jenkins.sh
 
 echo
 echo "##############################"
@@ -48,15 +52,15 @@ echo "Git Clone Repo"
 echo "##############################"
 echo
 sudo apt install -y git
-rm -rf $PROJECT_DIR
-mkdir -pv $PROJECT_DIR
-git clone $GITHUB_REPO $PROJECT_DIR
+rm -rf $DIR_PROJECT
+mkdir -pv $DIR_PROJECT
+git clone $GITHUB_REPO $DIR_PROJECT
 
-cd $PROJECT_DIR
+cd $DIR_PROJECT
 git checkout feature/dw
 # install package
-bash $PROJECT_DIR/data-warehouse/script/install.sh
+bash $SCRIPT_INIT
 # start prometheus
-bash $PROJECT_DIR/data-warehouse/script/start_monitor_docker.sh
+bash $SCRIPT_MONITOR
 # start jenkins
-bash $PROJECT_DIR/data-warehouse/script/start_jenkins.sh
+bash $SCRIPT_JENKINS
