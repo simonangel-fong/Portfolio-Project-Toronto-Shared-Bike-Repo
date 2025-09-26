@@ -1,0 +1,20 @@
+pipeline {
+  agent any
+
+  stages {
+
+    stage('Cleanup Workspace & Checkout') {
+      steps {
+          echo "#################### Checkout ####################"
+          checkout scm // Explicitly checks out the SCM after cleaning.
+          
+          echo "#################### Cleans the workspace ####################"
+          sh '''
+            ls
+            pwd
+          '''
+      }
+    }
+  }
+}
+ 

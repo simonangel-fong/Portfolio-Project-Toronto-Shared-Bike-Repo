@@ -136,22 +136,22 @@ pipeline {
       }
     }
 
-    stage('Export Data') {
-      steps {
-        echo "#################### Export Data ####################"
-        sh '''
-          rm -rf $POSTGRES_EXPORT_DIR
-          mkdir -pv $POSTGRES_EXPORT_DIR
-          ls -ld $POSTGRES_EXPORT_DIR
+    // stage('Export Data') {
+    //   steps {
+    //     echo "#################### Export Data ####################"
+    //     sh '''
+    //       rm -rf $POSTGRES_EXPORT_DIR
+    //       mkdir -pv $POSTGRES_EXPORT_DIR
+    //       ls -ld $POSTGRES_EXPORT_DIR
 
-          docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_hour) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_trip_user_year_hour.csv
-          docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_month) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_trip_user_year_month.csv
-          docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_top_station_user_year) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_top_station_user_year.csv
-          docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_station_year) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_station_year.csv
-          docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_bike_year) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_bike_year.csv
-        '''
-      }
-    }
+    //       docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_hour) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_trip_user_year_hour.csv
+    //       docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_month) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_trip_user_year_month.csv
+    //       docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_top_station_user_year) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_top_station_user_year.csv
+    //       docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_station_year) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_station_year.csv
+    //       docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_bike_year) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_bike_year.csv
+    //     '''
+    //   }
+    // }
 
     // stage('Upload to S3') {
     //   steps {
