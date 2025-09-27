@@ -13,14 +13,29 @@ pipeline {
       }
     }
   
-      stage('Clean previous run') {
+    stage('Clean previous run') {
       steps {
         // Clean up old containers/volumes so init scripts re-run on a fresh DB
         sh '''
           set -eux
           docker compose -f compose.pgdb.yml down -v || true
-          rm -f export/processed_items.csv || true
         '''
+      }
+    }
+
+    stage('Create PGDB & Process Data') {
+      steps {
+        dir("data-warehouse/postgresql"){
+          sh '''
+            set -eux
+
+            ls -la || true
+            docker compose -f docker-compose.yaml up -d
+            docker compose -f docker-compose.yaml ps
+
+            sleep 10
+          '''
+        }
       }
     }
   }
