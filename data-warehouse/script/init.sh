@@ -65,5 +65,5 @@ sudo usermod -aG docker $USER
 
 # start prometheus
 bash $SCRIPT_MONITOR
-# # start jenkins
-# bash $SCRIPT_JENKINS
+# start jenkins
+bash $SCRIPT_JENKINS
