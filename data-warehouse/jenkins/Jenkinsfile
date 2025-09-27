@@ -195,7 +195,7 @@ pipeline {
       emailext (
         to: env.EMAIL,
         subject: "Jekins Pipeline FAILURE - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
-        body: "<b>Jenkins pipeline</b>: '${env.JOB_NAME}'\n" +
+        body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
           "Status: FAILURE \n" +
           "Build URL: ${env.BUILD_URL}"
       )
@@ -205,7 +205,7 @@ pipeline {
       emailext (
         to: env.EMAIL,
         subject: "Jekins Pipeline SUCCESS - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
-        body: "<b>Jenkins pipeline</b>: '${env.JOB_NAME}'\n" +
+        body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
           "Status: SUCCESS \n" +
           "Build URL: ${env.BUILD_URL}"
       )
