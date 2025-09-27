@@ -9,7 +9,9 @@ pipeline {
     stage("test"){
       steps{
         sh '''
-          pwd ls
+          pwd 
+          ls
+          git --version
         '''
       }
     }
