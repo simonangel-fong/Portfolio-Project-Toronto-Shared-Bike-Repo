@@ -1,21 +1,18 @@
 pipeline {
   agent any
 
-   options {
-    // limit only one instance
-    // disableConcurrentBuilds()
-    // show timestamp for event
-    
+  options {
+  }
 
-    stages{
-      stage("test"){
-        steps{
-          sh '''
-            pwd ls
-          '''
-        }
+  stages{
+    stage("test"){
+      steps{
+        sh '''
+          pwd ls
+        '''
       }
     }
   }
 }
+
  
