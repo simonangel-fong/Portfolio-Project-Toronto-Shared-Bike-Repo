@@ -176,7 +176,7 @@ pipeline {
     stage('Upload to S3') {
       steps {
         script{
-          withAWS(credentials: env.aws_cred, region: env.AWS_REGION) {
+          withAWS(credentials: 'aws_cred', region: 'ca-central-1') {
             s3Upload(
               bucket: env.S3_BUCKET, 
               path: env.S3_BUCKET_PREFIX, 
