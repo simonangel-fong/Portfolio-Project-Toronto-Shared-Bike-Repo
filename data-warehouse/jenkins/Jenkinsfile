@@ -5,108 +5,16 @@ pipeline {
     // limit only one instance
     // disableConcurrentBuilds()
     // show timestamp for event
-    // timestamps()
-  //   // discard old builds
-  //   buildDiscarder(
-  //     logRotator(
-  //       // maximum number of the last build logs
-  //       numToKeepStr: '10',   
-  //       // maximum number of the last sets of build artifacts
-  //       artifactNumToKeepStr: '5'   
-  //     )
-  //   )
-  //   // set a timeout for the entire pipeline run
-  //   timeout(time: 60, unit: 'MINUTES')
+    
 
-     //Prevents Jenkins from automatically checking out the SCM.
-     skipDefaultCheckout(false)
-   }
-
-  environment {
-    POSTGRES_USER = credentials('postgres_user')
-    POSTGRES_PASSWORD = credentials('postgres_password')
-    POSTGRES_DB = credentials('postgres_db')
-  }
-
-  stages {
-
-    // stage('Cleanup Workspace & Checkout') {
-    //   steps {
-    //     echo "#################### Cleans the workspace ####################"
-    //     cleanWs()
-        
-    //     echo "#################### Checkout ####################"
-    //     checkout scm // Explicitly checks out the SCM after cleaning.
-
-    //     sh """
-    //       ls
-    //       pwd
-    //       echo "${POSTGRES_USER}"
-    //     """
-    //   }
-    // }
-
-    // stage('Download CSV Files') {
-    //   steps {
-    //     dir('data-warehouse/postgresql'){
-    //       echo "#################### Download CSV zip ####################"
-    //       sh '''
-    //         ls -l data/2019
-    //         # rm -rf data
-    //         mkdir -pv data
-    //         ls -dl data
-
-    //         curl -o csv.zip https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip
-    //         ls -l csv.zip
-    //       '''
-        
-    //       echo "#################### Unzip CSV zip ####################"
-    //       sh '''
-    //         unzip -o csv.zip -d .
-    //         ls -l data
-    //         du -h data
-
-    //         rm -fv csv.zip
-    //       '''
-    //     }
-    //   }
-    // }
-
-    stage('Start PostgreSQL') {
-      steps {
-        dir('data-warehouse/postgresql'){
-          echo "#################### Spin up PGDB ####################"
+    stages{
+      stage("test"){
+        steps{
           sh '''
-            pwd
-            ls
-            docker compose down
-            docker compose up -d --build
-
-            # Wait until Postgres is ready
-            until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-toronto_shared_bike}"'; do
-              echo "Waiting for PostgreSQL to become ready..."
-              sleep 10
-            done
-          '''
-
-          echo "#################### Confirm PGDB ####################"
-          sh '''
-            docker ps | grep postgresql
-            docker logs --tail=1000 postgresql || true
-            docker inspect postgresql
+            pwd ls
           '''
         }
       }
     }
-
-    stage('Extract Data') {
-      steps {
-        echo "#################### Extract Data ####################"
-        sh '''
-          docker exec -t postgresql bash /scripts/etl/extract.sh
-        '''
-      }
-    }
-  }
 }
  
