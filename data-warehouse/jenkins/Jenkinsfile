@@ -12,6 +12,17 @@ pipeline {
         sh 'ls -la'
       }
     }
+  
+      stage('Clean previous run') {
+      steps {
+        // Clean up old containers/volumes so init scripts re-run on a fresh DB
+        sh '''
+          set -eux
+          docker compose -f compose.pgdb.yml down -v || true
+          rm -f export/processed_items.csv || true
+        '''
+      }
+    }
   }
 }
 
