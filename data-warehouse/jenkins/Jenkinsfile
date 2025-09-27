@@ -6,13 +6,10 @@ pipeline {
   }
 
   stages{
-    stage("test"){
-      steps{
-        sh '''
-          pwd 
-          ls
-          git --version
-        '''
+    stage('Checkout') {
+      steps {
+        checkout scm
+        sh 'ls -la'
       }
     }
   }
