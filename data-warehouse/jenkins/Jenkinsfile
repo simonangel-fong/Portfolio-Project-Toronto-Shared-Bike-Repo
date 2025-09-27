@@ -119,61 +119,71 @@ pipeline {
       }
     }
 
-    // stage('Transform Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/transform.sh
-    //     '''
-    //   }
-    // }
+    stage('Transform Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/transform.sh
+        '''
+      }
+    }
 
-    // stage('Load Data') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/etl/load.sh
-    //     '''
-    //   }
-    // }
+    stage('Load Data') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/etl/load.sh
+        '''
+      }
+    }
 
-    // stage('Refresh Materialized Views') {
-    //   steps {
-    //     sh '''
-    //     docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
-    //     '''
-    //   }
-    // }
+    stage('Refresh Materialized Views') {
+      steps {
+        sh '''
+        docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+        '''
+      }
+    }
 
-    // stage('Export Data') {
-    //   steps {
-    //     echo "#################### Export Data ####################"
-    //     sh '''
-    //       rm -rf $POSTGRES_EXPORT_DIR
-    //       mkdir -pv $POSTGRES_EXPORT_DIR
-    //       ls -ld $POSTGRES_EXPORT_DIR
+    stage('Export Data') {
+      steps {
+        script{
+          withCredentials([
+            string(credentialsId: 'postgres_user', variable: 'POSTGRES_USER'),
+            string(credentialsId: 'postgres_db', variable: 'POSTGRES_DB')
+            ]) {
+        echo "#################### Export Data ####################"
+        sh '''
+          rm -rf $POSTGRES_EXPORT_DIR
+          mkdir -pv $POSTGRES_EXPORT_DIR
+          ls -ld $POSTGRES_EXPORT_DIR
 
-    //       docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_hour) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_trip_user_year_hour.csv
-    //       docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_month) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_trip_user_year_month.csv
-    //       docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_top_station_user_year) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_top_station_user_year.csv
-    //       docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_station_year) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_station_year.csv
-    //       docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_bike_year) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_bike_year.csv
-    //     '''
-    //   }
-    // }
+          rm -rf data-warehouse/postgresql/export || TRUE
+          mkdir -pv data-warehouse/postgresql/export
 
-    // stage('Upload to S3') {
-    //   steps {
-    //     script{
-    //       withAWS(credentials: env.S3_CREDENTIAL, region: env.AWS_REGION) {
-    //         s3Upload(
-    //           bucket: env.S3_BUCKET, 
-    //           path: env.S3_BUCKET_PREFIX, 
-    //           workingDir: env.POSTGRES_EXPORT_DIR,
-    //           includePathPattern:'**/*.csv',
-    //         )
-    //       }
-    //     }
-    //   }
-    // }
+          docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_hour) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_trip_user_year_hour.csv
+          docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_month) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_trip_user_year_month.csv
+          docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_top_station_user_year) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_top_station_user_year.csv
+          docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_station_year) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_station_year.csv
+          docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_bike_year) TO STDOUT WITH CSV HEADER" > $POSTGRES_EXPORT_DIR/mv_bike_year.csv
+          
+          ls -dl data-warehouse/postgresql/export
+        '''
+      }
+    }
+
+    stage('Upload to S3') {
+      steps {
+        script{
+          withAWS(credentials: env.aws_cred, region: env.AWS_REGION) {
+            s3Upload(
+              bucket: env.S3_BUCKET, 
+              path: env.S3_BUCKET_PREFIX, 
+              workingDir: env.POSTGRES_EXPORT_DIR,
+              includePathPattern:'**/*.csv',
+            )
+          }
+        }
+      }
+    }
   }
 
   post {
@@ -187,22 +197,22 @@ pipeline {
       // cleanWs()
     }
     
-    // failure {
-    //   emailext (
-    //     to: "tech.arguswatcher@gmail.com",
-    //     subject: "FAILURE: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-    //     body: "The Jenkins pipeline '${env.JOB_NAME}' failed.\n" +
-    //       "Build URL: ${env.BUILD_URL}",
-    //   )
-    // }
+    failure {
+      emailext (
+        to: env.EMAIL,
+        subject: "FAILURE: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+        body: "The Jenkins pipeline '${env.JOB_NAME}' failed.\n" +
+          "Build URL: ${env.BUILD_URL}",
+      )
+    }
 
-    // success {
-    //   emailext (
-    //     to: "tech.arguswatcher@gmail.com",
-    //     subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-    //     body: "The Jenkins pipeline '${env.JOB_NAME}' completed successfully.\n" +
-    //       "Build URL: ${env.BUILD_URL}",
-    //   )
-    // }
+    success {
+      emailext (
+        to: env.EMAIL,
+        subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+        body: "The Jenkins pipeline '${env.JOB_NAME}' completed successfully.\n" +
+          "Build URL: ${env.BUILD_URL}",
+      )
+    }
   }
 }
