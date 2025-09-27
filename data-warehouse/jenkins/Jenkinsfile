@@ -3,7 +3,7 @@ pipeline {
 
   options {
     // limit only one instance
-    disableConcurrentBuilds()
+    // disableConcurrentBuilds()
     // show timestamp for event
     timestamps()
   //   // discard old builds
