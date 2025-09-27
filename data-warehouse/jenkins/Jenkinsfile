@@ -53,6 +53,7 @@ pipeline {
           sh '''
             pwd
             ls
+            ls /docker-entrypoint-initdb.d
             docker compose down -v
             docker compose up --build
 
