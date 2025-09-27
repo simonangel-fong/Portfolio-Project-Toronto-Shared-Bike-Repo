@@ -1,7 +1,7 @@
 pipeline {
   agent any
 
-  // options {
+   options {
     // limit only one instance
     // disableConcurrentBuilds()
     // show timestamp for event
@@ -18,9 +18,9 @@ pipeline {
   //   // set a timeout for the entire pipeline run
   //   timeout(time: 60, unit: 'MINUTES')
 
-  //   //Prevents Jenkins from automatically checking out the SCM.
-  //   skipDefaultCheckout(true)
-  // }
+     //Prevents Jenkins from automatically checking out the SCM.
+     skipDefaultCheckout(false)
+   }
 
   environment {
     POSTGRES_USER = credentials('postgres_user')
@@ -46,6 +46,32 @@ pipeline {
     //   }
     // }
 
+    // stage('Download CSV Files') {
+    //   steps {
+    //     dir('data-warehouse/postgresql'){
+    //       echo "#################### Download CSV zip ####################"
+    //       sh '''
+    //         ls -l data/2019
+    //         # rm -rf data
+    //         mkdir -pv data
+    //         ls -dl data
+
+    //         curl -o csv.zip https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip
+    //         ls -l csv.zip
+    //       '''
+        
+    //       echo "#################### Unzip CSV zip ####################"
+    //       sh '''
+    //         unzip -o csv.zip -d .
+    //         ls -l data
+    //         du -h data
+
+    //         rm -fv csv.zip
+    //       '''
+    //     }
+    //   }
+    // }
+
     stage('Start PostgreSQL') {
       steps {
         dir('data-warehouse/postgresql'){
@@ -53,9 +79,8 @@ pipeline {
           sh '''
             pwd
             ls
-            ls /docker-entrypoint-initdb.d
-            docker compose down -v
-            docker compose up --build
+            docker compose down
+            docker compose up -d --build
 
             # Wait until Postgres is ready
             until docker exec -t postgresql bash -lc 'pg_isready -U "${POSTGRES_USER:-postgres}" -d "${POSTGRES_DB:-toronto_shared_bike}"'; do
@@ -66,10 +91,20 @@ pipeline {
 
           echo "#################### Confirm PGDB ####################"
           sh '''
-            docker ps
-            docker logs --tail=100 postgresql || true
+            docker ps | grep postgresql
+            docker logs --tail=1000 postgresql || true
+            docker inspect postgresql
           '''
         }
+      }
+    }
+
+    stage('Extract Data') {
+      steps {
+        echo "#################### Extract Data ####################"
+        sh '''
+          docker exec -t postgresql bash /scripts/etl/extract.sh
+        '''
       }
     }
   }
