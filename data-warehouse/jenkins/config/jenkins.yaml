@@ -68,7 +68,7 @@ unclassified:
 
 jobs:
   - script: >
-      pipelineJob('Toronto Shared Bike/ETL Job') {
+      pipelineJob('toronto-shared-bike/etl-job') {
         definition {
           cpsScm {
             scm {
