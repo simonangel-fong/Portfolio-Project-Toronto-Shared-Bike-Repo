@@ -8,8 +8,8 @@ echo "Install Jenkins"
 echo "##############################"
 echo
 # Installation of Java
-sudo apt update
-sudo apt install -y fontconfig openjdk-21-jre
+sudo apt-get update
+sudo apt-get install -y fontconfig openjdk-21-jre
 java -version
 
 # Install Jenkins
@@ -17,8 +17,8 @@ sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian
 echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
   https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
   /etc/apt/sources.list.d/jenkins.list > /dev/null
-sudo apt update
-sudo apt install -y jenkins
+sudo apt-get update
+sudo apt-get install -y jenkins
 
 # verify
 jenkins --version
@@ -32,3 +32,6 @@ echo "##############################"
 echo
 
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+# sudo mkdir -pv /var/lib/jenkins/casc_configs
+# sudo cp /home/ubuntuadmin/project_shared_bike/data-warehouse/jenkins/config/jenkins.yaml /var/lib/jenkins/casc_configs/jenkins.yaml

@@ -4,27 +4,51 @@ jenkins:
   securityRealm:
     local:
       allowsSignup: false
-      enableCaptcha: false
       users:
-      - id: jenkins_admin
-        password: "admin"
+      - id: "aadmin"
+        name: "aadmin"
+        properties:
+        - theme:
+            theme: "noOp"
+        - "consoleUrlProvider"
+        - "viewsTabBar"
+        - myView:
+            viewsTabBar: "standard"
+        - preferredProvider:
+            providerId: "default"
+        - "timezone"
+        - "experimentalFlags"
+        - mailer:
+            emailAddress: "tech.arguswatcher@gmail.com"
+        - "apiToken"
 
 credentials:
   system:
     domainCredentials:
     - credentials:
-      - string:
-          id: "postgres_db"
+      - aws:
+          accessKey: ""
+          id: "aws_cred"
           scope: GLOBAL
-          secret: "toronto_shared_bike"
+          secretKey: ""
+      - usernamePassword:
+          id: "gmail_cred"
+          password: ""
+          scope: GLOBAL
+          username: "tech.arguswatcher@gmail.com"
+          usernameSecret: true
       - string:
           id: "postgres_user"
           scope: GLOBAL
-          secret: "postgres"
+          secret: ""
+      - string:
+          id: "postgres_db"
+          scope: GLOBAL
+          secret: ""
       - string:
           id: "postgres_password"
           scope: GLOBAL
-          secret: "SecurePassword123"
+          secret: ""
 
 tool:
   git:
@@ -34,6 +58,27 @@ tool:
   mavenGlobalConfig:
     globalSettingsProvider: "standard"
     settingsProvider: "standard"
+
+unclassified:
+  email-ext:
+    mailAccount:
+      credentialsId: "gmail_cred"
+      smtpHost: "smtp.gmail.com"
+      smtpPort: "465"
+      useSsl: true
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+    url: "http://on-prem:8080/"
+  mailer:
+    authentication:
+      password: ""
+      username: "tech.arguswatcher@gmail.com"
+    charset: "UTF-8"
+    smtpHost: "smtp.gmail.com"
+    smtpPort: "465"
+    useSsl: true
+    useTls: false
+
 
 jobs:
   - script: >
