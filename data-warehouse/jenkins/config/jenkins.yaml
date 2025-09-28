@@ -78,7 +78,7 @@ unclassified:
     useSsl: true
     useTls: false
 
-jobs:
+# jobs:
 #   - script: >
 #      pipelineJob('test-jobs/default-agent') {
 #         definition {
