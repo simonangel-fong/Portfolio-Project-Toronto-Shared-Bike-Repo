@@ -28,14 +28,6 @@ sudo systemctl stop jenkins
 
 echo
 echo "##############################"
-echo "Get Jenkins pwd"
-echo "##############################"
-echo
-
-sudo cat /var/lib/jenkins/secrets/initialAdminPassword
-
-echo
-echo "##############################"
 echo "Install Jenkins Plugins"
 echo "##############################"
 echo
@@ -77,10 +69,15 @@ Environment="JAVA_OPTS=-Djenkins.install.runSetupWizard=false"
 Environment="CASC_JENKINS_CONFIG=/var/lib/jenkins/casc_configs/jenkins.yaml"
 EOF
 
-sudo systemctl daemon-reload
-sudo systemctl restart jenkins 
+# sudo systemctl daemon-reload
+# sudo systemctl restart jenkins 
 
-
+echo
+echo "##############################"
+echo "Get Jenkins pwd"
+echo "##############################"
+echo
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 
 
 # journalctl -u jenkins
