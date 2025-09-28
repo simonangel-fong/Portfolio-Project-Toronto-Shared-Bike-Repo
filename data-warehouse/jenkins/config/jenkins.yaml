@@ -66,20 +66,20 @@ unclassified:
     useTls: false
 
 
-jobs:
-  - script: >
-      pipelineJob('my_repo_pipeline') {
-        definition {
-          cpsScm {
-            scm {
-              git {
-                remote {
-                  url('https://github.com/simonangel-fong/Tutorial-Jenkins.git')
-                }
-                branch('*/master')
-              }
-            }
-            scriptPath('module-docker-compose-JCasC/pipeline/Jenkinsfile')
-          }
-        }
-      }
+# jobs:
+#   - script: >
+#       pipelineJob('docker-agent-test') {
+#         definition {
+#           cpsScm {
+#             scm {
+#               git {
+#                 remote {
+#                   url('https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git')
+#                 }
+#                 branch('feature/dw')
+#               }
+#             }
+#             scriptPath('data-warehouse/jenkins/Jenkinsfile')
+#           }
+#         }
+#       }
