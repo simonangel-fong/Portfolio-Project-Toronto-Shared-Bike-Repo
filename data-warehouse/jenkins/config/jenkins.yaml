@@ -52,9 +52,9 @@ unclassified:
       smtpHost: "smtp.gmail.com"
       smtpPort: "465"
       useSsl: true
-#   location:
-#     adminAddress: "address not configured yet <nobody@nowhere>"
-#     url: "http://on-prem:8080/"
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+    url: "http://on-prem:8080/"
 #   mailer:
 #     authentication:
 #       password: ""
