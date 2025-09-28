@@ -2,15 +2,15 @@
 
 set -euo pipefail
 
-export JENKINS_ADMIN_NAME=""
-export JENKINS_ADMIN_PWD=""
-export AWS_ACCESS_KEY=""
-export AWS_SECRET_KEY=""
-export GMAIL_PWD=""
-export GMAIL_USERNAME=""
-export POSTGRES_USER=""
-export POSTGRES_DB=""
-export POSTGRES_DB=""
+# export JENKINS_ADMIN_NAME=""
+# export JENKINS_ADMIN_PWD=""
+# export AWS_ACCESS_KEY=""
+# export AWS_SECRET_KEY=""
+# export GMAIL_PWD=""
+# export GMAIL_USERNAME=""
+# export POSTGRES_USER=""
+# export POSTGRES_DB=""
+# export POSTGRES_DB=""
 
 echo
 echo "##############################"
