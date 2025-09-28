@@ -68,18 +68,20 @@ unclassified:
 
 jobs:
   - script: >
-      pipelineJob('toronto-shared-bike/etl-job') {
+      pipelineJob('testjobs/default-agent') {
         definition {
-          cpsScm {
-            scm {
-              git {
-                remote {
-                  url('https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git')
+          cps {
+            script("""\
+              pipeline {
+                agent any
+                stages {
+                  stage ('test') {
+                    steps {
+                      echo "hello"
+                    }
+                  }
                 }
-                branch('feature/dw')
-              }
-            }
-            scriptPath('data-warehouse/jenkins/Jenkinsfile')
+              }""".stripIndent())
           }
         }
       }
