@@ -27,8 +27,6 @@ pipeline {
   }
 
   // environment {
-  //   S3_BUCKET  = 
-  //   S3_BUCKET_PREFIX  = 
   //   EMAIL = "tech.arguswatcher@gmail.com"
   // }
 
@@ -81,7 +79,9 @@ pipeline {
               dir("data-warehouse/postgresql"){
                 echo "#################### Spin up PGDB ####################"
                 sh '''
-                  # docker compose down -v
+                  pwd
+                  ls -l
+                  docker compose down -v
                   docker compose up -d --build
 
                   # Wait until Postgres is ready
