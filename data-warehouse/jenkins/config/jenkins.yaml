@@ -6,8 +6,8 @@ jenkins:
       allowsSignup: false
       enableCaptcha: false
       users:
-      - id: ${JENKINS_ADMIN_ID}
-        password: ${JENKINS_ADMIN_PASSWORD}
+      - id: jenkins_admin
+        password: "admin"
 
 credentials:
   system:
