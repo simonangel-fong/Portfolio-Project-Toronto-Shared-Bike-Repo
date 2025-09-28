@@ -12,11 +12,11 @@ credentials:
   system:
     domainCredentials:
     - credentials:
-#       - aws:
-#           accessKey: ""
-#           id: "aws_cred"
-#           scope: GLOBAL
-#           secretKey: ""
+      - aws:
+          accessKey: ""
+          id: "aws_cred"
+          scope: GLOBAL
+          secretKey: ""
       - usernamePassword:
           id: "gmail_cred"
           password: ""
