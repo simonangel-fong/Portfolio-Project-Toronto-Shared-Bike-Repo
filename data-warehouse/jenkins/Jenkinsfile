@@ -19,7 +19,7 @@ pipeline {
     timeout(time: 60, unit: 'MINUTES')
 
     // Prevents Jenkins from automatically checking out the SCM.
-    // skipDefaultCheckout(true)
+    skipDefaultCheckout(true)
   }
 
   triggers {
@@ -88,7 +88,7 @@ pipeline {
                   docker compose up -d --build
 
                   # Wait until Postgres is ready
-                  until docker exec -t postgresql bash -lc 'pg_isready -U "$POSTGRES_USER" -d "${POSTGRES_DB}"'; do
+                  until docker exec -t postgresql bash -lc 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'; do
                     echo "Waiting for PostgreSQL to become ready..."
                     sleep 10
                   done
