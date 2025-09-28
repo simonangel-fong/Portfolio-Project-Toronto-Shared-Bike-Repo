@@ -8,10 +8,10 @@ jenkins:
         - id: "admin"
           password: "admin"
 
-# credentials:
-#   system:
-#     domainCredentials:
-#     - credentials:
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
 #       - aws:
 #           accessKey: ""
 #           id: "aws_cred"
@@ -23,10 +23,10 @@ jenkins:
 #           scope: GLOBAL
 #           username: "tech.arguswatcher@gmail.com"
 #           usernameSecret: true
-#       - string:
-#           id: "postgres_user"
-#           scope: GLOBAL
-#           secret: ""
+      - string:
+          id: "postgres_user"
+          scope: GLOBAL
+          secret: ""
 #       - string:
 #           id: "postgres_db"
 #           scope: GLOBAL
