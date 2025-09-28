@@ -56,6 +56,8 @@ tool:
     settingsProvider: "standard"
 
 unclassified:
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
   buildDiscarders:
     configuredBuildDiscarders:
     - "jobBuildDiscarder"
@@ -78,20 +80,20 @@ unclassified:
     useSsl: true
     useTls: false
 
-# jobs:
-#   - script: >
-#       pipelineJob('my_repo_pipeline') {
-#         definition {
-#           cpsScm {
-#             scm {
-#               git {
-#                 remote {
-#                   url('https://github.com/simonangel-fong/Tutorial-Jenkins.git')
-#                 }
-#                 branch('*/master')
-#               }
-#             }
-#             scriptPath('module-docker-compose-JCasC/pipeline/Jenkinsfile')
-#           }
-#         }
-#       }
+jobs:
+  - script: >
+      pipelineJob('job-dsl-plugin') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/jenkinsci/job-dsl-plugin.git')
+                }
+                branch('*/master')
+              }
+            }
+            lightweight()
+          }
+        }
+      }
