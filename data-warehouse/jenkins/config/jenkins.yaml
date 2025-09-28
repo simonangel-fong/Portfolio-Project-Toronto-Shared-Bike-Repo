@@ -11,6 +11,8 @@ jenkins:
       users:
         - id: "${JENKINS_ADMIN_NAME}"
           password: "${JENKINS_ADMIN_PWD}"
+        - id: "admin"
+          password: "admin"
 
 security:
   apiToken:
