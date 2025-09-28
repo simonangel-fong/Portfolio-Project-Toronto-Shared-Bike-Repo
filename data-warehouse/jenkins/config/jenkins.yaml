@@ -78,23 +78,23 @@ unclassified:
     useSsl: true
     useTls: false
 
-jobs:
-  - script: >
-     pipelineJob('test-jobs/default-agent') {
-        definition {
-          cps {
-            script("""
-              pipeline {
-                agent any
-                stages {
-                  stage('test') {
-                    steps {
-                      echo 'hello'
-                    }
-                  }
-                }
-              }
-            """.stripIndent())
-          }
-        }
-      }
+# jobs:
+#   - script: >
+#      pipelineJob('test-jobs/default-agent') {
+#         definition {
+#           cps {
+#             script("""
+#               pipeline {
+#                 agent any
+#                 stages {
+#                   stage('test') {
+#                     steps {
+#                       echo 'hello'
+#                     }
+#                   }
+#                 }
+#               }
+#             """.stripIndent())
+#           }
+#         }
+#       }
