@@ -26,9 +26,10 @@ pipeline {
     cron 'H 4 * * *'    // every 4 a.m.
   }
 
-  // environment {
-  //   EMAIL = "tech.arguswatcher@gmail.com"
-  // }
+  environment {
+    // REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
+    REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/test_data.zip"
+  }
 
   stages {
 
@@ -55,7 +56,7 @@ pipeline {
             mkdir -pv data 
             mkdir -pv export
             ls -dl data
-            curl -o ./csv.zip https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip
+            curl -o ./csv.zip $REMOTE_DATA
             ls -l csv.zip
           '''
 
@@ -149,7 +150,6 @@ pipeline {
               sh '''
                 mkdir -pv export
                 ls -ld export
-                rm -f export/*
 
                 docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_hour) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_hour.csv
                 docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_month) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_month.csv

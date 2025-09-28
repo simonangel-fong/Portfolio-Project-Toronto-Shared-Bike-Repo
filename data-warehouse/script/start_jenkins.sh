@@ -93,9 +93,9 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 
 # journalctl -u jenkins
 
-# git pull && sudo cp -v /home/ubuntuadmin/project_shared_bike/data-warehouse/jenkins/config/jenkins.yaml /var/lib/jenkins/casc_configs/jenkins.yaml
-# sudo chmod -v 600 /var/lib/jenkins/casc_configs/jenkins.yaml
-# sudo chown -Rv jenkins:jenkins /var/lib/jenkins
+git pull && sudo cp -v /home/ubuntuadmin/project_shared_bike/data-warehouse/jenkins/config/jenkins.yaml /var/lib/jenkins/casc_configs/jenkins.yaml
+sudo chmod -v 600 /var/lib/jenkins/casc_configs/jenkins.yaml
+sudo chown -Rv jenkins:jenkins /var/lib/jenkins
 
-# sudo systemctl daemon-reload
-# sudo systemctl restart jenkins 
+sudo systemctl daemon-reload
+sudo systemctl restart jenkins 
