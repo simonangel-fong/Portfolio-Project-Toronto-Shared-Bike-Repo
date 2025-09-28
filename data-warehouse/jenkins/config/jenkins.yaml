@@ -17,12 +17,12 @@ credentials:
 #           id: "aws_cred"
 #           scope: GLOBAL
 #           secretKey: ""
-#       - usernamePassword:
-#           id: "gmail_cred"
-#           password: ""
-#           scope: GLOBAL
-#           username: "tech.arguswatcher@gmail.com"
-#           usernameSecret: true
+      - usernamePassword:
+          id: "gmail_cred"
+          password: ""
+          scope: GLOBAL
+          username: "tech.arguswatcher@gmail.com"
+          usernameSecret: true
       - string:
           id: "postgres_user"
           scope: GLOBAL

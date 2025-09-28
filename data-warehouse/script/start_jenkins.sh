@@ -85,6 +85,7 @@ sudo systemctl restart jenkins
 
 journalctl -u jenkins
 
+git pull
 sudo mkdir -pv /var/lib/jenkins/casc_configs
 sudo cp -v /home/ubuntuadmin/project_shared_bike/data-warehouse/jenkins/config/jenkins.yaml /var/lib/jenkins/casc_configs/jenkins.yaml
 sudo chmod -v 600 /var/lib/jenkins/casc_configs/jenkins.yaml
