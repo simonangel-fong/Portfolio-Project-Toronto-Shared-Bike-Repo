@@ -1,26 +1,12 @@
 jenkins:
   systemMessage: "Project Toronto Shared Bike - Jenkins Dashboard"
 
-  # securityRealm:
-  #   local:
-  #     allowsSignup: false
-  #     users:
-  #     - id: "aadmin"
-  #       name: "aadmin"
-  #       properties:
-  #       - theme:
-  #           theme: "noOp"
-  #       - "consoleUrlProvider"
-  #       - "viewsTabBar"
-  #       - myView:
-  #           viewsTabBar: "standard"
-  #       - preferredProvider:
-  #           providerId: "default"
-  #       - "timezone"
-  #       - "experimentalFlags"
-  #       - mailer:
-  #           emailAddress: "tech.arguswatcher@gmail.com"
-  #       - "apiToken"
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "admin"
 
 # credentials:
 #   system:

@@ -61,7 +61,7 @@ echo "##############################"
 echo
 sudo mkdir -pv /var/lib/jenkins/casc_configs
 sudo cp -v /home/ubuntuadmin/project_shared_bike/data-warehouse/jenkins/config/jenkins.yaml /var/lib/jenkins/casc_configs/jenkins.yaml
-sudo chmod 600 /var/lib/jenkins/casc_configs/jenkins.yaml
+sudo chmod -v 600 /var/lib/jenkins/casc_configs/jenkins.yaml
 sudo chown -Rv jenkins:jenkins /var/lib/jenkins/casc_configs
 
 sudo chown -Rv jenkins:jenkins /var/lib/jenkins
@@ -72,12 +72,15 @@ echo "Update Jenkins Service"
 echo "##############################"
 echo
 sudo tee /etc/systemd/system/jenkins.service.d/override.conf <<EOF
-
+[Service]
+Environment="JAVA_OPTS=-Djenkins.install.runSetupWizard=false"
+Environment="CASC_JENKINS_CONFIG=/var/lib/jenkins/casc_configs/jenkins.yaml"
 EOF
 
 sudo systemctl daemon-reload
 sudo systemctl restart jenkins 
 
-# Environment="CASC_JENKINS_CONFIG=/var/lib/jenkins/casc_configs/jenkins.yaml"
-# [Service]
-# Environment="JAVA_OPTS=-Djenkins.install.runSetupWizard=false"
+
+
+
+journalctl -u jenkins
