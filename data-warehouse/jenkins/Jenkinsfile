@@ -84,7 +84,7 @@ pipeline {
                 sh '''
                   pwd
                   ls -l
-                  docker compose down
+                  docker compose down -v
                   docker compose up -d --build
 
                   # Wait until Postgres is ready
