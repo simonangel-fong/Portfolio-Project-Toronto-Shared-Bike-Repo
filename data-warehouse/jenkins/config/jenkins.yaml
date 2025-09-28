@@ -27,14 +27,14 @@ credentials:
           id: "postgres_user"
           scope: GLOBAL
           secret: ""
-#       - string:
-#           id: "postgres_db"
-#           scope: GLOBAL
-#           secret: ""
-#       - string:
-#           id: "postgres_password"
-#           scope: GLOBAL
-#           secret: ""
+      - string:
+          id: "postgres_db"
+          scope: GLOBAL
+          secret: ""
+      - string:
+          id: "postgres_password"
+          scope: GLOBAL
+          secret: ""
 
 tool:
   git:
