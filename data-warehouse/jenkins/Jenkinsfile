@@ -51,7 +51,9 @@ pipeline {
         dir("data-warehouse/postgresql"){
           echo "#################### Download CSV zip ####################"
           sh '''
-            mkdir -pv data
+            ls -l
+            mkdir -pv data 
+            mkdir -pv export
             ls -dl data
             curl -o ./csv.zip https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip
             ls -l csv.zip
