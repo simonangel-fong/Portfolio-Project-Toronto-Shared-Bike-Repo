@@ -80,8 +80,21 @@ unclassified:
 
 jobs:
   - script: >
-      job('example') {
-        steps {
-          shell('echo Hello World!')
+     pipelineJob('test-jobs/default-agent') {
+        definition {
+          cps {
+            script("""
+              pipeline {
+                agent any
+                stages {
+                  stage('test') {
+                    steps {
+                      echo 'hello'
+                    }
+                  }
+                }
+              }
+            """.stripIndent())
+          }
         }
       }
