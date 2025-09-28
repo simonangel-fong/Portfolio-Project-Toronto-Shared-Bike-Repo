@@ -29,6 +29,7 @@ pipeline {
   environment {
     // REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
     REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/test_data.zip"
+    POSTGRES_DB = "toronto_shared_bike"
   }
 
   stages {
@@ -77,7 +78,6 @@ pipeline {
           withCredentials([
             string(credentialsId: 'postgres_user', variable: 'POSTGRES_USER'),
             string(credentialsId: 'postgres_password', variable: 'POSTGRES_PASSWORD'),
-            string(credentialsId: 'postgres_db', variable: 'POSTGRES_DB')
             ]) {
               dir("data-warehouse/postgresql"){
                 echo "#################### Spin up PGDB ####################"
@@ -88,7 +88,7 @@ pipeline {
                   docker compose up -d --build
 
                   # Wait until Postgres is ready
-                  until docker exec -t postgresql bash -lc 'pg_isready -U "$POSTGRES_USE" -d "${POSTGRES_DB}"'; do
+                  until docker exec -t postgresql bash -lc 'pg_isready -U "$POSTGRES_USER" -d "${POSTGRES_DB}"'; do
                     echo "Waiting for PostgreSQL to become ready..."
                     sleep 10
                   done
