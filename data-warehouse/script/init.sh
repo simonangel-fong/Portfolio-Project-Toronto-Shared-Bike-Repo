@@ -12,7 +12,7 @@ GITHUB_REPO=https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-
 
 SCRIPT_STALL=$DIR_PROJECT/data-warehouse/script/install.sh
 SCRIPT_MONITOR=$DIR_PROJECT/data-warehouse/script/start_monitor_docker.sh
-SCRIPT_JENKINS=$DIR_PROJECT/data-warehouse/script/start_jenkins_docker.sh
+SCRIPT_JENKINS=$DIR_PROJECT/data-warehouse/script/start_jenkins.sh
 
 echo
 echo "##############################"

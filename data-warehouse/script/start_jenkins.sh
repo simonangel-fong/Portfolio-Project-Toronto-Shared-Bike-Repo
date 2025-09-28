@@ -8,7 +8,7 @@ echo "Install Jenkins"
 echo "##############################"
 echo
 # Installation of Java
-sudo apt-get update && sudo apt-get install -y fontconfig openjdk-21-jre
+sudo apt-get install -y fontconfig openjdk-21-jre
 java -version
 
 # Install Jenkins
