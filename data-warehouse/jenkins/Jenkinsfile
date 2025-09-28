@@ -144,7 +144,6 @@ pipeline {
           dir('data-warehouse/postgresql'){
             withCredentials([
               string(credentialsId: 'postgres_user', variable: 'POSTGRES_USER'),
-              string(credentialsId: 'postgres_db', variable: 'POSTGRES_DB')
               ]) {
               echo "#################### Export Data ####################"
               sh '''
