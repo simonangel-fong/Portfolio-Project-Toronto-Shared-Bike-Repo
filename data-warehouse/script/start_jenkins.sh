@@ -63,14 +63,15 @@ echo "##############################"
 echo "Update Jenkins Service"
 echo "##############################"
 echo
+sudo mkdir -pv /etc/systemd/system/jenkins.service.d/
 sudo tee /etc/systemd/system/jenkins.service.d/override.conf <<EOF
 [Service]
 Environment="JAVA_OPTS=-Djenkins.install.runSetupWizard=false"
 Environment="CASC_JENKINS_CONFIG=/var/lib/jenkins/casc_configs/jenkins.yaml"
 EOF
 
-# sudo systemctl daemon-reload
-# sudo systemctl restart jenkins 
+sudo systemctl daemon-reload
+sudo systemctl restart jenkins 
 
 echo
 echo "##############################"
