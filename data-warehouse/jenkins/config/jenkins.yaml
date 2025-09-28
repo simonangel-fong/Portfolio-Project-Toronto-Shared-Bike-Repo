@@ -46,15 +46,15 @@ tool:
     settingsProvider: "standard"
 
 unclassified:
+  location:
+    adminAddress: "tech.arguswatcher@gmail.com"
+    url: "http://on-prem:8080/"
   email-ext:
     mailAccount:
       credentialsId: "gmail_cred"
       smtpHost: "smtp.gmail.com"
       smtpPort: "465"
       useSsl: true
-  # location:
-  #   adminAddress: "address not configured yet <nobody@nowhere>"
-  #   url: "http://on-prem:8080/"
   mailer:
     authentication:
       password: ""
