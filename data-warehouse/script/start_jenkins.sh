@@ -2,6 +2,16 @@
 
 set -euo pipefail
 
+export JENKINS_ADMIN_NAME=""
+export JENKINS_ADMIN_PWD=""
+export AWS_ACCESS_KEY=""
+export AWS_SECRET_KEY=""
+export GMAIL_PWD=""
+export GMAIL_USERNAME=""
+export POSTGRES_USER=""
+export POSTGRES_DB=""
+export POSTGRES_DB=""
+
 echo
 echo "##############################"
 echo "Install Jenkins"
@@ -83,9 +93,9 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 
 # journalctl -u jenkins
 
-git pull && sudo cp -v /home/ubuntuadmin/project_shared_bike/data-warehouse/jenkins/config/jenkins.yaml /var/lib/jenkins/casc_configs/jenkins.yaml
-sudo chmod -v 600 /var/lib/jenkins/casc_configs/jenkins.yaml
-sudo chown -Rv jenkins:jenkins /var/lib/jenkins
+# git pull && sudo cp -v /home/ubuntuadmin/project_shared_bike/data-warehouse/jenkins/config/jenkins.yaml /var/lib/jenkins/casc_configs/jenkins.yaml
+# sudo chmod -v 600 /var/lib/jenkins/casc_configs/jenkins.yaml
+# sudo chown -Rv jenkins:jenkins /var/lib/jenkins
 
-sudo systemctl daemon-reload
-sudo systemctl restart jenkins 
+# sudo systemctl daemon-reload
+# sudo systemctl restart jenkins 

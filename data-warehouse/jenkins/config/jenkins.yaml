@@ -9,8 +9,8 @@ jenkins:
     local:
       allowsSignup: false
       users:
-        - id: "admin"
-          password: "admin"
+        - id: "${JENKINS_ADMIN_NAME}"
+          password: "${JENKINS_ADMIN_PWD}"
 
 security:
   apiToken:
@@ -23,28 +23,28 @@ credentials:
     domainCredentials:
     - credentials:
       - aws:
-          accessKey: ""
+          accessKey: "${AWS_ACCESS_KEY}"
           id: "aws_cred"
           scope: GLOBAL
-          secretKey: ""
+          secretKey: "${AWS_SECRET_KEY}"
       - usernamePassword:
           id: "gmail_cred"
-          password: ""
+          password: "${GMAIL_PWD}"
           scope: GLOBAL
-          username: "tech.arguswatcher@gmail.com"
+          username: "${GMAIL_USERNAME}"
           usernameSecret: true
       - string:
           id: "postgres_user"
           scope: GLOBAL
-          secret: ""
+          secret: "${POSTGRES_USER}"
       - string:
           id: "postgres_db"
           scope: GLOBAL
-          secret: ""
+          secret: "${POSTGRES_DB}"
       - string:
           id: "postgres_password"
           scope: GLOBAL
-          secret: ""
+          secret: "${POSTGRES_PWD}"
 
 tool:
   git:
@@ -60,7 +60,7 @@ unclassified:
     configuredBuildDiscarders:
     - "jobBuildDiscarder"
   location:
-    adminAddress: "tech.arguswatcher@gmail.com"
+    adminAddress: "${GMAIL_USERNAME}"
     url: "http://on-prem:8080/"
   email-ext:
     mailAccount:
@@ -70,8 +70,8 @@ unclassified:
       useSsl: true
   mailer:
     authentication:
-      password: ""
-      username: "tech.arguswatcher@gmail.com"
+      password: "${GMAIL_PWD}"
+      username: "${GMAIL_USERNAME}"
     charset: "UTF-8"
     smtpHost: "smtp.gmail.com"
     smtpPort: "465"
