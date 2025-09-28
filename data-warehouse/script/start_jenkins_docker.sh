@@ -8,7 +8,7 @@ JENKINS_FILE=$DIR_PROJECT/data-warehouse/jenkins/docker-compose.yaml
 
 echo
 echo "##############################"
-echo "Start up Prometheus"
+echo "Start up Jenkins"
 echo "##############################"
 echo
 
