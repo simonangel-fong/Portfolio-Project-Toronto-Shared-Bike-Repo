@@ -39,7 +39,7 @@ pipeline {
         cleanWs()
         
         echo "#################### Checkout ####################"
-        // checkout scm
+        checkout scm
         sh '''
           pwd
           ls -l
