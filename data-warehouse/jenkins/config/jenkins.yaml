@@ -1,12 +1,22 @@
 jenkins:
   systemMessage: "Project Toronto Shared Bike - Jenkins Dashboard"
 
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+
   securityRealm:
     local:
       allowsSignup: false
       users:
         - id: "admin"
           password: "admin"
+
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
 
 credentials:
   system:
@@ -46,6 +56,9 @@ tool:
     settingsProvider: "standard"
 
 unclassified:
+  buildDiscarders:
+    configuredBuildDiscarders:
+    - "jobBuildDiscarder"
   location:
     adminAddress: "tech.arguswatcher@gmail.com"
     url: "http://on-prem:8080/"
@@ -67,20 +80,18 @@ unclassified:
 
 jobs:
   - script: >
-      pipelineJob('testjobs/default-agent') {
+      pipelineJob('my_repo_pipeline') {
         definition {
-          cps {
-            script("""\
-              pipeline {
-                agent any
-                stages {
-                  stage ('test') {
-                    steps {
-                      echo "hello"
-                    }
-                  }
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/simonangel-fong/Tutorial-Jenkins.git')
                 }
-              }""".stripIndent())
+                branch('*/master')
+              }
+            }
+            scriptPath('module-docker-compose-JCasC/pipeline/Jenkinsfile')
           }
         }
       }
