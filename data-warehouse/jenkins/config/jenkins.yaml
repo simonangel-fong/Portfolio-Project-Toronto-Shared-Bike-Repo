@@ -56,8 +56,6 @@ tool:
     settingsProvider: "standard"
 
 unclassified:
-  globalJobDslSecurityConfiguration:
-    useScriptSecurity: false
   buildDiscarders:
     configuredBuildDiscarders:
     - "jobBuildDiscarder"
