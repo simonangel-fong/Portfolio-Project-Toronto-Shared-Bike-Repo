@@ -45,41 +45,41 @@ tool:
     globalSettingsProvider: "standard"
     settingsProvider: "standard"
 
-# unclassified:
-#   email-ext:
-#     mailAccount:
-#       credentialsId: "gmail_cred"
-#       smtpHost: "smtp.gmail.com"
-#       smtpPort: "465"
-#       useSsl: true
-#   location:
-#     adminAddress: "address not configured yet <nobody@nowhere>"
-#     url: "http://on-prem:8080/"
-#   mailer:
-#     authentication:
-#       password: ""
-#       username: "tech.arguswatcher@gmail.com"
-#     charset: "UTF-8"
-#     smtpHost: "smtp.gmail.com"
-#     smtpPort: "465"
-#     useSsl: true
-#     useTls: false
+unclassified:
+  email-ext:
+    mailAccount:
+      credentialsId: "gmail_cred"
+      smtpHost: "smtp.gmail.com"
+      smtpPort: "465"
+      useSsl: true
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+    url: "http://on-prem:8080/"
+  mailer:
+    authentication:
+      password: ""
+      username: "tech.arguswatcher@gmail.com"
+    charset: "UTF-8"
+    smtpHost: "smtp.gmail.com"
+    smtpPort: "465"
+    useSsl: true
+    useTls: false
 
 
-jobs:
-  - script: >
-      pipelineJob('docker-agent-test') {
-        definition {
-          cpsScm {
-            scm {
-              git {
-                remote {
-                  url('https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git')
-                }
-                branch('feature/dw')
-              }
-            }
-            scriptPath('data-warehouse/jenkins/Jenkinsfile')
-          }
-        }
-      }
+# jobs:
+#   - script: >
+#       pipelineJob('docker-agent-test') {
+#         definition {
+#           cpsScm {
+#             scm {
+#               git {
+#                 remote {
+#                   url('https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git')
+#                 }
+#                 branch('feature/dw')
+#               }
+#             }
+#             scriptPath('data-warehouse/jenkins/Jenkinsfile')
+#           }
+#         }
+#       }
