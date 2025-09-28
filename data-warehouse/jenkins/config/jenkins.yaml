@@ -55,15 +55,15 @@ unclassified:
   # location:
   #   adminAddress: "address not configured yet <nobody@nowhere>"
   #   url: "http://on-prem:8080/"
-#   mailer:
-#     authentication:
-#       password: ""
-#       username: "tech.arguswatcher@gmail.com"
-#     charset: "UTF-8"
-#     smtpHost: "smtp.gmail.com"
-#     smtpPort: "465"
-#     useSsl: true
-#     useTls: false
+  mailer:
+    authentication:
+      password: ""
+      username: "tech.arguswatcher@gmail.com"
+    charset: "UTF-8"
+    smtpHost: "smtp.gmail.com"
+    smtpPort: "465"
+    useSsl: true
+    useTls: false
 
 
 # jobs:
