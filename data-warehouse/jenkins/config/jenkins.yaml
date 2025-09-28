@@ -45,13 +45,13 @@ tool:
     globalSettingsProvider: "standard"
     settingsProvider: "standard"
 
-# unclassified:
-#   email-ext:
-#     mailAccount:
-#       credentialsId: "gmail_cred"
-#       smtpHost: "smtp.gmail.com"
-#       smtpPort: "465"
-#       useSsl: true
+unclassified:
+  email-ext:
+    mailAccount:
+      credentialsId: "gmail_cred"
+      smtpHost: "smtp.gmail.com"
+      smtpPort: "465"
+      useSsl: true
 #   location:
 #     adminAddress: "address not configured yet <nobody@nowhere>"
 #     url: "http://on-prem:8080/"
