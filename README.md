@@ -44,18 +44,14 @@ bash data-warehouse/script/init.sh
 docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 ```
 
-
 ```sh
 sudo apt update
-sudo apt install -y openssh-server 
+sudo apt install -y openssh-server
 sudo systemctl enable --now ssh
 
 sudo vi /etc/ssh/sshd_config
 sudo systemctl restart ssh
 ```
-
-
-
 
                                 ┌───────────────────────────────────────────┐
                                 │                 Client                    │
@@ -63,60 +59,61 @@ sudo systemctl restart ssh
                                 └───────────────────────────────────────────┘
                                                      │ HTTPS
                                                      ▼
+
 ┌───────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                           VM (Host)                                           │
-│                                                                                               │
-│  ┌───────────────────────────┐                     Control (SSH)                              │
-│  │   Reverse Proxy (opt.)    │◀────────────────────────────────────────────────────────────┐  │
-│  │  (nginx/traefik + TLS)    │                                                            │  │
-│  └─────────────▲─────────────┘                                                            │  │
-│                │ HTTP (internal)                                                          │  │
-│  ┌─────────────┴───────────────────────────────────────────┐                              │  │
-│  │                 Jenkins Controller (Docker)              │                              │  │
-│  │   container: jenkins:lts-jdk17                           │                              │  │
-│  │   volume: jenkins_home  (JENKINS_HOME persistence)       │                              │  │
-│  │   NO /var/run/docker.sock mount (best practice)          │                              │  │
-│  └─────────────┬────────────────────────────────────────────┘                              │  │
-│                │ Schedules jobs                                                                 │
-│                │                                                                                │
-│                │                  ┌─────────────────────────────────────────────────────────┐   │
-│                └─────────────────▶│     Jenkins Agent (VM host via SSH)                     │   │
-│                                   │  user: jenkins (member of docker group)                │   │
-│                                   │  runs pipelines; sees host FS (/srv/etl)               │   │
-│                                   └───────────┬────────────────────────────────────────────┘   │
-│                                               │ orchestrates docker compose, psql, file IO      │
-│                                               │                                                 │
-│                          ┌────────────────────▼────────────────────┐                            │
-│                          │            Docker Engine                │                            │
-│                          │        (running on the VM host)         │                            │
-│                          └───────┬───────────────────┬─────────────┘                            │
-│                                  │                   │                                          │
-│   ┌───────────────────────────────▼─────────────┐     │                                          │
-│   │              pgdb Compose Stack             │     │                                          │
-│   │  service: db (postgres:16)                  │     │                                          │
-│   │  healthcheck: pg_isready                    │     │                                          │
-│   │  volumes:                                   │     │                                          │
-│   │    • pgdata (named volume)  ────────────────┘     │   durable database files                 │
-│   │    • ../data (bind mount)  <──────────────────────┘   raw/export visible on host + container │
-│   │    • ../sql/init (ro)      <──────────────────────── init SQL (schemas/users/extensions)     │
-│   │    • ../sql/transform (ro) <──────────────────────── ETL SQL (idempotent transforms)        │
-│   └─────────────────────────────────────────────────────────────────────────────────────────────┘
+│ VM (Host) │
+│ │
+│ ┌───────────────────────────┐ Control (SSH) │
+│ │ Reverse Proxy (opt.) │◀────────────────────────────────────────────────────────────┐ │
+│ │ (nginx/traefik + TLS) │ │ │
+│ └─────────────▲─────────────┘ │ │
+│ │ HTTP (internal) │ │
+│ ┌─────────────┴───────────────────────────────────────────┐ │ │
+│ │ Jenkins Controller (Docker) │ │ │
+│ │ container: jenkins:lts-jdk17 │ │ │
+│ │ volume: jenkins_home (JENKINS_HOME persistence) │ │ │
+│ │ NO /var/run/docker.sock mount (best practice) │ │ │
+│ └─────────────┬────────────────────────────────────────────┘ │ │
+│ │ Schedules jobs │
+│ │ │
+│ │ ┌─────────────────────────────────────────────────────────┐ │
+│ └─────────────────▶│ Jenkins Agent (VM host via SSH) │ │
+│ │ user: jenkins (member of docker group) │ │
+│ │ runs pipelines; sees host FS (/srv/etl) │ │
+│ └───────────┬────────────────────────────────────────────┘ │
+│ │ orchestrates docker compose, psql, file IO │
+│ │ │
+│ ┌────────────────────▼────────────────────┐ │
+│ │ Docker Engine │ │
+│ │ (running on the VM host) │ │
+│ └───────┬───────────────────┬─────────────┘ │
+│ │ │ │
+│ ┌───────────────────────────────▼─────────────┐ │ │
+│ │ pgdb Compose Stack │ │ │
+│ │ service: db (postgres:16) │ │ │
+│ │ healthcheck: pg_isready │ │ │
+│ │ volumes: │ │ │
+│ │ • pgdata (named volume) ────────────────┘ │ durable database files │
+│ │ • ../data (bind mount) <──────────────────────┘ raw/export visible on host + container │
+│ │ • ../sql/init (ro) <──────────────────────── init SQL (schemas/users/extensions) │
+│ │ • ../sql/transform (ro) <──────────────────────── ETL SQL (idempotent transforms) │
+│ └─────────────────────────────────────────────────────────────────────────────────────────────┘
 │
-│   Host filesystem layout (owned by jenkins:docker):
-│     /srv/etl/
-│       compose/  (docker-compose.yml, .env from Jenkins creds)
-│       data/
-│         raw/      ← CSV inputs downloaded by pipeline
-│         export/   → processed outputs & backups (pg_dump)
-│       sql/
-│         init/     ← first-boot schema/users
-│         transform/← idempotent ETL scripts
-│       cache/      ← ETag/checksum for idempotent downloads
-│       logs/
+│ Host filesystem layout (owned by jenkins:docker):
+│ /srv/etl/
+│ compose/ (docker-compose.yml, .env from Jenkins creds)
+│ data/
+│ raw/ ← CSV inputs downloaded by pipeline
+│ export/ → processed outputs & backups (pg_dump)
+│ sql/
+│ init/ ← first-boot schema/users
+│ transform/← idempotent ETL scripts
+│ cache/ ← ETag/checksum for idempotent downloads
+│ logs/
 │
-│   External data flows:
-│     [CSV Source: HTTPS/S3/etc.] ───────────────▶ /srv/etl/data/raw/      (download step, cache-aware)
-│     /srv/etl/data/export/ ─────────────────────▶ [Downstream consumer or S3 backup (optional)]
+│ External data flows:
+│ [CSV Source: HTTPS/S3/etc.] ───────────────▶ /srv/etl/data/raw/ (download step, cache-aware)
+│ /srv/etl/data/export/ ─────────────────────▶ [Downstream consumer or S3 backup (optional)]
 │
 └───────────────────────────────────────────────────────────────────────────────────────────────┘
 
@@ -128,9 +125,11 @@ useradd -m -s /bin/bash jenkins || true
 mkdir -p /home/jenkins/agent && chown -R jenkins:jenkins /home/jenkins
 ```
 
-
 dockerfile
 
 ```sh
 docker run -e POSTGRES_USER="postgres" -e POSTGRES_PASSWORD="SecurePassword123" -e POSTGRES_DB="toronto_shared_bike" -v ./scripts/setup:/docker-entrypoint-initdb.d -v ./scripts:/scripts --name "dw" -d postgres:15
 ```
+
+- [On-Premises Setup - Proxmox VE](./docs/pve/pve.md)
+- [On-Premises Deploy - Data Warehouse](./docs/dw/dw.md)

@@ -90,7 +90,7 @@ pipeline {
                   # Wait until Postgres is ready
                   until docker exec -t postgresql bash -lc 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'; do
                     echo "Waiting for PostgreSQL to become ready..."
-                    sleep 10
+                    sleep 30
                   done
                 '''
 
