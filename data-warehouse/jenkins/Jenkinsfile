@@ -23,7 +23,7 @@ pipeline {
   }
 
   triggers {
-    cron '0 0/2 * * *'    // every 2 hour
+    cron '0 H/2 * * *'    // every 2 hour
   }
 
   environment {
