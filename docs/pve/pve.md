@@ -107,8 +107,10 @@ netfilter-persistent save
 
 ## Initialize VM
 
+
 ```sh
-sudo apt-get update
+ssh -J root@192.168.1.80 admin@192.168.100.110
+sudo apt-get update && sudo apt-get upgrade -y
 sudo apt-get install -y openssh-server vim
 # enable pwd auth
 sudo nano /etc/ssh/sshd_config
@@ -116,19 +118,6 @@ sudo nano /etc/ssh/sshd_config
 sudo systemctl restart ssh
 
 # configure ip
-
-echo
-echo "##############################"
-echo "Update apt"
-echo "##############################"
-echo
-sudo apt-get update && sudo apt-get upgrade -y
-
-echo
-echo "##############################"
-echo "Set IP"
-echo "##############################"
-echo
 sudo touch /etc/netplan/01-netcfg.yaml
 sudo tee /etc/netplan/01-netcfg.yaml << EOF
 network:
