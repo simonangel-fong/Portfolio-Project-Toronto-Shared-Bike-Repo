@@ -1,9 +1,36 @@
 #!/bin/bash
 
-mkdir -pv ~/project_toronto_shared_bike
-cd ~/project_toronto_shared_bike
-git clone https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git ~/project_toronto_shared_bike
+set -euo pipefail
 
+DIR_HOME=/home/ubuntuadmin
+DIR_PROJECT=$DIR_HOME/project_shared_bike
+GITHUB_REPO=https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git
+
+SCRIPT_MONITOR=$DIR_PROJECT/data-warehouse/script/start_monitor_docker.sh
+SCRIPT_JENKINS=$DIR_PROJECT/data-warehouse/script/start_jenkins.sh
+
+echo
+echo "##############################"
+echo "Update apt"
+echo "##############################"
+echo
+sudo apt-get update && sudo apt-get upgrade -y
+
+echo
+echo "##############################"
+echo "Git Clone Repo"
+echo "##############################"
+echo
+sudo apt install -y git
+rm -rf $DIR_PROJECT
+mkdir -pv $DIR_PROJECT
+git clone $GITHUB_REPO $DIR_PROJECT
+
+echo
+echo "##############################"
+echo "Install Docker"
+echo "##############################"
+echo
 
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 
@@ -22,122 +49,17 @@ echo \
 sudo apt-get update
 
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo chmod 666 /var/run/docker.sock
+sudo systemctl enable --now docker
 
-# add current user
+# confirm
+docker --version
 sudo usermod -aG docker $USER
 
-docker --version
+cd $DIR_PROJECT
+git checkout feature/dw
 
-# install Jenkins with docker
-mkdir -pv ~/jenkins
-cd ~/jenkins
-
-cat > docker-compose.yaml<<EOF
-services:
-  jenkins:
-    container_name: jenkins
-    restart: unless-stopped
-    image: jenkins/jenkins
-    # privileged: true
-    # user: root
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./jenkins_home:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - net
-networks:
-  net:
-EOF
-
-# create dir for persistence
-mkdir -pv jenkins_home
-chown $USER:$USER -Rv jenkins_home
-
-sudo docker compose up -d
-
-# install prometheus
-mkdir -pv ~/monitoring
-cd ~/monitoring
-
-sudo docker network create monitoring
-
-tee docker-compose.yml<<EOF
-
-services:
-    node-exporter:
-        container_name: node-exporter
-        image: prom/node-exporter
-        ports:
-            - 9100:9100
-        restart: unless-stopped
-        networks:
-            - monitoring
-        volumes:
-            - /proc:/host/proc:ro
-            - /sys:/host/sys:ro
-            - /:/rootfs:ro
-        command:
-            - '--path.procfs=/host/proc'
-            - '--path.sysfs=/host/sys'
-            - '--path.rootfs=/rootfs'
-            - '--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)'
-
-    prometheus:
-        container_name: prometheus
-        image: prom/prometheus
-        volumes:
-            - "./prometheus.yml:/etc/prometheus/prometheus.yml"
-            - prometheus_data:/prometheus
-        ports:
-            - 9090:9090
-        restart: unless-stopped
-        networks:
-            - monitoring
-
-    grafana:
-        container_name: grafana
-        image: grafana/grafana
-        ports:
-            - 3000:3000
-        environment:
-            - GF_SECURITY_ADMIN_PASSWORD=admin # Change this in production
-        volumes:
-            - grafana_data:/var/lib/grafana
-        restart: unless-stopped
-        networks:
-            - monitoring
-
-networks:
-    monitoring:
-        driver: bridge
-
-volumes:
-    prometheus_data: {}
-    grafana_data: {}
-EOF
-
-tee prometheus.yml<<EOF
-
-global:
-  scrape_interval: 10s
-scrape_configs:
- - job_name: prometheus
-   static_configs:
-      - targets:
-        - prometheus:9090
-
-  - job_name: 'node-exporter'
-    static_configs:
-      - targets: 
-        - node-exporter:9100
-
- 
-EOF
-
-sudo docker compose up -d --build
-
-
-
-
+# start prometheus
+bash $SCRIPT_MONITOR
+# start jenkins
+bash $SCRIPT_JENKINS

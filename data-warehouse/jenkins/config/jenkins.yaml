@@ -1,0 +1,102 @@
+jenkins:
+  systemMessage: "Project Toronto Shared Bike - Jenkins Dashboard"
+
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "${JENKINS_ADMIN_NAME}"
+          password: "${JENKINS_ADMIN_PWD}"
+        - id: "admin"
+          password: "admin"
+
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - aws:
+          accessKey: "${AWS_ACCESS_KEY}"
+          id: "aws_cred"
+          scope: GLOBAL
+          secretKey: "${AWS_SECRET_KEY}"
+      - usernamePassword:
+          id: "gmail_cred"
+          password: "${GMAIL_PWD}"
+          scope: GLOBAL
+          username: "${GMAIL_USERNAME}"
+          usernameSecret: true
+      - string:
+          id: "postgres_user"
+          scope: GLOBAL
+          secret: "${POSTGRES_USER}"
+      # - string:
+      #     id: "postgres_db"
+      #     scope: GLOBAL
+      #     secret: "${POSTGRES_DB}"
+      - string:
+          id: "postgres_password"
+          scope: GLOBAL
+          secret: "${POSTGRES_PWD}"
+
+tool:
+  git:
+    installations:
+    - home: "git"
+      name: "Default"
+  mavenGlobalConfig:
+    globalSettingsProvider: "standard"
+    settingsProvider: "standard"
+
+unclassified:
+  buildDiscarders:
+    configuredBuildDiscarders:
+    - "jobBuildDiscarder"
+  location:
+    adminAddress: "${GMAIL_USERNAME}"
+    url: "http://on-prem:8080/"
+  email-ext:
+    mailAccount:
+      credentialsId: "gmail_cred"
+      smtpHost: "smtp.gmail.com"
+      smtpPort: "465"
+      useSsl: true
+  mailer:
+    authentication:
+      password: "${GMAIL_PWD}"
+      username: "${GMAIL_USERNAME}"
+    charset: "UTF-8"
+    smtpHost: "smtp.gmail.com"
+    smtpPort: "465"
+    useSsl: true
+    useTls: false
+
+# jobs:
+#   - script: >
+#      pipelineJob('test-jobs/default-agent') {
+#         definition {
+#           cps {
+#             script("""
+#               pipeline {
+#                 agent any
+#                 stages {
+#                   stage('test') {
+#                     steps {
+#                       echo 'hello'
+#                     }
+#                   }
+#                 }
+#               }
+#             """.stripIndent())
+#           }
+#         }
+#       }

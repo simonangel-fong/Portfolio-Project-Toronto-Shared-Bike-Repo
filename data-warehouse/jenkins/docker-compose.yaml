@@ -2,16 +2,25 @@ networks:
   jenkins_network:
     driver: bridge
 
+volumes:
+  jenkins_data: {}
+
 services:
   jenkins:
     container_name: jenkins
-    image: jenkins/jenkins
+    build: .
+    image: jenkins-jcasc
+    # image: jenkins/jenkins:2.516.3-jdk21
     restart: unless-stopped
-    # privileged: true
-    # user: root
+    user: root
+    environment:
+      - JENKINS_ADMIN_ID=${JENKINS_ADMIN_ID:-admin}
+      - JENKINS_ADMIN_PASSWORD=${JENKINS_ADMIN_PASSWORD:-admin}
+      - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
+      - jenkins_data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - jenkins_network
+      - jenkins_network 
     ports:
       - "8080:8080"
