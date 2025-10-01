@@ -151,6 +151,7 @@ pipeline {
               ]) {
               echo "#################### Export Data ####################"
               sh '''
+                pwd
                 mkdir -pv export
                 ls -ld export
 
