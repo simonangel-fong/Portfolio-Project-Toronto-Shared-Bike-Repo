@@ -1,0 +1,146 @@
+-- ============================================================================
+-- Script Name : transform.sql
+-- Purpose     : Transform staging data.
+-- Author      : Wenhao Fang
+-- Date        : 2025-07-15
+-- User        : Execute as a PostgreSQL superuser
+-- ============================================================================
+
+-- Enable verbose error reporting
+\set ON_ERROR_STOP on
+
+-- Connect to the toronto_shared_bike database
+\c toronto_shared_bike;
+
+-- ============================================================================
+-- Data processing: Remove rows with NULLs in Key columns
+-- ============================================================================
+-- Remove rows with NULL values in key columns
+\echo 
+\echo '##################################################'
+\echo 'Remove rows with NULLs in key columns... '
+\echo '##################################################'
+DELETE FROM dw_schema.staging_trip
+WHERE trip_id IS NULL
+   OR trip_duration IS NULL
+   OR start_time IS NULL
+   OR start_station_id IS NULL
+   OR end_station_id IS NULL;
+
+-- Remove rows where key columns contain the string "NULL"
+\echo 
+\echo '##################################################'
+\echo 'Remove rows with "NULLs" in Key columns... '
+\echo '##################################################'
+-- DELETE FROM dw_schema.staging_trip
+-- WHERE trip_id = 'NULL'
+--    OR trip_duration = 'NULL'
+--    OR start_time = 'NULL'
+--    OR start_station_id = 'NULL'
+--    OR end_station_id = 'NULL';
+
+-- -- ============================================================================
+-- -- Key columns processing: Remove rows with invalid data types or formats
+-- -- ============================================================================
+\echo 
+\echo '##################################################'
+\echo 'Remove rows with invalid data types or formats... '
+\echo '##################################################'
+DELETE FROM dw_schema.staging_trip
+WHERE NOT trip_id ~ '^[0-9]+$'
+   OR NOT trip_duration ~ '^[0-9]+(\.[0-9]+)?$'
+   OR NOT start_time ~ '^[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}$'
+   OR TO_TIMESTAMP(start_time, 'MM/DD/YYYY HH24:MI') IS NULL
+   OR NOT start_station_id ~ '^[0-9]+$'
+   OR NOT end_station_id ~ '^[0-9]+$';
+
+-- ============================================================================
+-- Key column processing (trip durations): Remove rows with non-positive value
+-- ============================================================================
+-- Delete rows with non-positive duration
+\echo 
+\echo '##################################################'
+\echo 'Delete rows with non-positive duration... '
+\echo '##################################################'
+DELETE FROM dw_schema.staging_trip
+WHERE trip_duration::numeric <= 0;
+
+-- ============================================================================
+-- Non-critical columns processing
+-- ============================================================================
+
+-- Fix invalid or NULL end_time values
+\echo 
+\echo '##################################################'
+\echo 'Fix invalid or NULL end_time values... '
+\echo '##################################################'
+UPDATE dw_schema.staging_trip
+SET end_time = TO_CHAR(
+    TO_TIMESTAMP(start_time, 'MM/DD/YYYY HH24:MI') + (trip_duration::numeric / 86400) * INTERVAL '1 day',
+    'MM/DD/YYYY HH24:MI'
+)
+WHERE end_time IS NULL
+   OR NOT end_time ~ '^[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}$'
+   OR TO_TIMESTAMP(end_time, 'MM/DD/YYYY HH24:MI') IS NULL;
+
+-- Substitute missing station names with 'UNKNOWN'
+\echo 
+\echo '##################################################'
+\echo 'Substitute missing station names with "UNKNOWN"... '
+\echo '##################################################'
+UPDATE dw_schema.staging_trip
+SET start_station_name = 'UNKNOWN'
+WHERE start_station_name IS NULL OR TRIM(start_station_name) = 'NULL';
+
+UPDATE dw_schema.staging_trip
+SET end_station_name = 'UNKNOWN'
+WHERE end_station_name IS NULL OR TRIM(end_station_name) = 'NULL';
+
+\echo 
+\echo '##################################################'
+\echo 'Update membership type... '
+\echo '##################################################'
+UPDATE dw_schema.staging_trip
+SET user_type = 'annual'
+WHERE user_type = 'Annual Member';
+
+UPDATE dw_schema.staging_trip
+SET user_type = 'casual'
+WHERE user_type = 'Casual Member';
+
+-- Substitute missing user_type with 'UNKNOWN'
+\echo 
+\echo '##################################################'
+\echo 'Substitute missing user_type with "UNKNOWN"... '
+\echo '##################################################'
+UPDATE dw_schema.staging_trip
+SET user_type = 'UNKNOWN'
+WHERE user_type IS NULL;
+
+-- Substitute invalid or missing bike_id with '-1'
+\echo 
+\echo '##################################################'
+\echo 'Substitute invalid or missing bike_id with "-1"... '
+\echo '##################################################'
+UPDATE dw_schema.staging_trip
+SET bike_id = '-1'
+WHERE bike_id IS NULL
+   OR (bike_id !~ '^[0-9]+$' AND bike_id != '-1');
+
+-- Substitute missing model with 'UNKNOWN'
+\echo 
+\echo '##################################################'
+\echo 'Substitute missing model with "UNKNOWN"... '
+\echo '##################################################'
+UPDATE dw_schema.staging_trip
+SET model = 'UNKNOWN'
+WHERE model IS NULL;
+
+-- Remove carriage return characters from user_type
+\echo 
+\echo '##################################################'
+\echo 'Remove carriage return characters from user_type... '
+\echo '##################################################'
+UPDATE dw_schema.staging_trip
+SET user_type = REPLACE(user_type, CHR(13), '')
+WHERE POSITION(CHR(13) IN user_type) > 0;

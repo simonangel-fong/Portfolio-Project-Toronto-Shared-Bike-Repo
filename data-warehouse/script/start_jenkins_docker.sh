@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -euo pipefail
+
+DIR_HOME=/home/ubuntuadmin
+DIR_PROJECT=$DIR_HOME/project_shared_bike
+JENKINS_FILE=$DIR_PROJECT/data-warehouse/jenkins/docker-compose.yaml
+
+echo
+echo "##############################"
+echo "Start up Jenkins"
+echo "##############################"
+echo
+
+docker compose -f $JENKINS_FILE up -d

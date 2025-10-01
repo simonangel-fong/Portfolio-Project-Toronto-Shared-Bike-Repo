@@ -1,40 +1,44 @@
-name: staging-cd
+name: api-staging
 
 on:
   workflow_dispatch:
   push:
     branches: ["staging"]
     paths:
-      - "src/**" # update of code
-      - "test/**" # update of test case
-      - ".github/workflows/staging.yml"
+      - "web-app/**" # update of code
+      - "testing/**" # update of test case
+      - ".github/workflows/api-staging.yml"
 
+# read write
 permissions:
   contents: read
   id-token: write
 
+# multiple trigger
 concurrency:
   group: staging-cd-${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true # Cancel older runs
 
 jobs:
-  provision_staging:
-    name: Provision Staging
+  deploy_staging:
+    name: Deploy Staging Env
     runs-on: ubuntu-latest
     environment: Staging
     timeout-minutes: 60
     env:
+      DIR_WEB_APP_AWS: web-app/aws
       TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
-      TF_VAR_project: ${{ vars.TF_VAR_PROJECT }}
-      TF_VAR_app: ${{ vars.TF_VAR_APP }}
-      TF_VAR_env: ${{ vars.TF_VAR_ENV }}
-      TF_VAR_dns_domain: ${{ vars.TF_VAR_DNS_DOMAIN }}
+      TF_VERSION: 1.9.8
+      TF_VAR_project: ${{ vars.PROJECT }}
+      TF_VAR_app: ${{ vars.APP_WEB }}
+      TF_VAR_env: ${{ vars.ENV }}
+      TF_VAR_dns_domain: ${{ vars.DNS_DOMAIN }}
       TF_VAR_aws_region: ${{ vars.AWS_REGION }}
       TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
       TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
     defaults:
       run:
-        working-directory: ${{ vars.DIR_AWS }}
+        working-directory: ${{ env.DIR_WEB_APP_AWS }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,13 +46,13 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: ${{ vars.TF_VERSION }}
+          terraform_version: ${{ env.TF_VERSION }}
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.TF_AWS_ROLE }}
-          aws-region: ${{ vars.TF_VAR_aws_region }}
+          aws-region: ${{ env.TF_VAR_aws_region }}
 
       - name: Configure Terraform plugin cache
         run: |
@@ -59,14 +63,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.terraform.d/plugin-cache
-          key: ${{ runner.os }}-terraform-${{ vars.TF_VERSION }}
+          key: ${{ runner.os }}-terraform-${{ env.TF_VERSION }}
 
       - name: Terraform init - S3 backend
         run: |
           terraform init -reconfigure -input=false \
-            -backend-config="bucket=${{ secrets.AWS_BACKEND_BUCKET }}" \
-            -backend-config="region=${{ secrets.AWS_REGION }}" \
-            -backend-config="key=${{ secrets.AWS_BACKEND_BUCKET_KEY }}/${{ vars.TF_VAR_env }}/terraform.tfstate" \
+            -backend-config="bucket=${{ vars.AWS_BACKEND_BUCKET }}" \
+            -backend-config="region=${{ vars.AWS_REGION }}" \
+            -backend-config="key=${{ vars.AWS_BACKEND_BUCKET_KEY }}/${{ vars.ENV }}/terraform.tfstate" \
             -backend-config="encrypt=true"
 
       - name: Terraform Validate
@@ -86,22 +90,29 @@ jobs:
         with:
           name: tfplan-bundle
           path: |
-            ${{ vars.DIR_AWS }}/tfplan
-            ${{ vars.DIR_AWS }}/tfplan.json
+            ${{ env.DIR_WEB_APP_AWS }}/tfplan
+            ${{ env.DIR_WEB_APP_AWS }}/tfplan.json
           retention-days: 3
 
       - name: Terraform Apply - Staging
         run: terraform apply -auto-approve -no-color tfplan
 
-  staging_testing:
-    name: Integrate Testing - K6
-    needs: provision_staging
+  test_staging:
+    name: Integrate Testing(K6)
+    needs: deploy_staging
     runs-on: ubuntu-latest
     environment: Staging
     env:
-      TF_WORKING_DIR: src/aws
+      DIR_LOAD_TESTING: testing/load
       TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
-
+      TF_VERSION: 1.9.8
+      TF_VAR_project: ${{ vars.PROJECT }}
+      TF_VAR_app: ${{ vars.APP_WEB }}
+      TF_VAR_env: ${{ vars.ENV }}
+      TF_VAR_dns_domain: ${{ vars.DNS_DOMAIN }}
+      TF_VAR_aws_region: ${{ vars.AWS_REGION }}
+      TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
+      TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -115,17 +126,14 @@ jobs:
         env:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
-          DNS_DOMAIN: ${{ vars.TF_VAR_dns_domain }}
-          API_ENV: ${{ vars.TF_VAR_env }}
-          SLA_FAIL: "0.01"
-          SLA_DUR_99: "1000"
         with:
           debug: true
           fail-fast: true
+          flags: --env DNS_DOMAIN=${{ env.TF_VAR_dns_domain }} --env API_ENV=${{ env.TF_VAR_env }}
           path: |
-            ${{ vars.DIR_LOAD_TESTING }}/cloud_smoke.js
-            ${{ vars.DIR_LOAD_TESTING }}/cloud_load.js
-            ${{ vars.DIR_LOAD_TESTING }}/cloud_stress.js
+            ${{ env.DIR_LOAD_TESTING }}/cloud_smoke.js
+            ${{ env.DIR_LOAD_TESTING }}/cloud_load.js
+            ${{ env.DIR_LOAD_TESTING }}/cloud_stress.js
 
       - name: Send email notification
         if: always()
@@ -136,15 +144,15 @@ jobs:
           secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "✉️ ${{ vars.TF_VAR_project}} ${{vars.TF_VAR_app}} (${{vars.TF_VAR_env}}): ${{ github.job }} ${{ job.status }}"
+          subject: "✉️ ${{ vars.PROJECT}} ${{vars.APP_WEB}} (${{vars.ENV}}): ${{ github.job }} ${{ job.status }}"
           to: ${{ secrets.EMAIL_USERNAME }}
           from: ${{ secrets.EMAIL_USERNAME }}
           html_body: |
             <h2>GitHub Actions CI/CD Notification</h2>
-            <p><b>Project</b>: ${{ vars.TF_VAR_project}}</p>
-            <p><b>Application</b>: ${{ vars.TF_VAR_app}}</p>
+            <p><b>Project</b>: ${{ vars.PROJECT}}</p>
+            <p><b>Application</b>: ${{ vars.APP_WEB}}</p>
             <p><b>Repository</b>: ${{ github.repository }}</p>
-            <p><b>Env</b>: ${{ vars.TF_VAR_env }}</p>
+            <p><b>Env</b>: ${{ vars.ENV }}</p>
             <p><b>Job</b>: ${{ github.job }}</p>
             <p><b>Status</b>: ${{ job.status }}</p>
             <p><b>Branch</b>: ${{ github.ref }}</p>
