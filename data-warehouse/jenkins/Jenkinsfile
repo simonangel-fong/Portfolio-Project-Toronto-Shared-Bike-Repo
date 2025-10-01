@@ -109,6 +109,7 @@ pipeline {
       steps {
         echo "#################### Extract Data ####################"
         sh '''
+          sleep 900
           docker exec -t postgresql bash /scripts/etl/extract.sh
         '''
       }
@@ -117,7 +118,8 @@ pipeline {
     stage('Transform Data') {
       steps {
         sh '''
-        docker exec -t postgresql bash /scripts/etl/transform.sh
+          sleep 900
+          docker exec -t postgresql bash /scripts/etl/transform.sh
         '''
       }
     }
@@ -125,7 +127,8 @@ pipeline {
     stage('Load Data') {
       steps {
         sh '''
-        docker exec -t postgresql bash /scripts/etl/load.sh
+          sleep 900
+          docker exec -t postgresql bash /scripts/etl/load.sh
         '''
       }
     }
@@ -133,7 +136,8 @@ pipeline {
     stage('Refresh Materialized Views') {
       steps {
         sh '''
-        docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+          sleep 900
+          docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
         '''
       }
     }
