@@ -155,7 +155,7 @@ pipeline {
                 mkdir -pv export
                 ls -ld export
 
-                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_hour) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_hour.csv
+                docker exec -t postgresql psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_hour) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_hour.csv
                 docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_month) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_month.csv
                 docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_top_station_user_year) TO STDOUT WITH CSV HEADER" > export/mv_top_station_user_year.csv
                 docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_station_year) TO STDOUT WITH CSV HEADER" > export/mv_station_year.csv
