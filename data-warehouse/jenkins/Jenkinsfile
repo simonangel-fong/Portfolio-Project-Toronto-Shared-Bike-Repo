@@ -15,7 +15,7 @@ pipeline {
         artifactNumToKeepStr: '5'   
       )
     )
-    set a timeout for the entire pipeline run
+    // set a timeout for the entire pipeline run
     timeout(time: 40, unit: 'MINUTES')
 
     // Prevents Jenkins from automatically checking out the SCM.
