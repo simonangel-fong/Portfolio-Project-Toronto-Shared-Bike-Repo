@@ -90,7 +90,7 @@ pipeline {
                   # Wait until Postgres is ready
                   until docker exec -t postgresql bash -lc 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'; do
                     echo "Waiting for PostgreSQL to become ready..."
-                    sleep 30
+                    sleep 5
                   done
                 '''
 
@@ -109,7 +109,7 @@ pipeline {
       steps {
         echo "#################### Extract Data ####################"
         sh '''
-          sleep 900
+          # sleep 900
           docker exec -t postgresql bash /scripts/etl/extract.sh
         '''
       }
@@ -118,7 +118,7 @@ pipeline {
     stage('Transform Data') {
       steps {
         sh '''
-          sleep 900
+          # sleep 900
           docker exec -t postgresql bash /scripts/etl/transform.sh
         '''
       }
@@ -127,7 +127,7 @@ pipeline {
     stage('Load Data') {
       steps {
         sh '''
-          sleep 900
+          # sleep 900
           docker exec -t postgresql bash /scripts/etl/load.sh
         '''
       }
@@ -136,7 +136,7 @@ pipeline {
     stage('Refresh Materialized Views') {
       steps {
         sh '''
-          sleep 900
+          # sleep 900
           docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
         '''
       }
