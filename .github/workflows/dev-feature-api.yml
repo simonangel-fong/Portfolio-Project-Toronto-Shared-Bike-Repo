@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - "feature/api"
+      - "dev-feature-api"
     paths:
       - "web-app/**"
       - "testing/**"
-      - ".github/workflows/api-dev.yml"
+      - ".github/workflows/dev-feature-api.yml"
   pull_request:
-    branches: ["staging"]
+    branches: ["staging-feature-api"]
     paths:
       - "web-app/**"
       - "testing/**"

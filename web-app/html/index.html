@@ -31,12 +31,15 @@
                 <li class="nav-item">
                     <a class="nav-link fw-bold py-1 px-0 me-2" href="#dashboard">Dashboard</a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item"> 
                     <a class="nav-link fw-bold py-1 px-0 me-2" href="#insight">Insight</a>
-                </li>
+                </li> -->
                 <li class="nav-item">
                     <a class="nav-link fw-bold py-1 px-0 me-2" href="#devops">DevOps</a>
                 </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#cloud">Cloud</a>
+                </li> -->
                 <li class="nav-item">
                     <a class="nav-link fw-bold py-1 px-0 me-2" href="#data_engineer">Data Engineer</a>
                 </li>
@@ -118,18 +121,16 @@
         <section id="dashboard" class="container pb-5">
 
             <!-- Chart Title -->
-            <div class="row">
-                <div class="px-5 py-5">
+            <div class="row pt-5">
 
-                    <!-- title text -->
-                    <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
-                        Dashboard
-                    </h1>
-                    <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
-                    <p class="text-center lead pt-4">
-                        Select charts to visualize API data (https://trip.arguswatcher.net/prod/bike).
-                    </p>
-                </div>
+                <!-- title text -->
+                <h1 class="display-5 fw-bold text-body-emphasis text-center">
+                    Dashboard
+                </h1>
+                <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
+                <p class="text-center lead pt-4">
+                    Select charts to visualize API data (https://trip.arguswatcher.net/prod/bike).
+                </p>
             </div>
 
             <!-- selector -->
@@ -153,11 +154,11 @@
             </div>
 
             <!-- divider -->
-            <hr class="col-8 mx-auto py-lg-4 py-sm-2">
+            <hr class="col-8 mx-auto py-lg-2">
 
             <!-- Dashboard Title -->
             <div class="row">
-                <div class="px-5 py-5">
+                <div class="">
 
                     <!-- title text -->
                     <p class="text-center lead pt-4">
@@ -220,7 +221,7 @@
         </section>
 
         <!-- divider -->
-        <hr class="col-8 mx-auto py-lg-4 py-sm-2">
+        <hr class="col-8 mx-auto py-lg-2">
 
         <!-- Insight -->
         <section id="insight" class="container pb-5">
@@ -343,7 +344,7 @@
         </section>
 
         <!-- divider -->
-        <hr class="col-8 mx-auto py-3">
+        <hr class="col-8 mx-auto py-lg-2">
 
         <!-- DevOps -->
         <section id="devops" class="container pb-5">
@@ -351,26 +352,24 @@
                 data-bs-smooth-scroll="true" class="bg-body-white p-3 rounded-2" tabindex="0">
 
                 <!-- Title -->
-                <div class="row row-cols-1">
-                    <div class="px-5 py-5">
+                <div class="row row-cols-1 pt-5">
 
-                        <!-- title text -->
-                        <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
-                            DevOps Skill
-                        </h1>
-                        <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
-                        <p class="text-center lead py-2">
-                            Explore DevOps skills by navigating the following slides
-                        </p>
+                    <!-- title text -->
+                    <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
+                        DevOps Skill
+                    </h1>
+                    <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
+                    <p class="text-center lead py-2">
+                        Explore DevOps skills by navigating the following slides
+                    </p>
 
-                        <div class="d-flex justify-content-center">
-                            <ul class="lead" style="list-style-type:square;">
-                                <li>CI/CD pipeline with GitHub Actions</li>
-                                <li>Infrastructure as Code (IaC) with Terraform</li>
-                                <!-- <li>Load testing with Grafana Cloud k6</li> -->
-                                <!-- <li>Central monitoring dashboard with Prometheus + Grafana</li> -->
-                            </ul>
-                        </div>
+                    <div class="d-flex justify-content-center">
+                        <ul class="lead" style="list-style-type:square;">
+                            <li>CI/CD pipeline with GitHub Actions</li>
+                            <li>Infrastructure as Code (IaC) with Terraform</li>
+                            <!-- <li>Load testing with Grafana Cloud k6</li> -->
+                            <!-- <li>Central monitoring dashboard with Prometheus + Grafana</li> -->
+                        </ul>
                     </div>
                 </div>
 
@@ -426,30 +425,21 @@
                 <!-- divider -->
                 <hr class="col-8 mx-auto py-lg-5">
 
-                <!-- DevOps: CICD Pipeline -->
-                <div class="row g-5 p-lg-5 mb-5">
+                <!-- DevOps Video: GitHub Actions CICD Pipeline -->
+                <div class="row g-5 mb-5">
 
-                    <!-- description -->
-                    <div class="col-lg-4 col-md-12 m-0 mb-4">
-                        <h1 class="display-6 fw-bold text-body-emphasis text-center lh-1 pb-3 mb-2">
-                            CI/CD Pipeline
-                        </h1>
-                        <p class="lead">
-                            Auto lint test - pull+pr
-                        </p>
-                        <p class="lead">
-                            Auto test - Grafana Cloud K6
-                        </p>
-                        <p class="lead">
-                            Prod - Notify
-                        </p>
-                        <p class="lead">
-                            Synthetic Alert.
-                        </p>
+                    <div class="row row-cols-1">
+                        <div class="px-5 py-3">
+
+                            <!-- title text -->
+                            <h3 class="fw-bold text-body-emphasis text-center">
+                                GitHub Actions CI/CD Pipeline
+                            </h3>
+                        </div>
                     </div>
 
                     <!-- video -->
-                    <div class="col-lg-8 col-md-12 m-0">
+                    <div class="col-lg-8 col-md-12 mx-auto my-0">
                         <video class="ratio ratio-4x3 shadow p-0 m-0" loading="lazy" autoplay muted controls>
                             <source
                                 src="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/video/insight/monthly.mp4"
@@ -457,44 +447,11 @@
                         </video>
                     </div>
                 </div>
-
-                <!-- divider -->
-                <hr class="col-8 mx-auto py-lg-5">
-
-                <!-- DevOps: API performance -->
-                <div class="row flex-lg-row-reverse g-5 p-lg-5 mb-5">
-                    <!-- description -->
-                    <div class="col-lg-4 col-md-12 m-0 mb-4">
-                        <h1 class="display-6 fw-bold text-body-emphasis text-center lh-1 pb-3 mb-2">
-                            API performance
-                        </h1>
-                        <p class="lead">
-                            Baseline: S3 + API Gateway
-                        </p>
-                        <p class="lead">
-                            Improve
-                            CDN
-                            Compression
-                            Cache
-                        </p>
-                        <p class="lead">
-                            SLA
-                        </p>
-                    </div>
-
-                    <!-- video -->
-                    <div class="col-lg-8 col-md-12 p-0">
-                        <video class="ratio ratio-4x3 shadow p-0 m-0" loading="lazy" autoplay muted controls>
-                            <source
-                                src="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/video/insight/hourly.mp4"
-                                type="video/mp4">
-                        </video>
-                    </div>
-                </div>
+            </div>
         </section>
 
         <!-- divider -->
-        <hr class="col-8 mx-auto py-3">
+        <hr class="col-8 mx-auto">
 
         <!-- DE -->
         <section id="data_engineer" class="container pb-5">
@@ -502,26 +459,24 @@
                 data-bs-smooth-scroll="true" class="bg-body-white p-3 rounded-2" tabindex="0">
 
                 <!-- Title -->
-                <div class="row row-cols-1">
-                    <div class="px-5 py-5">
+                <div class="row row-cols-1 pt-5">
 
-                        <!-- title text -->
-                        <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
-                            Data Engineering Skill
-                        </h1>
-                        <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
-                        <p class="text-center lead py-2">
-                            Explore Data Engineering skills by navigating the following slides
-                        </p>
+                    <!-- title text -->
+                    <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
+                        Data Engineering Skill
+                    </h1>
+                    <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
+                    <p class="text-center lead py-2">
+                        Explore Data Engineering skills by navigating the following slides
+                    </p>
 
-                        <div class="d-flex justify-content-center">
-                            <ul class="lead" style="list-style-type:square;">
-                                <li>On-premises data warehouse solution</li>
-                                <li>ETL Pipeline with PostgreSQL</li>
-                                <li>Data warehouse logical desgin</li>
-                                <!-- <li>Schedule backup task with Jenkins</li> -->
-                            </ul>
-                        </div>
+                    <div class="d-flex justify-content-center">
+                        <ul class="lead" style="list-style-type:square;">
+                            <li>On-premises data warehouse solution</li>
+                            <li>ETL Pipeline with PostgreSQL</li>
+                            <li>Data warehouse logical desgin</li>
+                            <!-- <li>Schedule backup task with Jenkins</li> -->
+                        </ul>
                     </div>
                 </div>
 
@@ -583,35 +538,6 @@
 
                 <!-- divider -->
                 <hr class="col-8 mx-auto py-lg-5">
-
-                <!-- DE: ETL Pipeline -->
-                <div class="row g-5 p-lg-5 mb-5">
-
-                    <!-- description -->
-                    <div class="col-lg-4 col-md-12 m-0 mb-4">
-                        <h1 class="display-6 fw-bold text-body-emphasis text-center lh-1 pb-3 mb-2">
-                            Data Pipeline
-                        </h1>
-                        <p class="lead">
-                            ETL - Jenkins
-                        </p>
-                        <p class="lead">
-                            Database+Docker
-                        </p>
-                        <p class="lead">
-                            Shell script + SQL Script
-                        </p>
-                    </div>
-
-                    <!-- video -->
-                    <div class="col-lg-8 col-md-12 m-0">
-                        <video class="ratio ratio-4x3 shadow p-0 m-0" loading="lazy" autoplay muted controls>
-                            <source
-                                src="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/video/devops/jenkins_etl01.mp4"
-                                type="video/mp4">
-                        </video>
-                    </div>
-                </div>
         </section>
     </main>
 
