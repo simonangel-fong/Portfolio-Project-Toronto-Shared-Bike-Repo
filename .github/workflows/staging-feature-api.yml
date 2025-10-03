@@ -3,11 +3,11 @@ name: api-staging
 on:
   workflow_dispatch:
   push:
-    branches: ["staging"]
+    branches: ["staging-feature-api"]
     paths:
       - "web-app/**" # update of code
       - "testing/**" # update of test case
-      - ".github/workflows/api-staging.yml"
+      - ".github/workflows/staging-feature-api.yml"
 
 # read write
 permissions:
