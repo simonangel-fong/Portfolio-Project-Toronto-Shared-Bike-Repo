@@ -1,4 +1,4 @@
-name: staging-destroy
+name: Feature API Destroy(Manual) - Staging Environment
 
 on:
   workflow_dispatch: {}

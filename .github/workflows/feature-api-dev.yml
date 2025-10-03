@@ -1,4 +1,4 @@
-name: api-dev
+name: Feature API Pipeline - Development Environment
 
 on:
   workflow_dispatch:

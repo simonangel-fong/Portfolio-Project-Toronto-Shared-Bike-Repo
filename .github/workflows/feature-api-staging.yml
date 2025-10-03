@@ -1,12 +1,13 @@
-name: api-prod-destroy
+name: Feature API Pipeline - Staging Environment
 
 on:
   workflow_dispatch:
   push:
-    branches:
-      - master
+    branches: ["staging-feature-api"]
     paths:
-      - "web-app/**"
+      - "web-app/**" # update of code
+      - "testing/**" # update of test case
+      - ".github/workflows/staging-feature-api.yml"
 
 # read write
 permissions:
@@ -19,10 +20,10 @@ concurrency:
   cancel-in-progress: true # Cancel older runs
 
 jobs:
-  provision_prod:
-    name: Provision Prod
+  deploy_staging:
+    name: Deploy Staging Env
     runs-on: ubuntu-latest
-    environment: Prod
+    environment: Staging
     timeout-minutes: 60
     env:
       DIR_WEB_APP_AWS: web-app/aws
@@ -69,7 +70,7 @@ jobs:
           terraform init -reconfigure -input=false \
             -backend-config="bucket=${{ vars.AWS_BACKEND_BUCKET }}" \
             -backend-config="region=${{ vars.AWS_REGION }}" \
-            -backend-config="key=${{ vars.AWS_BACKEND_BUCKET_KEY }}/${{ env.TF_VAR_env }}/terraform.tfstate" \
+            -backend-config="key=${{ vars.AWS_BACKEND_BUCKET_KEY }}/${{ vars.ENV }}/terraform.tfstate" \
             -backend-config="encrypt=true"
 
       - name: Terraform Validate
@@ -87,15 +88,53 @@ jobs:
       - name: Save plan artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: tfplan
+          name: tfplan-bundle
           path: |
             ${{ env.DIR_WEB_APP_AWS }}/tfplan
             ${{ env.DIR_WEB_APP_AWS }}/tfplan.json
           retention-days: 3
 
-      - name: Terraform Apply - Prod
+      - name: Terraform Apply - Staging
         run: terraform apply -auto-approve -no-color tfplan
-        
+
+  test_staging:
+    name: Integrate Testing(K6)
+    needs: deploy_staging
+    runs-on: ubuntu-latest
+    environment: Staging
+    env:
+      DIR_LOAD_TESTING: testing/load
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
+      TF_VERSION: 1.9.8
+      TF_VAR_project: ${{ vars.PROJECT }}
+      TF_VAR_app: ${{ vars.APP_WEB }}
+      TF_VAR_env: ${{ vars.ENV }}
+      TF_VAR_dns_domain: ${{ vars.DNS_DOMAIN }}
+      TF_VAR_aws_region: ${{ vars.AWS_REGION }}
+      TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
+      TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run k6 test
+        uses: grafana/run-k6-action@v1
+        id: testing_k6
+        env:
+          K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
+          K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+        with:
+          debug: true
+          fail-fast: true
+          flags: --env DNS_DOMAIN=${{ env.TF_VAR_dns_domain }} --env API_ENV=${{ env.TF_VAR_env }}
+          path: |
+            ${{ env.DIR_LOAD_TESTING }}/cloud_smoke.js
+            ${{ env.DIR_LOAD_TESTING }}/cloud_load.js
+            ${{ env.DIR_LOAD_TESTING }}/cloud_stress.js
+
       - name: Send email notification
         if: always()
         uses: dawidd6/action-send-mail@v3
@@ -117,6 +156,7 @@ jobs:
             <p><b>Job</b>: ${{ github.job }}</p>
             <p><b>Status</b>: ${{ job.status }}</p>
             <p><b>Branch</b>: ${{ github.ref }}</p>
+            <p><b>Test ID</b>: ${{ steps.testing_k6.outputs.testRunIds }}</p>
             <p><b>Workflow</b>: ${{ github.workflow }}</p>
             <p><b>Commit</b>: ${{ github.sha }}</p>
             <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
