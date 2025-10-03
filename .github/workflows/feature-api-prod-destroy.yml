@@ -1,4 +1,4 @@
-name: staging-destroy
+name: Feature API Destroy(Manual) - Production Environment
 
 on:
   workflow_dispatch: {}
@@ -8,15 +8,15 @@ permissions:
   id-token: write
 
 concurrency:
-  group: staging-destroy-${{ github.workflow }}-${{ github.ref_name }}
+  group: prod-destroy-${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true # Cancel older runs
 
 jobs:
-  destroy_staging:
-    name: Destroy Staging
-    if: github.ref_name == 'staging'
+  destroy_prod:
+    name: Destroy Prod
+    if: github.ref_name == 'master'
     runs-on: ubuntu-latest
-    environment: Staging
+    environment: Prod
     timeout-minutes: 60
     env:
       DIR_WEB_APP_AWS: web-app/aws
@@ -71,9 +71,9 @@ jobs:
           terraform fmt -check -recursive -no-color
           terraform validate -no-color
 
-      - name: Terraform Plan - Destroy
+      - name: Terraform Plan
         id: plan
         run: terraform plan -out=tfplan -input=false -no-color -destroy
 
-      - name: Terraform Apply - Staging Destroy
+      - name: Terraform Apply - Destroy Prod
         run: terraform apply -auto-approve -no-color tfplan
