@@ -1,28 +1,22 @@
-name: api-prod-destroy
+name: Feature API Destroy(Manual) - Staging Environment
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - master
-    paths:
-      - "web-app/**"
+  workflow_dispatch: {}
 
-# read write
 permissions:
   contents: read
   id-token: write
 
-# multiple trigger
 concurrency:
-  group: staging-cd-${{ github.workflow }}-${{ github.ref_name }}
+  group: staging-destroy-${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true # Cancel older runs
 
 jobs:
-  provision_prod:
-    name: Provision Prod
+  destroy_staging:
+    name: Destroy Staging
+    if: github.ref_name == 'staging'
     runs-on: ubuntu-latest
-    environment: Prod
+    environment: Staging
     timeout-minutes: 60
     env:
       DIR_WEB_APP_AWS: web-app/aws
@@ -77,46 +71,9 @@ jobs:
           terraform fmt -check -recursive -no-color
           terraform validate -no-color
 
-      - name: Terraform Plan
+      - name: Terraform Plan - Destroy
         id: plan
-        run: terraform plan -out=tfplan -input=false -no-color
+        run: terraform plan -out=tfplan -input=false -no-color -destroy
 
-      - name: Show plan (JSON)
-        run: terraform show -json tfplan > tfplan.json
-
-      - name: Save plan artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan
-          path: |
-            ${{ env.DIR_WEB_APP_AWS }}/tfplan
-            ${{ env.DIR_WEB_APP_AWS }}/tfplan.json
-          retention-days: 3
-
-      - name: Terraform Apply - Prod
+      - name: Terraform Apply - Staging Destroy
         run: terraform apply -auto-approve -no-color tfplan
-        
-      - name: Send email notification
-        if: always()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465`
-          secure: true
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "✉️ ${{ vars.PROJECT}} ${{vars.APP_WEB}} (${{vars.ENV}}): ${{ github.job }} ${{ job.status }}"
-          to: ${{ secrets.EMAIL_USERNAME }}
-          from: ${{ secrets.EMAIL_USERNAME }}
-          html_body: |
-            <h2>GitHub Actions CI/CD Notification</h2>
-            <p><b>Project</b>: ${{ vars.PROJECT}}</p>
-            <p><b>Application</b>: ${{ vars.APP_WEB}}</p>
-            <p><b>Repository</b>: ${{ github.repository }}</p>
-            <p><b>Env</b>: ${{ vars.ENV }}</p>
-            <p><b>Job</b>: ${{ github.job }}</p>
-            <p><b>Status</b>: ${{ job.status }}</p>
-            <p><b>Branch</b>: ${{ github.ref }}</p>
-            <p><b>Workflow</b>: ${{ github.workflow }}</p>
-            <p><b>Commit</b>: ${{ github.sha }}</p>
-            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>

@@ -1,13 +1,13 @@
-name: api-staging
+name: Feature API Pipeline - Staging Environment
 
 on:
   workflow_dispatch:
   push:
-    branches: ["staging"]
+    branches: ["feature-api-staging"]
     paths:
       - "web-app/**" # update of code
       - "testing/**" # update of test case
-      - ".github/workflows/api-staging.yml"
+      - ".github/workflows/feature-api-staging.yml"
 
 # read write
 permissions:

@@ -1,16 +1,16 @@
-name: api-dev
+name: Feature API Pipeline - Development Environment
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - "feature/api"
+      - "feature-api-dev"
     paths:
       - "web-app/**"
       - "testing/**"
-      - ".github/workflows/api-dev.yml"
+      - ".github/workflows/feature-api-dev.yml"
   pull_request:
-    branches: ["staging"]
+    branches: ["feature-api-staging"]
     paths:
       - "web-app/**"
       - "testing/**"
