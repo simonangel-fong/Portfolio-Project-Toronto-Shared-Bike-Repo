@@ -3,12 +3,12 @@
 [Back](../README.md)
 
 - [Portfolio Project - Toronto-Shared-Bike: Testing](#portfolio-project---toronto-shared-bike-testing)
-  - [Testing](#testing)
-  - [K6](#k6)
+  - [Performance Testing](#performance-testing)
+    - [K6](#k6)
 
 ---
 
-## Testing
+## Performance Testing
 
 | Type               | Category               | Subcategory         | Goal                                                            |
 | ------------------ | ---------------------- | ------------------- | --------------------------------------------------------------- |
@@ -20,30 +20,32 @@
 
 ---
 
-## K6
+### K6
 
 ```sh
-cd test
+cd testing/load
 docker build -t k6 .
 
 # smoke testing
-docker run --rm --name k6_con --env-file ./.env -v ./script:/app k6 cloud run cloud_smoke.js
+docker run --rm --name k6_con --env-file ./.env -v ./:/app k6 cloud run --include-system-env-vars=true cloud_smoke.js
 
 # load testing
-docker run --rm --name k6_con --env-file ./.env -v ./script:/app k6 cloud run cloud_load.js
+docker run --rm --name k6_con --env-file ./.env -v ./:/app k6 cloud run --include-system-env-vars=true cloud_load.js
 
 # stress testing
-docker run --rm --name k6_con --env-file ./.env -v ./script:/app k6 cloud run cloud_stress.js
+docker run --rm --name k6_con --env-file ./.env -v ./:/app k6 cloud run --include-system-env-vars=true cloud_stress.js
 
 # spike testing
-docker run --rm --name k6_con --env-file ./.env -v ./script:/app k6 cloud run cloud_spike.js
+docker run --rm --name k6_con --env-file ./.env -v ./:/app k6 cloud run --include-system-env-vars=true cloud_spike.js
 
 # stress testing local
-docker run --rm --name k6_con -e K6_WEB_DASHBOARD=true -e K6_WEB_DASHBOARD_EXPORT=stress.html -v ./script:/app k6 run local_stress.js
+docker run --rm --name k6_con -e K6_WEB_DASHBOARD=true -e K6_WEB_DASHBOARD_EXPORT=stress.html -v ./:/app k6 run local_stress.js
 
 # spike testing local
-docker run --rm --name k6_con -e K6_WEB_DASHBOARD=true -e K6_WEB_DASHBOARD_EXPORT=spike.html -v ./script:/app k6 run local_spike.js
+docker run --rm --name k6_con -e K6_WEB_DASHBOARD=true -e K6_WEB_DASHBOARD_EXPORT=spike.html -v ./:/app k6 run local_spike.js
 
 # breakpoint testing
-docker run --rm --name k6_con -e K6_WEB_DASHBOARD=true -e K6_WEB_DASHBOARD_EXPORT=breakpoint.html -v ./script:/app k6 run local_breakpoint.js
+docker run --rm --name k6_con -e K6_WEB_DASHBOARD=true -e K6_WEB_DASHBOARD_EXPORT=breakpoint.html -v ./:/app k6 run local_breakpoint.js
 ```
+
+---
