@@ -1,10 +1,43 @@
-# Portfolio Project - Toronto-Shared-Bike: Testing
+# Testing
 
-[Back](../README.md)
+[Back](../../README.md)
 
-- [Portfolio Project - Toronto-Shared-Bike: Testing](#portfolio-project---toronto-shared-bike-testing)
+- [Testing](#testing)
+  - [Unit Test](#unit-test)
   - [Performance Testing](#performance-testing)
     - [K6](#k6)
+
+---
+
+## Unit Test
+
+```sh
+# setup env
+python -m venv .venv
+
+# activate env
+.venv\Scripts\activate.bat
+# .venv\Scripts\deactivate.bat
+
+# install packages
+pip install --upgrade pip
+pip install pytest moto boto3
+
+# unit test
+pytest
+# ================================== test session starts ==================================
+# platform win32 -- Python 3.11.0rc2, pytest-8.4.2, pluggy-1.6.0
+# rootdir: C:\Users\simon\OneDrive\Tech\Github\Portfolio-Project-Toronto-Shared-Bike-Infra-Repo
+# collected 13 items
+
+# testing\unit\test_bike.py ..                                                       [ 15%]
+# testing\unit\test_station.py ..                                                    [ 30%]
+# testing\unit\test_top_station.py ...                                               [ 53%]
+# testing\unit\test_trip_hour.py ...                                                 [ 76%]
+# testing\unit\test_trip_month.py ...                                                [100%]
+
+# ================================== 13 passed in 2.22s ===================================
+```
 
 ---
 
@@ -47,5 +80,3 @@ docker run --rm --name k6_con -e K6_WEB_DASHBOARD=true -e K6_WEB_DASHBOARD_EXPOR
 # breakpoint testing
 docker run --rm --name k6_con -e K6_WEB_DASHBOARD=true -e K6_WEB_DASHBOARD_EXPORT=breakpoint.html -v ./:/app k6 run local_breakpoint.js
 ```
-
----
