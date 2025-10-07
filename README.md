@@ -1,135 +1,62 @@
-# Portfolio Project - Toronto-Shared-Bike
+# Toronto Shared Bike Analytics - A Hybrid Cloud Project
 
-- [Portfolio Project - Toronto-Shared-Bike](#portfolio-project---toronto-shared-bike)
-  - [System Architecture](#system-architecture)
-  - [Web Application](#web-application)
-
----
-
-## System Architecture
-
-![sa](./src/web-app/html/img/tech/system_design.gif)
+- [Toronto Shared Bike Analytics - A Hybrid Cloud Project](#toronto-shared-bike-analytics---a-hybrid-cloud-project)
+  - [Overview](#overview)
+  - [Architecture](#architecture)
+  - [Project Demo](#project-demo)
+  - [Key Features \& Tech Skills](#key-features--tech-skills)
+  - [Detailed Documentation](#detailed-documentation)
 
 ---
 
-## Web Application
+## Overview
 
-- Web: [https://trip.arguswatcher.net](https://trip.arguswatcher.net)
+A `hybrid cloud` project designed and automated to analyze [Toronto’s Shared Bike](https://bikesharetoronto.com/) data, revealing user behavior and usage trends.
 
-- RESTful API
+- **On-Prem Data Warehouse**: Built and automated a local `PostgreSQL`-based data warehouse using `Docker` and `Jenkins` to run nightly `ETL pipelines`, handling data aggregation for over **18 million records** and performance monitoring.
 
-| Url                                      | Description                          |
-| ---------------------------------------- | ------------------------------------ |
-| `trip.arguswatcher.net/prod/bike`        | Shared bike number over years        |
-| `trip.arguswatcher.net/prod/station`     | Bike station number over years       |
-| `trip.arguswatcher.net/prod/trip-hour`   | Hourly pattern of shared-bike trips  |
-| `trip.arguswatcher.net/prod/trip-month`  | Monthly pattern of shared-bike trips |
-| `trip.arguswatcher.net/prod/top-station` | Top 10 stations                      |
+- **AWS Serverless Application**: Deployed a [REST API](https://trip.arguswatcher.net/prod/bike) and interactive [web](https://trip.arguswatcher.net/) visualization using `AWS` services, with infrastructure managed by `Terraform` and `CI/CD` powered by `GitHub Actions`.
 
 ---
 
-- [Testing with `k6`](./docs/test.md)
+## Architecture
 
-```sh
-mkdir -pv ~/project_toronto_shared_bike
-sudo apt install -y git
-git clone https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git ~/project_toronto_shared_bike
+- **On-Prem Solution**
 
-cd ~/project_toronto_shared_bike
-git checkout feature/dw
-chmod -v +x ~/project_toronto_shared_bike/data-warehouse/script/init.sh
+![on-prem](./web-app/html/img/de/on-prem.gif)
 
-bash data-warehouse/script/init.sh
-# get jenkins pwd
-docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
-```
+- **Cloud Solution**
+  - Website URL: https://trip.arguswatcher.net/
 
-```sh
-sudo apt update
-sudo apt install -y openssh-server
-sudo systemctl enable --now ssh
+![AWS](./web-app/html/img/devops/devops_cloud.gif)
 
-sudo vi /etc/ssh/sshd_config
-sudo systemctl restart ssh
-```
+---
 
-                                ┌───────────────────────────────────────────┐
-                                │                 Client                    │
-                                │  (your browser/CLI hitting Jenkins UI)    │
-                                └───────────────────────────────────────────┘
-                                                     │ HTTPS
-                                                     ▼
+## Project Demo
 
-┌───────────────────────────────────────────────────────────────────────────────────────────────┐
-│ VM (Host) │
-│ │
-│ ┌───────────────────────────┐ Control (SSH) │
-│ │ Reverse Proxy (opt.) │◀────────────────────────────────────────────────────────────┐ │
-│ │ (nginx/traefik + TLS) │ │ │
-│ └─────────────▲─────────────┘ │ │
-│ │ HTTP (internal) │ │
-│ ┌─────────────┴───────────────────────────────────────────┐ │ │
-│ │ Jenkins Controller (Docker) │ │ │
-│ │ container: jenkins:lts-jdk17 │ │ │
-│ │ volume: jenkins_home (JENKINS_HOME persistence) │ │ │
-│ │ NO /var/run/docker.sock mount (best practice) │ │ │
-│ └─────────────┬────────────────────────────────────────────┘ │ │
-│ │ Schedules jobs │
-│ │ │
-│ │ ┌─────────────────────────────────────────────────────────┐ │
-│ └─────────────────▶│ Jenkins Agent (VM host via SSH) │ │
-│ │ user: jenkins (member of docker group) │ │
-│ │ runs pipelines; sees host FS (/srv/etl) │ │
-│ └───────────┬────────────────────────────────────────────┘ │
-│ │ orchestrates docker compose, psql, file IO │
-│ │ │
-│ ┌────────────────────▼────────────────────┐ │
-│ │ Docker Engine │ │
-│ │ (running on the VM host) │ │
-│ └───────┬───────────────────┬─────────────┘ │
-│ │ │ │
-│ ┌───────────────────────────────▼─────────────┐ │ │
-│ │ pgdb Compose Stack │ │ │
-│ │ service: db (postgres:16) │ │ │
-│ │ healthcheck: pg_isready │ │ │
-│ │ volumes: │ │ │
-│ │ • pgdata (named volume) ────────────────┘ │ durable database files │
-│ │ • ../data (bind mount) <──────────────────────┘ raw/export visible on host + container │
-│ │ • ../sql/init (ro) <──────────────────────── init SQL (schemas/users/extensions) │
-│ │ • ../sql/transform (ro) <──────────────────────── ETL SQL (idempotent transforms) │
-│ └─────────────────────────────────────────────────────────────────────────────────────────────┘
-│
-│ Host filesystem layout (owned by jenkins:docker):
-│ /srv/etl/
-│ compose/ (docker-compose.yml, .env from Jenkins creds)
-│ data/
-│ raw/ ← CSV inputs downloaded by pipeline
-│ export/ → processed outputs & backups (pg_dump)
-│ sql/
-│ init/ ← first-boot schema/users
-│ transform/← idempotent ETL scripts
-│ cache/ ← ETag/checksum for idempotent downloads
-│ logs/
-│
-│ External data flows:
-│ [CSV Source: HTTPS/S3/etc.] ───────────────▶ /srv/etl/data/raw/ (download step, cache-aware)
-│ /srv/etl/data/export/ ─────────────────────▶ [Downstream consumer or S3 backup (optional)]
-│
-└───────────────────────────────────────────────────────────────────────────────────────────────┘
+- **CI/CD Pipeline - GitHub Actions**
 
-```sh
-apt update
-apt install -y openjdk-17-jre openssh-server
-# Create a work dir for Jenkins builds:
-useradd -m -s /bin/bash jenkins || true
-mkdir -p /home/jenkins/agent && chown -R jenkins:jenkins /home/jenkins
-```
+[![cicd_github_action](https://img.youtube.com/vi/V_tjzqmmyYc/0.jpg)](https://www.youtube.com/watch?v=V_tjzqmmyYc)
 
-dockerfile
+---
 
-```sh
-docker run -e POSTGRES_USER="postgres" -e POSTGRES_PASSWORD="SecurePassword123" -e POSTGRES_DB="toronto_shared_bike" -v ./scripts/setup:/docker-entrypoint-initdb.d -v ./scripts:/scripts --name "dw" -d postgres:15
-```
+## Key Features & Tech Skills
 
-- [On-Premises Setup - Proxmox VE](./docs/pve/pve.md)
-- [On-Premises Deploy - Data Warehouse](./docs/dw/dw.md)
+| Feature                          | Tools & Technologies                                |
+| -------------------------------- | --------------------------------------------------- |
+| **CI/CD Automation**             | Jenkins (on-prem), GitHub Actions (serverless)      |
+| **Infrastructure as Code (IaC)** | Terraform                                           |
+| **Cloud Platform**               | AWS (Lambda, API Gateway, DynamoDB, S3, CloudFront) |
+| **On-Prem Infrastructure**       | Proxmox VE, Docker                                  |
+| **ETL Pipeline**                 | PostgreSQL, Jenkins, SQL, Shell scripting           |
+| **Monitoring & Load Testing**    | Grafana, k6 (Grafana Cloud)                         |
+
+---
+
+## Detailed Documentation
+
+- [Proxmox VE](./docs/pve/pve.md)
+- [Initialize VM & Auto Install](./docs/init/init.md)
+- [Testing (Unit Test & Load Testing)](./docs/testing/testing.md)
+
+---
