@@ -38,8 +38,6 @@ A `hybrid cloud` project designed and automated to analyze [Toronto’s Shared B
 
 [![cicd_github_action](https://img.youtube.com/vi/V_tjzqmmyYc/0.jpg)](https://www.youtube.com/watch?v=V_tjzqmmyYc)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/V_tjzqmmyYc" frameborder="0" allowfullscreen></iframe>
-
 ---
 
 ## Key Features & Tech Skills
@@ -57,12 +55,8 @@ A `hybrid cloud` project designed and automated to analyze [Toronto’s Shared B
 
 ## Detailed Documentation
 
-- On-Prem Solution
-
-  - [Proxmox VE](./docs/pve/pve.md)
-  - [Initialize VM & Auto Install](./docs/init/init.md)
-
-- Cloud Solution
-  - [Testing](./docs/testing/testing.md)
+- [Proxmox VE](./docs/pve/pve.md)
+- [Initialize VM & Auto Install](./docs/init/init.md)
+- [Testing (Unit Test & Load Testing)](./docs/testing/testing.md)
 
 ---
