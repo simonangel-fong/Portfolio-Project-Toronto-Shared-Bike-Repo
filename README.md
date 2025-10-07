@@ -3,6 +3,7 @@
 - [Toronto Shared Bike Analytics - A Hybrid Cloud Project](#toronto-shared-bike-analytics---a-hybrid-cloud-project)
   - [Overview](#overview)
   - [Architecture](#architecture)
+  - [Project Demo](#project-demo)
   - [Key Features \& Tech Skills](#key-features--tech-skills)
   - [Detailed Documentation](#detailed-documentation)
 
@@ -28,6 +29,14 @@ A `hybrid cloud` project designed and automated to analyze [Toronto’s Shared B
   - Website URL: https://trip.arguswatcher.net/
 
 ![AWS](./web-app/html/img/devops/devops_cloud.gif)
+
+---
+
+## Project Demo
+
+- **CI/CD Pipeline - GitHub Actions**
+
+[![cicd_github_action](https://img.youtube.com/vi/V_tjzqmmyYc/0.jpg)](https://www.youtube.com/watch?v=V_tjzqmmyYc)
 
 ---
 
