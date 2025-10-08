@@ -11,7 +11,10 @@ networks:
 services:
   postgresql-db:
     container_name: postgresql
-    image: postgres:15
+    # image: postgres:15
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: unless-stopped
     # user: root
     environment:
