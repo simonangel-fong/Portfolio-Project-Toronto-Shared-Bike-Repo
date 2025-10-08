@@ -22,7 +22,7 @@ services:
     volumes:
       - ./init/:/docker-entrypoint-initdb.d # scripts to run after setup
       - ./scripts/:/scripts
-      # - ./data/:/data
+      - ./data/:/data
       # - ./export/:/export
       - pgdata:/var/lib/postgresql # persist data
     networks:
