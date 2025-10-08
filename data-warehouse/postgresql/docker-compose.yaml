@@ -11,10 +11,10 @@ networks:
 services:
   postgresql-db:
     container_name: postgresql
-    # image: postgres:15
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: postgres:15
+    # build:
+      # context: .
+      # dockerfile: Dockerfile
     restart: unless-stopped
     # user: root
     environment:
@@ -23,10 +23,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-toronto_shared_bike}
       # PGDATA: ${PGDATA}
     volumes:
-      - ./init/:/docker-entrypoint-initdb.d # scripts to run after setup
-      - ./scripts/:/scripts
-      - ./data/:/data
-      - ./export/:/export
+      - ${DIR_PGDB:-.}/init/:/docker-entrypoint-initdb.d # scripts to run after setup
+      - ${DIR_PGDB:-.}/scripts/:/scripts
+      - ${DIR_PGDB:-.}/data/:/data
+      - ${DIR_PGDB:-.}/export/:/export
       - pgdata:/var/lib/postgresql # persist data
     networks:
       - public-net # public for dev
