@@ -3,13 +3,12 @@
 [Back](../../README.md)
 
 - [Proxmox VE Setup](#proxmox-ve-setup)
-  - [Challenge: Map Wifi to Proxmox NIC (Skip)](#challenge-map-wifi-to-proxmox-nic-skip)
+  - [Challenge: Map Wifi to Proxmox NIC](#challenge-map-wifi-to-proxmox-nic)
   - [Challenge: Port Forwarding](#challenge-port-forwarding)
-  - [Initialize VM](#initialize-vm)
 
 ---
 
-## Challenge: Map Wifi to Proxmox NIC (Skip)
+## Challenge: Map Wifi to Proxmox NIC
 
 - By default, PVE uses ethernet network.
   - Further configuration is required when using Wifi
@@ -64,8 +63,6 @@ ssh root@192.168.1.80
 ssh -J root@192.168.1.80 aadmin@192.168.100.110
 ```
 
-![network architecture diagram](network)
-
 ---
 
 ## Challenge: Port Forwarding
@@ -102,41 +99,3 @@ netfilter-persistent save
 - Test Connection (Grafana) after deployment
 
 ![pic](./pic/grafana.png)
-
----
-
-## Initialize VM
-
-
-```sh
-ssh -J root@192.168.1.80 admin@192.168.100.110
-sudo apt-get update && sudo apt-get upgrade -y
-sudo apt-get install -y openssh-server vim
-# enable pwd auth
-sudo nano /etc/ssh/sshd_config
-# PasswordAuthentication yes
-sudo systemctl restart ssh
-
-# configure ip
-sudo touch /etc/netplan/01-netcfg.yaml
-sudo tee /etc/netplan/01-netcfg.yaml << EOF
-network:
-  version: 2
-  renderer: networkd
-  ethernets:
-    ens18:
-      dhcp4: no
-      addresses:
-        - 192.168.100.110/24
-      routes:
-        - to: default
-          via: 192.168.100.254
-      nameservers:
-        addresses: [192.168.100.254, 8.8.8.8]
-EOF
-
-sudo chmod 600 /etc/netplan/01-netcfg.yaml
-sudo netplan apply
-
-sudo reboot
-```
