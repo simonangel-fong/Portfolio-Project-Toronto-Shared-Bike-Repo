@@ -9,7 +9,7 @@ services:
   jenkins:
     container_name: jenkins
     build: .
-    image: jenkins-jcasc
+    # image: jenkins-jcasc
     # image: jenkins/jenkins:2.516.3-jdk21
     restart: unless-stopped
     user: root
