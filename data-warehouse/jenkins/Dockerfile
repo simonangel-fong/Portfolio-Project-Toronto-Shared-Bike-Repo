@@ -11,8 +11,6 @@ RUN echo "deb [arch=$(dpkg --print-architecture) \
   $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
 RUN apt-get update && apt-get install -y docker-ce-cli
 
-USER jenkins
-
 # disable setup wizard
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
 
@@ -23,3 +21,5 @@ COPY --chown=jenkins:jenkins ./config/jenkins.yaml /var/jenkins_home/casc_config
 # Install Jenkins plugins
 COPY --chown=jenkins:jenkins ./config/plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
+
+USER jenkins
