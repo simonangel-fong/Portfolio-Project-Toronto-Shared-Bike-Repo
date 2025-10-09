@@ -3,12 +3,16 @@ pipeline {
 
     stages {
         stage('Clean workspace & Clone repo') {
+
+           
             steps {
-                cleanWs()
-                sh """
+                wc("/var/jenkins_home/workspace"){
+                    cleanWs()
+                    sh """
                     git clone -b feature-dw-dev https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git .
-                    git checkout feature-dw-dev
-                """
+                    """
+                }
+
             }
         }
         
@@ -20,7 +24,18 @@ pipeline {
                 pwd 
                 ls -l
                 hostname
+
                 '''
+                wc("/var/jenkins_home/workspace"){
+                    sh '''
+                set -e
+                
+                pwd 
+                ls -l
+                hostname
+
+                '''
+                }
             }
         }
 
