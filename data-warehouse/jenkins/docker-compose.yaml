@@ -8,20 +8,22 @@ volumes:
 services:
   jenkins:
     container_name: jenkins
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
     # image: jenkins-jcasc
-    # image: jenkins/jenkins:2.516.3-jdk21
+    image: jenkins/jenkins:2.516.3-jdk21
     restart: unless-stopped
     user: root
+    env_file:
+      - ./.env
     environment:
       - JENKINS_ADMIN_ID=${JENKINS_ADMIN_ID:-admin}
       - JENKINS_ADMIN_PASSWORD=${JENKINS_ADMIN_PASSWORD:-admin}
       - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
       - jenkins_data:/var/jenkins_home
-      - /var/jenkins_home/workspace:/var/jenkins_home/workspace
+      # - /var/jenkins_home/workspace:/var/jenkins_home/workspace
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - jenkins_network 
