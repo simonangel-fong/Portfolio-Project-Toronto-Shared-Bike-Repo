@@ -1,0 +1,25 @@
+name: toronto-shared-bike
+
+include:
+  - ../nginx/docker-compose.yaml
+
+networks:
+  public-net:
+    driver: bridge
+  monitoring:
+    driver: bridge
+
+services:
+  cloudflare:
+    container_name: cloudflare
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - public-net
+      - monitoring
+    command: tunnel run
+    depends_on:
+      - nginx
+
