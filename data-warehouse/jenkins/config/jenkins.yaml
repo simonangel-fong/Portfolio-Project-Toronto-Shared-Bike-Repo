@@ -98,9 +98,7 @@ jobs:
             triggers {
               githubPush()
             }
-            steps {
-              shell('echo "GitHub webhook triggered this build!"')
-            }
+            scriptPath("data-warehouse/jenkins/test_db.Jenkinsfile")
             lightweight()
           }
         }
