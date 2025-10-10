@@ -1,26 +1,226 @@
 pipeline {
-    agent any
+  agent any
 
-    environment {
-        // REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
-        REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/test_data.zip"
-        POSTGRES_DB = "toronto_shared_bike"
-        GMAIL = credentials('gmail_cred')
+  options {
+    // limit only one instance
+    disableConcurrentBuilds()
+    // show timestamp for event
+    timestamps()
+    // discard old builds
+    buildDiscarder(
+      logRotator(
+        // maximum number of the last build logs
+        numToKeepStr: '10',   
+        // maximum number of the last sets of build artifacts
+        artifactNumToKeepStr: '5'   
+      )
+    )
+    // set a timeout for the entire pipeline run
+    timeout(time: 40, unit: 'MINUTES')
+
+    // Prevents Jenkins from automatically checking out the SCM.
+    skipDefaultCheckout(true)
+  }
+
+  triggers {
+    cron '0 0 * * *'    // every midnight
+  }
+
+  environment {
+    // REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
+    REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/test_data.zip"
+    POSTGRES_DB = "toronto_shared_bike"
+  }
+
+  stages {
+
+    stage('Cleanup Workspace & Checkout') {
+      steps {
+        echo "#################### Cleans the workspace ####################"
+        cleanWs()
+        
+        echo "#################### Checkout ####################"
+        checkout scm
+        sh '''
+          pwd
+          ls -l
+        '''
+      }
     }
 
-    stages {
-        stage('Clean workspace & Clone repo') {
-            steps {
-                echo "#################### Email ####################"
-                echo "Username: ${GMAIL_USR}"
-                emailext (
-                    to: "${GMAIL_USR}",
-                    subject: "Jekins Pipeline FAILURE - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
-                    body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
-                        "Status: FAILURE \n" +
-                        "Build URL: ${env.BUILD_URL}"
-                )
-            }
+    stage('Download CSV Files') {
+      steps {
+        dir("data-warehouse/postgresql"){
+          echo "#################### Download CSV zip ####################"
+          sh '''
+            ls -l
+            mkdir -pv data 
+            mkdir -pv export
+            ls -dl data
+            curl -o ./csv.zip $REMOTE_DATA
+            ls -l csv.zip
+          '''
+
+          echo "#################### Unzip CSV zip ####################"
+          sh '''
+            unzip -o ./csv.zip -d .
+            ls -l ./data
+            du -h ./data
+            rm -fv ./csv.zip
+          '''
         }
+      }
     }
+
+    stage('Start PostgreSQL') {
+      steps {
+        script{
+          withCredentials([
+            string(credentialsId: 'postgres_user', variable: 'POSTGRES_USER'),
+            string(credentialsId: 'postgres_password', variable: 'POSTGRES_PASSWORD'),
+            ]) {
+              dir("data-warehouse/postgresql"){
+                echo "#################### Spin up PGDB ####################"
+                sh '''
+                  pwd
+                  ls -l
+                  docker compose down -v
+                  docker compose up -d --build
+
+                  # Wait until Postgres is ready
+                  until docker exec -t postgresql bash -lc 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'; do
+                    echo "Waiting for PostgreSQL to become ready..."
+                    sleep 5
+                  done
+                '''
+
+                echo "#################### Confirm PGDB ####################"
+                sh '''
+                  docker ps
+                  docker logs --tail=100 postgresql || true
+                '''
+              }
+          }
+        }
+      }
+    }
+
+    stage('Extract Data') {
+      steps {
+        echo "#################### Extract Data ####################"
+        sh '''
+          # sleep 900
+          docker exec -t postgresql bash /scripts/etl/extract.sh
+        '''
+      }
+    }
+
+    stage('Transform Data') {
+      steps {
+        sh '''
+          # sleep 900
+          docker exec -t postgresql bash /scripts/etl/transform.sh
+        '''
+      }
+    }
+
+    stage('Load Data') {
+      steps {
+        sh '''
+          # sleep 900
+          docker exec -t postgresql bash /scripts/etl/load.sh
+        '''
+      }
+    }
+
+    stage('Refresh Materialized Views') {
+      steps {
+        sh '''
+          # sleep 900
+          docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
+        '''
+      }
+    }
+
+    stage('Export Data') {
+      steps {
+        script{
+          dir('data-warehouse/postgresql'){
+            withCredentials([
+              string(credentialsId: 'postgres_user', variable: 'POSTGRES_USER'),
+              ]) {
+              echo "#################### Export Data ####################"
+              sh '''
+                pwd
+                mkdir -pv export
+                ls -ld export
+
+                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_hour) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_hour.csv
+                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_month) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_month.csv
+                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_top_station_user_year) TO STDOUT WITH CSV HEADER" > export/mv_top_station_user_year.csv
+                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_station_year) TO STDOUT WITH CSV HEADER" > export/mv_station_year.csv
+                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_bike_year) TO STDOUT WITH CSV HEADER" > export/mv_bike_year.csv
+
+              '''
+              }
+          }
+        }
+      }
+    }
+
+    stage('Upload to S3') {
+      steps {
+        dir('data-warehouse/postgresql'){
+          script{
+            echo "#################### Upload to S3 ####################"
+            sh '''
+              pwd
+              ls ./export
+            '''
+
+            withAWS(credentials: 'aws_cred', region: 'ca-central-1') {
+              s3Upload(
+                bucket: 'toronto-shared-bike-data-warehouse-data-bucket', 
+                path: 'test', 
+                workingDir: 'export',
+                includePathPattern:'**/*.csv',
+              )
+            }
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      echo "#################### Cleanup PGDB ####################"
+      sh '''
+      docker compose -f data-warehouse/postgresql/docker-compose.yaml down
+      '''
+
+      echo "#################### Cleanup Workspace ####################"
+      // cleanWs()
+    }
+    
+    failure {
+      emailext (
+        to: "	tech@arguswatcher.net",
+        subject: "Jekins Pipeline FAILURE - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
+        body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
+          "Status: FAILURE \n" +
+          "Build URL: ${env.BUILD_URL}"
+      )
+    }
+
+    success {
+      emailext (
+        to: "	tech@arguswatcher.net",
+        subject: "Jekins Pipeline SUCCESS - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
+        body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
+          "Status: SUCCESS \n" +
+          "Build URL: ${env.BUILD_URL}"
+      )
+    }
+  }
 }
