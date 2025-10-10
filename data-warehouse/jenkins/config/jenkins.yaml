@@ -96,9 +96,11 @@ jobs:
               }
             }
             triggers {
-              githubPush() // This line enables the GitHub push trigger
+              githubPush()
             }
-            scriptPath("data-warehouse/jenkins/test_db.Jenkinsfile")
+            steps {
+              shell('echo "GitHub webhook triggered this build!"')
+            }
             lightweight()
           }
         }
