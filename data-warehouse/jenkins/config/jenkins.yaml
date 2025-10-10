@@ -95,6 +95,9 @@ jobs:
                 branch('feature-dw-dev')
               }
             }
+            triggers {
+              githubPush() // This line enables the GitHub push trigger
+            }
             scriptPath("data-warehouse/jenkins/test_db.Jenkinsfile")
             lightweight()
           }
