@@ -8,24 +8,13 @@ pipeline {
 
   stages {
 
-    stage('Cleanup Workspace & Checkout') {
-      steps {
-        echo "#################### Cleans the workspace ####################"
-        cleanWs()
-        
-        echo "#################### Checkout ####################"
-        checkout scm
-        sh '''
-          pwd
-          ls -l
-        '''
-      }
-    }
-
     stage('test') {
       steps {
         dir("data-warehouse/postgresql"){
           echo "#################### test ####################"
+          sh '''
+          ls -l
+          '''
         }
       }
     }
