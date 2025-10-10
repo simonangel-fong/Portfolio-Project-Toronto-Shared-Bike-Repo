@@ -5,6 +5,10 @@ pipeline {
         choice(name: 'ENVIRONMENT', choices: ['qa', 'prod'], description: 'Deployment environment')
     }
 
+    triggers {
+        githubPush() // Triggers on GitHub push events
+    }
+
     environment {
         // REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
         REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/test_data.zip"
