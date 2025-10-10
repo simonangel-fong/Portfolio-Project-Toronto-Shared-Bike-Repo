@@ -205,7 +205,7 @@ pipeline {
     
     failure {
       emailext (
-        to: "tech.arguswatcher@gmail.com",
+        to: "	tech@arguswatcher.net",
         subject: "Jekins Pipeline FAILURE - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
         body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
           "Status: FAILURE \n" +
@@ -215,7 +215,7 @@ pipeline {
 
     success {
       emailext (
-        to: "tech.arguswatcher@gmail.com",
+        to: "	tech@arguswatcher.net",
         subject: "Jekins Pipeline SUCCESS - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
         body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
           "Status: SUCCESS \n" +

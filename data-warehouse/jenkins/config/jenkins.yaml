@@ -80,23 +80,21 @@ unclassified:
     useSsl: true
     useTls: false
 
-# jobs:
-#   - script: >
-#       pipelineJob('testjobs/default-agent') {
-#         definition {
-#           cps {
-#             script("""
-#               pipeline {
-#                 agent any
-#                 stages {
-#                   stage('test') {
-#                     steps {
-#                       echo "hello"
-#                     }
-#                   }
-#                 }
-#               }
-#             """.stripIndent())
-#           }
-#         }
-#       }
+jobs:
+  - script: >
+      pipelineJob('test-pgdb') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git')
+                }
+                branch('feature-dw-dev')
+              }
+            }
+            scriptPath("data-warehouse/jenkins/test_db.Jenkinsfile")
+            lightweight()
+          }
+        }
+      }

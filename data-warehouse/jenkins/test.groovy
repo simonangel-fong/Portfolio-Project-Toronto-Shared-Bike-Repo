@@ -18,28 +18,28 @@ pipeline {
             }
         }
         
-        stage('Download CSV Files') {
-            steps {
-                dir("data-warehouse/postgresql"){
-                    echo "#################### Download CSV zip ####################"
-                    sh '''
-                        mkdir -pv data 
-                        mkdir -pv export
+    //     stage('Download CSV Files') {
+    //         steps {
+    //             dir("data-warehouse/postgresql"){
+    //                 echo "#################### Download CSV zip ####################"
+    //                 sh '''
+    //                     mkdir -pv data 
+    //                     mkdir -pv export
                     
-                        curl -o ./csv.zip $REMOTE_DATA
-                        ls -l csv.zip
-                    '''
+    //                     curl -o ./csv.zip $REMOTE_DATA
+    //                     ls -l csv.zip
+    //                 '''
 
-                    echo "#################### Unzip CSV zip ####################"
-                    sh '''
-                        unzip -o ./csv.zip -d .
-                        ls -l ./data
-                        du -h ./data
-                        rm -fv ./csv.zip
-                    '''
-                }
-            }
-        }
+    //                 echo "#################### Unzip CSV zip ####################"
+    //                 sh '''
+    //                     unzip -o ./csv.zip -d .
+    //                     ls -l ./data
+    //                     du -h ./data
+    //                     rm -fv ./csv.zip
+    //                 '''
+    //             }
+    //         }
+    //     }
 
         stage('Start PostgreSQL') {
             steps {
@@ -74,110 +74,116 @@ pipeline {
             }
         }
 
-        stage('Extract Data') {
-            steps {
-                echo "#################### Extract Data ####################"
-                sh 'docker exec -t postgresql bash /scripts/etl/extract.sh'
-            }
-        }
+        // stage('Extract Data') {
+        //     steps {
+        //         echo "#################### Extract Data ####################"
+        //         sh 'docker exec -t postgresql bash /scripts/etl/extract.sh'
+        //     }
+        // }
 
-        stage('Transform Data') {
-            steps {
-                sh 'docker exec -t postgresql bash /scripts/etl/transform.sh'
-            }
-        }
+    //     stage('Transform Data') {
+    //         steps {
+    //             sh 'docker exec -t postgresql bash /scripts/etl/transform.sh'
+    //         }
+    //     }
 
-        stage('Load Data') {
-            steps {
-                sh 'docker exec -t postgresql bash /scripts/etl/load.sh'
-            }
-        }
+    //     stage('Load Data') {
+    //         steps {
+    //             sh 'docker exec -t postgresql bash /scripts/etl/load.sh'
+    //         }
+    //     }
 
-        stage('Refresh Materialized Views') {
-            steps {
-                sh 'docker exec -t postgresql bash /scripts/mv/mv_refresh.sh'
-            }
-        }
+    //     stage('Refresh Materialized Views') {
+    //         steps {
+    //             sh 'docker exec -t postgresql bash /scripts/mv/mv_refresh.sh'
+    //         }
+    //     }
 
-        stage('Export Data') {
-            steps {
-                script{
-                    dir('data-warehouse/postgresql'){
-                        withCredentials([
-                            string(credentialsId: 'postgres_user', variable: 'POSTGRES_USER'),
-                        ]) {
-                            echo "#################### Export Data ####################"
-                            sh '''
-                                pwd
-                                mkdir -pv export
-                                ls -ld export
+    //     stage('Export Data') {
+    //         steps {
+    //             script{
+    //                 dir('data-warehouse/postgresql'){
+    //                     withCredentials([
+    //                         string(credentialsId: 'postgres_user', variable: 'POSTGRES_USER'),
+    //                     ]) {
+    //                         echo "#################### Export Data ####################"
+    //                         sh '''
+    //                             pwd
+    //                             mkdir -pv export
+    //                             ls -ld export
 
-                                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_hour) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_hour.csv
-                                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_month) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_month.csv
-                                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_top_station_user_year) TO STDOUT WITH CSV HEADER" > export/mv_top_station_user_year.csv
-                                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_station_year) TO STDOUT WITH CSV HEADER" > export/mv_station_year.csv
-                                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_bike_year) TO STDOUT WITH CSV HEADER" > export/mv_bike_year.csv
+    //                             docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_hour) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_hour.csv
+    //                             docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_month) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_month.csv
+    //                             docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_top_station_user_year) TO STDOUT WITH CSV HEADER" > export/mv_top_station_user_year.csv
+    //                             docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_station_year) TO STDOUT WITH CSV HEADER" > export/mv_station_year.csv
+    //                             docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_bike_year) TO STDOUT WITH CSV HEADER" > export/mv_bike_year.csv
 
-                            '''
-                        }
-                    }
-                }
-            }
-        }
+    //                         '''
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
 
-        stage('Upload to S3') {
-            steps {
-                dir('data-warehouse/postgresql'){
-                    script{
-                        echo "#################### Upload to S3 ####################"
-                        sh '''
-                            pwd
-                            ls ./export
-                        '''
+    //     stage('Upload to S3') {
+    //         steps {
+    //             dir('data-warehouse/postgresql'){
+    //                 script{
+    //                     echo "#################### Upload to S3 ####################"
+    //                     sh '''
+    //                         pwd
+    //                         ls ./export
+    //                     '''
 
-                        withAWS(credentials: 'aws_cred', region: 'ca-central-1') {
-                            s3Upload(
-                                bucket: 'toronto-shared-bike-data-warehouse-data-bucket', 
-                                path: 'test', 
-                                workingDir: 'export',
-                                includePathPattern:'**/*.csv',
-                            )
-                        }
-                    }
-                }
-            }
-        }
+    //                     withAWS(credentials: 'aws_cred', region: 'ca-central-1') {
+    //                         s3Upload(
+    //                             bucket: 'toronto-shared-bike-data-warehouse-data-bucket', 
+    //                             path: 'test', 
+    //                             workingDir: 'export',
+    //                             includePathPattern:'**/*.csv',
+    //                         )
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
     }
 
     post {
         always {
-            echo "#################### Cleanup PGDB ####################"
-            sh '''
-                docker compose -f data-warehouse/postgresql/docker-compose.yaml down
-            '''
+    //         echo "#################### Cleanup PGDB ####################"
+    //         sh '''
+    //             docker compose -f data-warehouse/postgresql/docker-compose.yaml down
+    //         '''
 
-            echo "#################### Cleanup Workspace ####################"
-            cleanWs()
-    }
+    //         echo "#################### Cleanup Workspace ####################"
+    //         cleanWs()
+    // }
     
-    failure {
-        emailext (
-            to: "tech.arguswatcher@gmail.com",
-            subject: "Jekins Pipeline FAILURE - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
-            body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
-            "Status: FAILURE \n" +
-            "Build URL: ${env.BUILD_URL}"
-        )
-    }
-
-    success {
-        emailext (
-            to: "tech.arguswatcher@gmail.com",
-            subject: "Jekins Pipeline SUCCESS - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
-            body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
-            "Status: SUCCESS \n" +
-            "Build URL: ${env.BUILD_URL}"
-        )
+        // failure {
+            withCredentials([usernamePassword(credentialsId: 'gmail_cred', usernameVariable: 'EMAIL')]){
+                echo "#################### Email ####################"
+                // echo EMAIL
+                // emailext (
+                //     to: "tech.arguswatcher@gmail.com",
+                //     subject: "Jekins Pipeline FAILURE - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
+                //     body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
+                //     "Status: FAILURE \n" +
+                //     "Build URL: ${env.BUILD_URL}"
+                // )
+            }
         }
+
+        // success {
+        //     withCredentials([usernamePassword(credentialsId: 'gmail_cred', usernameVariable: 'EMAIL')]){
+        //         emailext (
+        //             to: "tech.arguswatcher@gmail.com",
+        //             subject: "Jekins Pipeline SUCCESS - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
+        //             body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
+        //             "Status: SUCCESS \n" +
+        //             "Build URL: ${env.BUILD_URL}"
+        //         )
+        //     }
+        // }
     }
 }
