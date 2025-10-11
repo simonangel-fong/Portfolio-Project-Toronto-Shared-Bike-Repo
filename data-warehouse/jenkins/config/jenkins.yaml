@@ -92,7 +92,7 @@ jobs:
                 remote {
                   url('https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git')
                 }
-                branch('feature-dw-staging')
+                branch('feature-dw-dev')
               }
             }
             triggers {
