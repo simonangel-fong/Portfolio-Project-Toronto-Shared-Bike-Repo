@@ -79,7 +79,7 @@ pipeline {
       steps {
         echo "#################### Extract Data ####################"
         sh '''
-          echo "Test Database"
+          echo docker exec -t postgresql bash /scripts/test
         '''
       }
     }

@@ -1,4 +1,4 @@
-name: toronto-shared-bike-postgresql
+name: toronto-shared-bike
 
 volumes:
   pgdata:
@@ -9,7 +9,7 @@ networks:
     driver: bridge
 
 services:
-  postgresql-db:
+  postgresql:
     container_name: postgresql
     image: postgres:15
     # build:

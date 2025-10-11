@@ -2,11 +2,14 @@ name: toronto-shared-bike
 
 include:
   - ../jenkins/docker-compose.yaml
+  - ../monitor/docker-compose.yaml
 
 networks:
   public-net:
     driver: bridge
   jenkins_network:
+    driver: bridge
+  monitoring:
     driver: bridge
 
 services:
@@ -20,6 +23,7 @@ services:
     networks:
       - public-net
       - jenkins_network
+      - monitoring
     ports:
       - "8000:8000"
     healthcheck:
@@ -30,3 +34,4 @@ services:
       start_period: 10s
     depends_on:
       - jenkins
+      - grafana
