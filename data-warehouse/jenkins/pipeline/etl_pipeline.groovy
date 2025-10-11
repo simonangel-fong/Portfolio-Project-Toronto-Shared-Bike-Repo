@@ -33,9 +33,9 @@ pipeline {
   stages {
 
     stage('Clone GitHub Repository') {
-      // when {
-      //   branch "${env.GITHUB_BRANCH}"
-      // }
+      when {
+        branch "${env.GITHUB_BRANCH}" changeset "data-warehouse/*"
+      }
       steps {
         cleanWs()
         checkout scmGit(
