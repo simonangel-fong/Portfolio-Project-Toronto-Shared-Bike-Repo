@@ -16,7 +16,7 @@ pipeline {
       )
     )
     // set a timeout for the entire pipeline run
-    timeout(time: 30, unit: 'MINUTES')
+    // timeout(time: 30, unit: 'MINUTES')
 
     // Prevents Jenkins from automatically checking out the SCM.
     skipDefaultCheckout(true)
@@ -28,18 +28,14 @@ pipeline {
 
   stages {
 
-    stage('Cleanup Workspace & Checkout') {
-      steps {
-        echo "#################### Cleans the workspace ####################"
-        cleanWs()
-        
-        echo "#################### Checkout ####################"
-        checkout scm
-        sh '''
-          pwd
-          ls -l
-        '''
-      }
+    stage('Clean workspace & Clone repo') {
+        steps {
+            cleanWs()
+            checkout scmGit(
+                branches: [[name: 'feature-dw-dev']], 
+                userRemoteConfigs: [[url: 'https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git']]
+            )
+        }
     }
 
     stage('Start PostgreSQL') {
@@ -79,7 +75,7 @@ pipeline {
       steps {
         echo "#################### Extract Data ####################"
         sh '''
-          echo docker exec -t postgresql bash /scripts/test
+          docker exec -t postgresql bash /scripts/testing/object_check.sh
         '''
       }
     }
