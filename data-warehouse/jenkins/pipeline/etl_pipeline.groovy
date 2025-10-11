@@ -33,12 +33,6 @@ pipeline {
   stages {
 
     stage('Clone GitHub Repository') {
-      when { 
-        anyOf { 
-          branch 'feature-dw-dev'; 
-          branch 'master' 
-        }  
-      }
       steps {
         cleanWs()
         checkout scmGit(
