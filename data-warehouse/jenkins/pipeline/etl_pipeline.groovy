@@ -34,8 +34,7 @@ pipeline {
 
     stage('Clone GitHub Repository') {
       when {
-        branch "${env.GITHUB_BRANCH}" 
-        changeset "data-warehouse/*"
+        branch "${env.GITHUB_BRANCH}"
       }
       steps {
         cleanWs()
