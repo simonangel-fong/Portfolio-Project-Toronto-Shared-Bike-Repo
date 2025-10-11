@@ -99,6 +99,10 @@ jobs:
               githubPush()
             }
             scriptPath("data-warehouse/jenkins/test_db.Jenkinsfile")
+            cleanBeforeCheckout()
+            cleanAfterCheckout {
+              deleteUntrackedNestedRepositories(boolean value)
+            }
             lightweight()
           }
         }
