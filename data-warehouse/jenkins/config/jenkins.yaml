@@ -98,10 +98,9 @@ jobs:
             triggers {
               githubPush()
             }
-            scriptPath("data-warehouse/jenkins/Jenkinsfile.pgdb_check")
+            scriptPath("data-warehouse/jenkins/pgdb_check.groovy")
             lightweight()
           }
         }
       }
-    
     
