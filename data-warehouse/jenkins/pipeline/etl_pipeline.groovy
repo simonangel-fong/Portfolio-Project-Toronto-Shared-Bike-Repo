@@ -43,7 +43,7 @@ pipeline {
           branches: [[name: "${env.GITHUB_BRANCH}"]]
         )
       }
-    }
+    } 
 
     // stage('Start PostgreSQL Database') {
     //   steps {
