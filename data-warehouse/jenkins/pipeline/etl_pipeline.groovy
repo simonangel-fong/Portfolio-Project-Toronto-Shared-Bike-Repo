@@ -36,8 +36,8 @@ pipeline {
       steps {
         cleanWs()
         checkout scmGit(
-          userRemoteConfigs: [[url: "${env.GITHUB_URL}"]]
-          // userRemoteConfigs: [[url: "${env.GITHUB_URL}"]],
+          // userRemoteConfigs: [[url: "${env.GITHUB_URL}"]]
+          userRemoteConfigs: [[url: "${env.GITHUB_URL}"]],
           // branches: [[name: "${env.GITHUB_BRANCH}"]]
         )
       }
