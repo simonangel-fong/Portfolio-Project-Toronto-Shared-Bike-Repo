@@ -33,14 +33,18 @@ pipeline {
   stages {
 
     stage('Clone GitHub Repository') {
-      // when {
-      //   branch 'feature-dw-dev'
-      // }
+      when { 
+        anyOf { 
+          branch 'feature-dw-dev'; 
+          branch 'master' 
+        } 
+      }
       steps {
         cleanWs()
         checkout scmGit(
-          userRemoteConfigs: [[url: "${env.GITHUB_URL}"]],
-          branches: [[name: "${env.GITHUB_BRANCH}"]]
+          userRemoteConfigs: [[url: "${env.GITHUB_URL}"]]
+          // userRemoteConfigs: [[url: "${env.GITHUB_URL}"]],
+          // branches: [[name: "${env.GITHUB_BRANCH}"]]
         )
       }
     } 
