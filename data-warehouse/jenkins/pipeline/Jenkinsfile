@@ -31,7 +31,9 @@ pipeline {
   }
 
   stages {
-
+    when{
+      branch "${GITHUB_BRANCH}"
+    }
     stage('Clone GitHub Repository') {
       steps {
         cleanWs()
