@@ -84,7 +84,7 @@ unclassified:
 
 jobs:
   - script: >
-      pipelineJob('test-pgdb') {
+      pipelineJob('pgdb check') {
         definition {
           cpsScm {
             scm {
@@ -98,7 +98,7 @@ jobs:
             triggers {
               githubPush()
             }
-            scriptPath("data-warehouse/jenkins/test_db.Jenkinsfile")
+            scriptPath("data-warehouse/jenkins/Jenkinsfile.pgdb_check")
             cleanBeforeCheckout()
             cleanAfterCheckout {
               deleteUntrackedNestedRepositories(boolean value)
