@@ -33,9 +33,9 @@ pipeline {
   stages {
 
     stage('Clone GitHub Repository') {
-      when {
-        branch 'feature-dw-dev'
-      }
+      // when {
+      //   branch 'feature-dw-dev'
+      // }
       steps {
         cleanWs()
         checkout scmGit(
