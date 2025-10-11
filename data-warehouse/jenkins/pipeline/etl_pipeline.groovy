@@ -37,7 +37,7 @@ pipeline {
         anyOf { 
           branch 'feature-dw-dev'; 
           branch 'master' 
-        } 
+        }  
       }
       steps {
         cleanWs()
