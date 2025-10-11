@@ -1,37 +1,33 @@
 pipeline {
   agent any
 
-//   options {
-//     // limit only one instance
-//     disableConcurrentBuilds()
-//     // show timestamp for event
-//     timestamps()
-//     // discard old builds
-//     buildDiscarder(
-//       logRotator(
-//         // maximum number of the last build logs
-//         numToKeepStr: '10',   
-//         // maximum number of the last sets of build artifacts
-//         artifactNumToKeepStr: '5'   
-//       )
-//     )
-//     // set a timeout for the entire pipeline run
-//     timeout(time: 40, unit: 'MINUTES')
+  triggers {
+    githubPush() // Triggers on GitHub push events
+  }
 
-//     // Prevents Jenkins from automatically checking out the SCM.
-//     skipDefaultCheckout(true)
-//   }
+  options {
+    disableConcurrentBuilds()   // only one instance
+    timestamps()    // show timestamp
+    timeout(time: 30, unit: 'MINUTES')    // timeout for pipeline run
+    skipDefaultCheckout(true)   // Prevents auto SCM checkout
 
-//   triggers {
-//     cron '0 0 * * *'    // every midnight
-//   }
+    // discard old builds
+    buildDiscarder(
+      logRotator(
+        // maximum number of the last build logs
+        numToKeepStr: '10',   
+        // maximum number of the last sets of build artifacts
+        artifactNumToKeepStr: '5'   
+      )
+    )
+  }
 
   environment {
     GITHUB_URL = "https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git"
     GITHUB_BRANCH = "feature-dw-dev"
     POSTGRES_DB = "toronto_shared_bike"
     REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/test_data.zip"
-    // REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
+    // REMOTE_DATA_PROD="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
   }
 
   stages {
@@ -43,30 +39,6 @@ pipeline {
           userRemoteConfigs: [[url: "${env.GITHUB_URL}"]],
           branches: [[name: "${env.GITHUB_BRANCH}"]]
         )
-      }
-    }
-
-    stage('Download CSV Files') {
-      steps {
-        dir("data-warehouse/postgresql"){
-          echo "#################### Download CSV zip ####################"
-          sh '''
-            ls -l
-            mkdir -pv data 
-            mkdir -pv export
-            ls -dl data
-            curl -o ./csv.zip $REMOTE_DATA
-            ls -l csv.zip
-          '''
-
-          echo "#################### Unzip CSV zip ####################"
-          sh '''
-            unzip -o ./csv.zip -d .
-            ls -l ./data
-            du -h ./data
-            rm -fv ./csv.zip
-          '''
-        }
       }
     }
 
@@ -101,6 +73,37 @@ pipeline {
                 '''
               }
           }
+        }
+      }
+    }
+
+    stage('Check PostgreSQL Database Objects') {
+      steps {
+        echo "#################### Check PostgreSQL Database ####################"
+        sh 'docker exec postgresql bash /scripts/testing/object_check.sh'
+      }
+    }
+
+    stage('Download CSV Files') {
+      steps {
+        dir("data-warehouse/postgresql"){
+          echo "#################### Download CSV zip ####################"
+          sh '''
+            ls -l
+            mkdir -pv data 
+            mkdir -pv export
+            ls -dl data
+            curl -o ./csv.zip $REMOTE_DATA
+            ls -l csv.zip
+          '''
+
+          echo "#################### Unzip CSV zip ####################"
+          sh '''
+            unzip -o ./csv.zip -d .
+            ls -l ./data
+            du -h ./data
+            rm -fv ./csv.zip
+          '''
         }
       }
     }

@@ -23,10 +23,12 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-toronto_shared_bike}
       # PGDATA: ${PGDATA}
     volumes:
-      - ${DIR_PGDB:-.}/init/:/docker-entrypoint-initdb.d # scripts to run after setup
-      - ${DIR_PGDB:-.}/scripts/:/scripts
-      - ${DIR_PGDB:-.}/data/:/data
-      - ${DIR_PGDB:-.}/export/:/export
+      - ./init/:/docker-entrypoint-initdb.d # scripts to run after setup
+      - ./scripts/:/scripts
+      # - ${DIR_PGDB:-.}/init/:/docker-entrypoint-initdb.d # scripts to run after setup
+      # - ${DIR_PGDB:-.}/scripts/:/scripts
+      # - ${DIR_PGDB:-.}/data/:/data
+      # - ${DIR_PGDB:-.}/export/:/export
       - pgdata:/var/lib/postgresql # persist data
     networks:
       - public-net # public for dev
