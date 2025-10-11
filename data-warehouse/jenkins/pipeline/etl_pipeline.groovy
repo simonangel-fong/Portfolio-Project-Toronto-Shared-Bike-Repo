@@ -34,7 +34,7 @@ pipeline {
 
     stage('Clone GitHub Repository') {
       when {
-        branch "feature-dw-dev"
+        branch 'feature-dw-dev'
       }
       steps {
         cleanWs()
