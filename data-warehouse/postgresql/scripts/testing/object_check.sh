@@ -6,6 +6,13 @@ DB_USER=postgres
 DB_NAME=toronto_shared_bike
 SQL_FILE=/scripts/testing/object_check.sql
 
+echo
+echo "##############################"
+echo "Check Database Object..."
+echo "##############################"
+echo
+
+
 psql -U $DB_USER \
     -d $DB_NAME \
-    -c "SELECT * FROM information_schema.schemata WHERE schema_name = 'dw_schema1'"
+    -c "SELECT * FROM information_schema.schemata WHERE schema_name = 'dw_schema1';"

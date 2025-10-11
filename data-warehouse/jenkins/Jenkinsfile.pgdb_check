@@ -2,10 +2,11 @@ pipeline {
   agent any
 
   options {
-    // limit only one instance
-    disableConcurrentBuilds()
-    // show timestamp for event
-    timestamps()
+    disableConcurrentBuilds()   // only one instance
+    timestamps()    // show timestamp
+    timeout(time: 30, unit: 'MINUTES')    // timeout for pipeline run
+    skipDefaultCheckout(true)   // Prevents auto SCM checkout
+
     // discard old builds
     buildDiscarder(
       logRotator(
@@ -15,30 +16,27 @@ pipeline {
         artifactNumToKeepStr: '5'   
       )
     )
-    // set a timeout for the entire pipeline run
-    // timeout(time: 30, unit: 'MINUTES')
-
-    // Prevents Jenkins from automatically checking out the SCM.
-    skipDefaultCheckout(true)
   }
 
   environment {
+    GITHUB_URL = "https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git"
+    GITHUB_BRANCH = "feature-dw-dev"
     POSTGRES_DB = "toronto_shared_bike"
   }
 
   stages {
 
-    stage('Clean workspace & Clone repo') {
-        steps {
-            cleanWs()
-            checkout scmGit(
-                branches: [[name: 'feature-dw-dev']], 
-                userRemoteConfigs: [[url: 'https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git']]
-            )
-        }
-    }
+    // stage('Clone GitHub Repository') {
+    //   steps {
+    //     cleanWs()
+    //     checkout scmGit(
+    //       userRemoteConfigs: [[url: "${env.GITHUB_URL}"]],
+    //       branches: [[name: "${env.GITHUB_BRANCH}"]]
+    //     )
+    //   }
+    // }
 
-    stage('Start PostgreSQL') {
+    stage('Start PostgreSQL Database') {
       steps {
         script{
           withCredentials([
@@ -48,6 +46,8 @@ pipeline {
               dir("data-warehouse/postgresql"){
                 echo "#################### Spin up PGDB ####################"
                 sh '''
+                  set -Eeu pipefail
+
                   pwd
                   ls -l
                   docker compose down -v
@@ -62,7 +62,7 @@ pipeline {
 
                 echo "#################### Confirm PGDB ####################"
                 sh '''
-                  docker ps
+                  docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
                   docker logs --tail=100 postgresql || true
                 '''
               }
@@ -71,12 +71,10 @@ pipeline {
       }
     }
 
-    stage('Test Database') {
+    stage('Check PostgreSQL Database Objects') {
       steps {
-        echo "#################### Extract Data ####################"
-        sh '''
-          docker exec -t postgresql bash /scripts/testing/object_check.sh
-        '''
+        echo "#################### Check PostgreSQL Database ####################"
+        sh 'docker exec postgresql bash /scripts/testing/object_check.sh'
       }
     }
   }
@@ -84,9 +82,9 @@ pipeline {
   post {
     always {
       echo "#################### Cleanup PGDB ####################"
-      sh '''
-      docker compose -f data-warehouse/postgresql/docker-compose.yaml down
-      '''
+      dir("data-warehouse/postgresql"){
+        sh 'docker compose down -v || true'
+      }
 
       echo "#################### Cleanup Workspace ####################"
       cleanWs()
@@ -94,7 +92,7 @@ pipeline {
     
     failure {
       emailext (
-        to: "	tech@arguswatcher.net",
+        to: "tech.arguswatcher@gmail.com",
         subject: "FAILURE - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
         body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
           "Status: FAILURE \n" +
@@ -104,7 +102,7 @@ pipeline {
 
     success {
       emailext (
-        to: "	tech@arguswatcher.net",
+        to: "tech@arguswatcher.net",
         subject: "SUCCESS - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
         body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
           "Status: SUCCESS \n" +
