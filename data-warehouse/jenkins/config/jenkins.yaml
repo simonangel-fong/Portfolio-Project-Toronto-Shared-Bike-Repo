@@ -99,10 +99,6 @@ jobs:
               githubPush()
             }
             scriptPath("data-warehouse/jenkins/Jenkinsfile.pgdb_check")
-            cleanBeforeCheckout()
-            cleanAfterCheckout {
-              deleteUntrackedNestedRepositories(boolean value)
-            }
             lightweight()
           }
         }
