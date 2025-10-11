@@ -41,38 +41,41 @@ pipeline {
     // }
 
     stage('Start PostgreSQL Database') {
-      steps {
-        script{
-          withCredentials([
-            string(credentialsId: 'postgres_user', variable: 'POSTGRES_USER'),
-            string(credentialsId: 'postgres_password', variable: 'POSTGRES_PASSWORD'),
-            ]) {
-              dir("data-warehouse/postgresql"){
-                echo "#################### Spin up PGDB ####################"
-                sh '''
-                  set -Eeu pipefail
+      when {
+        branch 'feature-dw-dev'
+      }
+        steps {
+          script{
+            withCredentials([
+              string(credentialsId: 'postgres_user', variable: 'POSTGRES_USER'),
+              string(credentialsId: 'postgres_password', variable: 'POSTGRES_PASSWORD'),
+              ]) {
+                dir("data-warehouse/postgresql"){
+                  echo "#################### Spin up PGDB ####################"
+                  sh '''
+                    set -Eeu pipefail
 
-                  pwd
-                  ls -l
-                  docker compose -f docker-compose.yaml down -v
-                  docker compose up -d --build
+                    pwd
+                    ls -l
+                    docker compose -f docker-compose.yaml down -v
+                    docker compose up -d --build
 
-                  # Wait until Postgres is ready
-                  until docker exec -t postgresql bash -lc 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'; do
-                    echo "Waiting for PostgreSQL to become ready..."
-                    sleep 5
-                  done
-                '''
+                    # Wait until Postgres is ready
+                    until docker exec -t postgresql bash -lc 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'; do
+                      echo "Waiting for PostgreSQL to become ready..."
+                      sleep 5
+                    done
+                  '''
 
-                echo "#################### Confirm PGDB ####################"
-                sh '''
-                  docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
-                  docker logs --tail=100 postgresql || true
-                '''
-              }
+                  echo "#################### Confirm PGDB ####################"
+                  sh '''
+                    docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
+                    docker logs --tail=100 postgresql || true
+                  '''
+                }
+            }
           }
         }
-      }
     }
 
     stage('Check PostgreSQL Database Objects') {

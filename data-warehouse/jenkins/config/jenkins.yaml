@@ -123,3 +123,23 @@ jobs:
           }
         }
       }
+  - script: >
+      pipelineJob('prod-etl-pipeline') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git')
+                }
+                branch('master')
+              }
+            }
+            triggers {
+                cron('@daily')
+            }
+            scriptPath("data-warehouse/jenkins/pipeline/etl_pipeline.groovy")
+            lightweight()
+          }
+        }
+      }
