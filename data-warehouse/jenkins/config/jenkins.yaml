@@ -84,7 +84,7 @@ unclassified:
 
 jobs:
   - script: >
-      pipelineJob('pgdb check') {
+      pipelineJob('pgdb-check') {
         definition {
           cpsScm {
             scm {
