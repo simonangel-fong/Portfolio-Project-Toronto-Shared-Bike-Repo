@@ -116,7 +116,7 @@ jobs:
               }
             }
             triggers {
-              githubPush()
+              cron('@daily')
             }
             scriptPath("data-warehouse/jenkins/pipeline/etl_pipeline.groovy")
             lightweight()
