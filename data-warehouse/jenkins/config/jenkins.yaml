@@ -84,7 +84,7 @@ unclassified:
 
 jobs:
   - script: >
-      pipelineJob('pgdb-check') {
+      pipelineJob('dev-pgdb-check') {
         definition {
           cpsScm {
             scm {
@@ -98,9 +98,28 @@ jobs:
             triggers {
               githubPush()
             }
-            scriptPath("data-warehouse/jenkins/pgdb_check.groovy")
+            scriptPath("data-warehouse/jenkins/pipeline/pgdb_check.groovy")
             lightweight()
           }
         }
       }
-    
+  - script: >
+      pipelineJob('staging-etl-pipeline') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git')
+                }
+                branch('feature-dw-staging')
+              }
+            }
+            triggers {
+              githubPush()
+            }
+            scriptPath("data-warehouse/jenkins/pipeline/etl_pipeline.groovy")
+            lightweight()
+          }
+        }
+      }

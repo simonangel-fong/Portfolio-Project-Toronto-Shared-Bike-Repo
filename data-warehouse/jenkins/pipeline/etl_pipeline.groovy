@@ -1,50 +1,48 @@
 pipeline {
   agent any
 
-  options {
-    // limit only one instance
-    disableConcurrentBuilds()
-    // show timestamp for event
-    timestamps()
-    // discard old builds
-    buildDiscarder(
-      logRotator(
-        // maximum number of the last build logs
-        numToKeepStr: '10',   
-        // maximum number of the last sets of build artifacts
-        artifactNumToKeepStr: '5'   
-      )
-    )
-    // set a timeout for the entire pipeline run
-    timeout(time: 40, unit: 'MINUTES')
+//   options {
+//     // limit only one instance
+//     disableConcurrentBuilds()
+//     // show timestamp for event
+//     timestamps()
+//     // discard old builds
+//     buildDiscarder(
+//       logRotator(
+//         // maximum number of the last build logs
+//         numToKeepStr: '10',   
+//         // maximum number of the last sets of build artifacts
+//         artifactNumToKeepStr: '5'   
+//       )
+//     )
+//     // set a timeout for the entire pipeline run
+//     timeout(time: 40, unit: 'MINUTES')
 
-    // Prevents Jenkins from automatically checking out the SCM.
-    skipDefaultCheckout(true)
-  }
+//     // Prevents Jenkins from automatically checking out the SCM.
+//     skipDefaultCheckout(true)
+//   }
 
-  triggers {
-    cron '0 0 * * *'    // every midnight
-  }
+//   triggers {
+//     cron '0 0 * * *'    // every midnight
+//   }
 
   environment {
-    // REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
-    REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/test_data.zip"
+    GITHUB_URL = "https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git"
+    GITHUB_BRANCH = "feature-dw-dev"
     POSTGRES_DB = "toronto_shared_bike"
+    REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/test_data.zip"
+    // REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
   }
 
   stages {
 
-    stage('Cleanup Workspace & Checkout') {
+    stage('Clone GitHub Repository') {
       steps {
-        echo "#################### Cleans the workspace ####################"
         cleanWs()
-        
-        echo "#################### Checkout ####################"
-        checkout scm
-        sh '''
-          pwd
-          ls -l
-        '''
+        checkout scmGit(
+          userRemoteConfigs: [[url: "${env.GITHUB_URL}"]],
+          branches: [[name: "${env.GITHUB_BRANCH}"]]
+        )
       }
     }
 
@@ -72,7 +70,7 @@ pipeline {
       }
     }
 
-    stage('Start PostgreSQL') {
+    stage('Start PostgreSQL Database') {
       steps {
         script{
           withCredentials([
@@ -82,9 +80,11 @@ pipeline {
               dir("data-warehouse/postgresql"){
                 echo "#################### Spin up PGDB ####################"
                 sh '''
+                  set -Eeu pipefail
+
                   pwd
                   ls -l
-                  docker compose down -v
+                  docker compose -f docker-compose.yaml down -v
                   docker compose up -d --build
 
                   # Wait until Postgres is ready
@@ -96,7 +96,7 @@ pipeline {
 
                 echo "#################### Confirm PGDB ####################"
                 sh '''
-                  docker ps
+                  docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
                   docker logs --tail=100 postgresql || true
                 '''
               }
@@ -108,37 +108,25 @@ pipeline {
     stage('Extract Data') {
       steps {
         echo "#################### Extract Data ####################"
-        sh '''
-          # sleep 900
-          docker exec -t postgresql bash /scripts/etl/extract.sh
-        '''
+        sh 'docker exec -t postgresql bash /scripts/etl/extract.sh'
       }
     }
 
     stage('Transform Data') {
       steps {
-        sh '''
-          # sleep 900
-          docker exec -t postgresql bash /scripts/etl/transform.sh
-        '''
+        sh 'docker exec -t postgresql bash /scripts/etl/transform.sh'
       }
     }
 
     stage('Load Data') {
       steps {
-        sh '''
-          # sleep 900
-          docker exec -t postgresql bash /scripts/etl/load.sh
-        '''
+        sh 'docker exec -t postgresql bash /scripts/etl/load.sh'
       }
     }
 
     stage('Refresh Materialized Views') {
       steps {
-        sh '''
-          # sleep 900
-          docker exec -t postgresql bash /scripts/mv/mv_refresh.sh
-        '''
+        sh 'docker exec -t postgresql bash /scripts/mv/mv_refresh.sh'
       }
     }
 
@@ -195,18 +183,18 @@ pipeline {
   post {
     always {
       echo "#################### Cleanup PGDB ####################"
-      sh '''
-      docker compose -f data-warehouse/postgresql/docker-compose.yaml down
-      '''
+      dir("data-warehouse/postgresql"){
+        sh 'docker compose -f docker-compose.yaml down -v || true'
+      }
 
       echo "#################### Cleanup Workspace ####################"
-      // cleanWs()
+      cleanWs()
     }
     
     failure {
       emailext (
-        to: "	tech@arguswatcher.net",
-        subject: "Jekins Pipeline FAILURE - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
+        to: "tech.arguswatcher@gmail.com",
+        subject: "FAILURE - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
         body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
           "Status: FAILURE \n" +
           "Build URL: ${env.BUILD_URL}"
@@ -215,8 +203,8 @@ pipeline {
 
     success {
       emailext (
-        to: "	tech@arguswatcher.net",
-        subject: "Jekins Pipeline SUCCESS - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
+        to: "tech.arguswatcher@gmail.com",
+        subject: "SUCCESS - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
         body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
           "Status: SUCCESS \n" +
           "Build URL: ${env.BUILD_URL}"
