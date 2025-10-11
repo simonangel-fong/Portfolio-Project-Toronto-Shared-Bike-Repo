@@ -98,7 +98,7 @@ jobs:
             triggers {
               githubPush()
             }
-            scriptPath("data-warehouse/jenkins/pipeline/etl_pipeline.groovy")
+            scriptPath("data-warehouse/jenkins/pipeline/Jenkinsfile")
             lightweight()
           }
         }
@@ -118,7 +118,7 @@ jobs:
             triggers {
               cron('@daily')
             }
-            scriptPath("data-warehouse/jenkins/pipeline/etl_pipeline.groovy")
+            scriptPath("data-warehouse/jenkins/pipeline/Jenkinsfile")
             lightweight()
           }
         }
