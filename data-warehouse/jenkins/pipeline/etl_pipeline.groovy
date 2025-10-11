@@ -195,25 +195,25 @@ pipeline {
       cleanWs()
     }
     
-  //   failure {
-  //     emailext (
-  //       to: "tech.arguswatcher@gmail.com",
-  //       subject: "FAILURE - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
-  //       body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
-  //         "Status: FAILURE \n" +
-  //         "Build URL: ${env.BUILD_URL}"
-  //     )
-  //   }
+    failure {
+      emailext (
+        to: "tech.arguswatcher@gmail.com",
+        subject: "FAILURE - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
+        body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
+          "Status: FAILURE \n" +
+          "Build URL: ${env.BUILD_URL}"
+      )
+    }
 
-  //   success {
-  //     emailext (
-  //       to: "tech.arguswatcher@gmail.com",
-  //       subject: "SUCCESS - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
-  //       body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
-  //         "Status: SUCCESS \n" +
-  //         "Build URL: ${env.BUILD_URL}"
-  //     )
-  //   }
+    success {
+      emailext (
+        to: "tech.arguswatcher@gmail.com",
+        subject: "SUCCESS - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
+        body: "Jenkins pipeline: '${env.JOB_NAME}'\n" +
+          "Status: SUCCESS \n" +
+          "Build URL: ${env.BUILD_URL}"
+      )
+    }
   }
 }
 // 
