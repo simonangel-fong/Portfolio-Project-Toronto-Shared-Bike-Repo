@@ -23,7 +23,7 @@ pipeline {
     GITHUB_BRANCH = "feature-dw-dev"
     POSTGRES_DB = "toronto_shared_bike"
     REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/test_data.zip"
-    // REMOTE_DATA_PROD="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
+    // REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
   }
 
   stages {
@@ -83,7 +83,7 @@ pipeline {
         dir("data-warehouse/postgresql"){
           script {
             if (env.BRANCH_NAME == 'master') {
-              env.REMOTE_DATA_PROD='https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip'
+              env.REMOTE_DATA='https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip'
             }
           }
 
