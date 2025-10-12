@@ -7,6 +7,8 @@ networks:
   data_net:
     driver: bridge
     internal: true
+  egress_net:
+    driver: bridge
 
 volumes:
   jenkins_data: {}
@@ -35,5 +37,6 @@ services:
     networks:
       - app_net
       - data_net
+      - egress_net
     ports:
       - "8080:8080"
