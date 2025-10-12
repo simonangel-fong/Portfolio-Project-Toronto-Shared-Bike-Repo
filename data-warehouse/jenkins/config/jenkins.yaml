@@ -13,7 +13,9 @@ jenkins:
           password: "${JENKINS_ADMIN_PWD}"
         - id: "admin"
           password: "admin"
-
+          properties:
+          - timezone:
+              timeZoneName: "Canada/Eastern"
 security:
   apiToken:
     creationOfLegacyTokenEnabled: false
