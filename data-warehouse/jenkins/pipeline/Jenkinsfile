@@ -85,7 +85,6 @@ pipeline {
             ls -l
             mkdir -pv data 
             mkdir -pv export
-            echo "Git Commit: ${env.GIT_COMMIT}"
           '''
 
           script {
