@@ -93,6 +93,8 @@ pipeline {
             mkdir -pv data 
             mkdir -pv export
             ls -dl data
+
+            echo $REMOTE_DATA
             curl -o ./csv.zip $REMOTE_DATA
             ls -l csv.zip
           '''
