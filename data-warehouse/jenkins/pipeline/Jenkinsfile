@@ -80,30 +80,31 @@ pipeline {
     }
 
     stage('Download CSV Files') {
-      script{
-        if (env.BRANCH_NAME == 'master'){
-          REMOTE_DATA_PROD="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
-        }
-        steps {
-          dir("data-warehouse/postgresql"){
-            echo "#################### Download CSV zip ####################"
-            sh '''
-              ls -l
-              mkdir -pv data 
-              mkdir -pv export
-              ls -dl data
-              curl -o ./csv.zip $REMOTE_DATA
-              ls -l csv.zip
-            '''
-
-            echo "#################### Unzip CSV zip ####################"
-            sh '''
-              unzip -o ./csv.zip -d .
-              ls -l ./data
-              du -h ./data
-              rm -fv ./csv.zip
-            '''
+      steps {
+        script {
+          if (env.BRANCH_NAME == 'master') {
+            env.REMOTE_DATA_PROD="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
           }
+        }
+
+        dir("data-warehouse/postgresql"){
+          echo "#################### Download CSV zip ####################"
+          sh '''
+            ls -l
+            mkdir -pv data 
+            mkdir -pv export
+            ls -dl data
+            curl -o ./csv.zip $REMOTE_DATA
+            ls -l csv.zip
+          '''
+
+          echo "#################### Unzip CSV zip ####################"
+          sh '''
+            unzip -o ./csv.zip -d .
+            ls -l ./data
+            du -h ./data
+            rm -fv ./csv.zip
+          '''
         }
       }
     }
