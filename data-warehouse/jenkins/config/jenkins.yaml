@@ -117,7 +117,7 @@ jobs:
             }
             triggers {
               githubPush()
-              cron('@daily')
+              cron('30 0 * * *')
             }
             scriptPath("data-warehouse/jenkins/pipeline/Jenkinsfile")
             lightweight()
