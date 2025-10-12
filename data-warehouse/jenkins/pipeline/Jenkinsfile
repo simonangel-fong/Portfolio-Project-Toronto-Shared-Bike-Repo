@@ -85,11 +85,11 @@ pipeline {
             ls -l
             mkdir -pv data 
             mkdir -pv export
-            echo $GIT_BRANCH
+            echo "Git Commit: ${env.GIT_COMMIT}"
           '''
 
           script {
-            echo "Current branch: ${env.BRANCH_NAME}"
+            echo "Current branch: ${env.GIT_BRANCH}"
 
             if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'main') {
               echo "#################### Download CSV zip ####################"
