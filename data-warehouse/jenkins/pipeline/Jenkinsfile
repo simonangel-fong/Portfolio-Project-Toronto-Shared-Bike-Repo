@@ -22,8 +22,8 @@ pipeline {
     GITHUB_URL = "https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git"
     GITHUB_BRANCH = "feature-dw-dev"
     POSTGRES_DB = "toronto_shared_bike"
-    REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/test_data.zip"
-    // REMOTE_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
+    TEST_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/test_data.zip"
+    RAW_DATA="https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip"
   }
 
   stages {
@@ -81,29 +81,23 @@ pipeline {
     stage('Download CSV Files') {
       steps {
         dir("data-warehouse/postgresql"){
-      script {
-        // Set REMOTE_DATA dynamically
-        if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'main') {
-          env.REMOTE_DATA = 'https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/data.zip'
-        } else {
-          env.REMOTE_DATA = 'https://toronto-shared-bike-data-warehouse-data-bucket.s3.ca-central-1.amazonaws.com/raw/test_data.zip'
-        }
-
-        echo "Branch: ${env.BRANCH_NAME}"
-        echo "Using data source: ${env.REMOTE_DATA}"
-      }
-
           echo "#################### Download CSV zip ####################"
           sh '''
             ls -l
             mkdir -pv data 
             mkdir -pv export
-            ls -dl data
-
-            echo $REMOTE_DATA
-            curl -o ./csv.zip $REMOTE_DATA
-            ls -l csv.zip
           '''
+          script {
+            if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'main') {
+              sh '''
+                curl -o ./csv.zip $RAW_DATA
+              '''
+            } else {
+              sh '''
+                curl -o ./csv.zip $TEST_DATA
+              '''
+            }
+          }
 
           echo "#################### Unzip CSV zip ####################"
           sh '''
