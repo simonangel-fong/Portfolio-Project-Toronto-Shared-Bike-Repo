@@ -1,8 +1,12 @@
 name: toronto-shared-bike
 
 networks:
-  monitoring:
+  app_net:
     driver: bridge
+    internal: true
+  monitor_net:
+    driver: bridge
+    internal: true
 
 volumes:
   prometheus_data: {}
@@ -18,7 +22,7 @@ services:
       - /sys:/host/sys:ro
       - /:/rootfs:ro
     networks:
-      - monitoring
+      - monitor_net
     ports:
       - 9100:9100
     command:
@@ -40,7 +44,8 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     networks:
-      - monitoring
+      - app_net
+      - monitor_net
     ports:
       - 9090:9090
     command:
@@ -68,7 +73,8 @@ services:
       - ./grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
       - ./grafana/dashboards:/var/lib/grafana/dashboards
     networks:
-      - monitoring
+      - app_net
+      - monitor_net
     ports:
       - 3000:3000
     healthcheck:
@@ -89,7 +95,7 @@ services:
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
     networks:
-      - monitoring
+      - monitor_net
     ports:
       - "8081:8080" # custom port
     healthcheck:

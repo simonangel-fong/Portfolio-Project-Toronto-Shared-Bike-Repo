@@ -84,7 +84,7 @@ unclassified:
 
 jobs:
   - script: >
-      pipelineJob('dev-etl-pipeline') {
+      pipelineJob('etl-pipeline-dev') {
         definition {
           cpsScm {
             scm {
@@ -104,7 +104,7 @@ jobs:
         }
       }
   - script: >
-      pipelineJob('prod-etl-pipeline-daily') {
+      pipelineJob('etl-pipeline-prod-interval') {
         definition {
           cpsScm {
             scm {
@@ -117,7 +117,7 @@ jobs:
             }
             triggers {
               githubPush()
-              cron('30 0 * * *')
+              cron('H */2 * * *')
             }
             scriptPath("data-warehouse/jenkins/pipeline/Jenkinsfile")
             lightweight()

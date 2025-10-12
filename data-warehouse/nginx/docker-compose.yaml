@@ -5,12 +5,11 @@ include:
   - ../monitor/docker-compose.yaml
 
 networks:
-  public-net:
+  ingress_net:
     driver: bridge
-  jenkins_network:
+  app_net:
     driver: bridge
-  monitoring:
-    driver: bridge
+    internal: true
 
 services:
   nginx:
@@ -21,9 +20,8 @@ services:
       - ./config/nginx.conf:/etc/nginx/nginx.conf:ro # Mount Nginx config
       - ./static/robots.txt:/usr/share/nginx/html/robots.txt:ro # Web crawl
     networks:
-      - public-net
-      - jenkins_network
-      - monitoring
+      - ingress_net
+      - app_net
     ports:
       - "8000:8000"
     healthcheck:
