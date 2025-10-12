@@ -32,6 +32,10 @@ pipeline {
 
   stages {
     stage('Clone GitHub Repository') {
+      when{
+        branch pattern: 'feature-dw-*'
+        changeset "data-warehouse/**"
+      }
       steps {
         cleanWs()
         checkout scmGit(
