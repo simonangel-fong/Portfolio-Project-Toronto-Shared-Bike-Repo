@@ -129,7 +129,7 @@ pipeline {
 
     stage('Load Data') {
       steps {
-        sh 'docker exec -t postgresql bash /scripts/etl/load.sh'
+        sh 'docker exec postgresql bash /scripts/etl/load.sh'
       }
     }
 
