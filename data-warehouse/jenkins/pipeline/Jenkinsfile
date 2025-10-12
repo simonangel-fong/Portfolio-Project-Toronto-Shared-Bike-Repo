@@ -90,12 +90,13 @@ pipeline {
           script {
             echo "Current branch: ${env.GIT_BRANCH}"
 
-            if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'main') {
-              echo "#################### Download CSV zip ####################"
+            if (env.GIT_BRANCH == 'origin/master') {
+              echo "#################### Download Raw CSV Zip ####################"
               sh '''
                 curl -o ./csv.zip $RAW_DATA
               '''
             } else {
+              echo "#################### Download Test CSV Zip ####################"
               sh '''
                 curl -o ./csv.zip $TEST_DATA
               '''
