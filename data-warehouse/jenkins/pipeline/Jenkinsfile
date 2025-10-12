@@ -114,79 +114,79 @@ pipeline {
       }
     }
 
-    // stage('Extract Data') {
-    //   steps {
-    //     echo "#################### Extract Data ####################"
-    //     sh 'docker exec -t postgresql bash /scripts/etl/extract.sh'
-    //   }
-    // }
+    stage('Extract Data') {
+      steps {
+        echo "#################### Extract Data ####################"
+        sh 'docker exec -t postgresql bash /scripts/etl/extract.sh'
+      }
+    }
 
-    // stage('Transform Data') {
-    //   steps {
-    //     sh 'docker exec -t postgresql bash /scripts/etl/transform.sh'
-    //   }
-    // }
+    stage('Transform Data') {
+      steps {
+        sh 'docker exec -t postgresql bash /scripts/etl/transform.sh'
+      }
+    }
 
-    // stage('Load Data') {
-    //   steps {
-    //     sh 'docker exec -t postgresql bash /scripts/etl/load.sh'
-    //   }
-    // }
+    stage('Load Data') {
+      steps {
+        sh 'docker exec -t postgresql bash /scripts/etl/load.sh'
+      }
+    }
 
-    // stage('Refresh Materialized Views') {
-    //   steps {
-    //     sh 'docker exec -t postgresql bash /scripts/mv/mv_refresh.sh'
-    //   }
-    // }
+    stage('Refresh Materialized Views') {
+      steps {
+        sh 'docker exec -t postgresql bash /scripts/mv/mv_refresh.sh'
+      }
+    }
 
-    // stage('Export Data') {
-    //   steps {
-    //     script{
-    //       dir('data-warehouse/postgresql'){
-    //         withCredentials([
-    //           string(credentialsId: 'postgres_user', variable: 'POSTGRES_USER'),
-    //           ]) {
-    //           echo "#################### Export Data ####################"
-    //           sh '''
-    //             pwd
-    //             mkdir -pv export
-    //             ls -ld export
+    stage('Export Data') {
+      steps {
+        script{
+          dir('data-warehouse/postgresql'){
+            withCredentials([
+              string(credentialsId: 'postgres_user', variable: 'POSTGRES_USER'),
+              ]) {
+              echo "#################### Export Data ####################"
+              sh '''
+                pwd
+                mkdir -pv export
+                ls -ld export
 
-    //             docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_hour) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_hour.csv
-    //             docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_month) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_month.csv
-    //             docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_top_station_user_year) TO STDOUT WITH CSV HEADER" > export/mv_top_station_user_year.csv
-    //             docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_station_year) TO STDOUT WITH CSV HEADER" > export/mv_station_year.csv
-    //             docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_bike_year) TO STDOUT WITH CSV HEADER" > export/mv_bike_year.csv
+                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_hour) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_hour.csv
+                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_trip_user_year_month) TO STDOUT WITH CSV HEADER" > export/mv_trip_user_year_month.csv
+                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_top_station_user_year) TO STDOUT WITH CSV HEADER" > export/mv_top_station_user_year.csv
+                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_station_year) TO STDOUT WITH CSV HEADER" > export/mv_station_year.csv
+                docker exec -t postgresql psql -U $POSTGRES_USER -d $POSTGRES_DB -c "COPY (SELECT * FROM dw_schema.mv_bike_year) TO STDOUT WITH CSV HEADER" > export/mv_bike_year.csv
 
-    //           '''
-    //           }
-    //       }
-    //     }
-    //   }
-    // }
+              '''
+              }
+          }
+        }
+      }
+    }
 
-    // stage('Upload to S3') {
-    //   steps {
-    //     dir('data-warehouse/postgresql'){
-    //       script{
-    //         echo "#################### Upload to S3 ####################"
-    //         sh '''
-    //           pwd
-    //           ls ./export
-    //         '''
+    stage('Upload to S3') {
+      steps {
+        dir('data-warehouse/postgresql'){
+          script{
+            echo "#################### Upload to S3 ####################"
+            sh '''
+              pwd
+              ls ./export
+            '''
 
-    //         withAWS(credentials: 'aws_cred', region: 'ca-central-1') {
-    //           s3Upload(
-    //             bucket: 'toronto-shared-bike-data-warehouse-data-bucket', 
-    //             path: 'test', 
-    //             workingDir: 'export',
-    //             includePathPattern:'**/*.csv',
-    //           )
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+            withAWS(credentials: 'aws_cred', region: 'ca-central-1') {
+              s3Upload(
+                bucket: 'toronto-shared-bike-data-warehouse-data-bucket', 
+                path: 'test', 
+                workingDir: 'export',
+                includePathPattern:'**/*.csv',
+              )
+            }
+          }
+        }
+      }
+    }
   }
 
   post {
