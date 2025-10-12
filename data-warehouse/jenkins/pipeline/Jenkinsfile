@@ -1,9 +1,9 @@
 pipeline {
   agent any
 
-  triggers {
-    githubPush() // Triggers on GitHub push events
-  }
+  // triggers {
+  //   githubPush() // Triggers on GitHub push events
+  // }
 
   options {
     disableConcurrentBuilds()   // only one instance
