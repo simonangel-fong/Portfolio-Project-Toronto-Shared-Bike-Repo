@@ -85,14 +85,11 @@ unclassified:
     useTls: false
   globalTimeOutConfiguration:
     operations:
-    - "abortOperation"
+    - "failOperation"
     overwriteable: false
     strategy:
-      elasticTimeOutStrategy:
-        failSafeTimeoutDuration: false
-        numberOfBuilds: "3"
-        timeoutMinutesElasticDefault: "60"
-        timeoutPercentage: "150"
+      absoluteTimeOutStrategy:
+        timeoutMinutes: "60"
 
 jobs:
   - script: >
