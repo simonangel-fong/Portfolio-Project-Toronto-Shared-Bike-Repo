@@ -17,11 +17,11 @@ volumes:
 services:
   jenkins:
     container_name: jenkins
-    # build:
-      # context: .
-      # dockerfile: Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
     # image: jenkins-jcasc
-    image: jenkins/jenkins:2.516.3-jdk21
+    # image: jenkins/jenkins:2.516.3-jdk21
     restart: unless-stopped
     user: root
     env_file:
