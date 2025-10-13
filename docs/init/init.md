@@ -72,4 +72,7 @@ bash init.sh
 # set env
 vi ~/project_shared_bike/data-warehouse/cloudflare/.env
 vi ~/project_shared_bike/data-warehouse/jenkins/.env
+
+cd ~/project_shared_bike/data-warehouse/cloudflare
+docker compose up -d --build
 ```
