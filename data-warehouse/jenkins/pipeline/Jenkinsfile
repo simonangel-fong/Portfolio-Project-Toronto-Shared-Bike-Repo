@@ -117,19 +117,19 @@ pipeline {
     stage('Extract Data') {
       steps {
         echo "#################### Extract Data ####################"
-        sh 'docker exec -t postgresql bash /scripts/etl/extract.sh'
+        sh 'docker exec postgresql bash /scripts/etl/extract.sh'
       }
     }
 
     stage('Transform Data') {
       steps {
-        sh 'docker exec -t postgresql bash /scripts/etl/transform.sh'
+        sh 'docker exec postgresql bash /scripts/etl/transform.sh'
       }
     }
 
     stage('Load Data') {
       steps {
-        sh 'docker exec -it postgresql bash /scripts/etl/load.sh'
+        sh 'docker exec postgresql bash /scripts/etl/load.sh'
       }
     }
 
