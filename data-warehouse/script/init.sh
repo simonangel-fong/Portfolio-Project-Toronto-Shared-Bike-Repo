@@ -54,7 +54,7 @@ docker --version
 sudo usermod -aG docker $USER
 
 cd $DIR_PROJECT
-git checkout feature/dw
+git checkout feature-dw-dev
 
 echo
 echo "##############################"
