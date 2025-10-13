@@ -67,7 +67,7 @@ unclassified:
     - "jobBuildDiscarder"
   location:
     adminAddress: "${GMAIL_USERNAME}"
-    url: "http://on-prem:8080/"
+    url: "https://onprem.arguswatcher.net/jenkins/"
   email-ext:
     mailAccount:
       credentialsId: "gmail_cred"
@@ -83,6 +83,16 @@ unclassified:
     smtpPort: "465"
     useSsl: true
     useTls: false
+  globalTimeOutConfiguration:
+    operations:
+    - "abortOperation"
+    overwriteable: false
+    strategy:
+      elasticTimeOutStrategy:
+        failSafeTimeoutDuration: false
+        numberOfBuilds: "3"
+        timeoutMinutesElasticDefault: "60"
+        timeoutPercentage: "150"
 
 jobs:
   - script: >
