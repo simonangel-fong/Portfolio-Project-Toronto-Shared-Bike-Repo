@@ -64,5 +64,10 @@ scp -r -o ProxyJump=root@192.168.1.80 ./init.sh root@192.168.100.110:~
 # connect with vm
 ssh -J root@192.168.1.80 root@192.168.100.110
 
+# initialize app code
 bash init.sh
+
+# set env
+vi ~/project_shared_bike/cloudflare/.env
+vi ~/project_shared_bike/jenkins/.env
 ```

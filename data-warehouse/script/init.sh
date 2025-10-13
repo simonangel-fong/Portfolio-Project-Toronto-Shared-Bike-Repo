@@ -6,9 +6,6 @@ DIR_HOME=/home/ubuntuadmin
 DIR_PROJECT=$DIR_HOME/project_shared_bike
 GITHUB_REPO=https://github.com/simonangel-fong/Portfolio-Project-Toronto-Shared-Bike-Repo.git
 
-SCRIPT_MONITOR=$DIR_PROJECT/data-warehouse/script/start_monitor_docker.sh
-SCRIPT_JENKINS=$DIR_PROJECT/data-warehouse/script/start_jenkins.sh
-
 echo
 echo "##############################"
 echo "Update apt"
@@ -59,7 +56,8 @@ sudo usermod -aG docker $USER
 cd $DIR_PROJECT
 git checkout feature/dw
 
-# start prometheus
-bash $SCRIPT_MONITOR
-# start jenkins
-bash $SCRIPT_JENKINS
+echo
+echo "##############################"
+echo "Git Pull Completed."
+echo "##############################"
+echo

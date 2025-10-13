@@ -19,3 +19,8 @@ cd ~/project_shared_bike/data-warehouse/cloudflare
 
 git pull && sudo docker compose down -v && sudo docker compose up -d --build
 ```
+
+```sh
+
+
+```
