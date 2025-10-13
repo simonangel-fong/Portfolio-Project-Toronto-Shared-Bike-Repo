@@ -51,7 +51,7 @@ pipeline {
 
                 pwd
                 ls -l
-                docker compose -f docker-compose.yaml down
+                docker compose -f docker-compose.yaml down -v
                 docker compose up -d --build
 
                 # Wait until Postgres is ready
@@ -193,7 +193,7 @@ pipeline {
     always {
       echo "#################### Cleanup PGDB ####################"
       dir("data-warehouse/postgresql"){
-        sh 'docker compose -f docker-compose.yaml down || true'
+        sh 'docker compose -f docker-compose.yaml down -v || true'
       }
 
       echo "#################### Cleanup Workspace ####################"
@@ -201,6 +201,7 @@ pipeline {
     }
     
     failure {
+      echo "#################### Failure ####################"
       emailext (
         to: "tech.arguswatcher@gmail.com",
         subject: "FAILURE - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
@@ -211,6 +212,7 @@ pipeline {
     }
 
     success {
+      echo "#################### SUCCESS ####################"
       emailext (
         to: "tech.arguswatcher@gmail.com",
         subject: "SUCCESS - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
