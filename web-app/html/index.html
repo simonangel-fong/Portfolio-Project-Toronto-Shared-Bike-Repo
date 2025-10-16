@@ -29,19 +29,16 @@
             </a>
             <ul class="nav nav-masthead justify-content-center">
                 <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#dashboard">Dashboard</a>
+                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#da">Data Analysis</a>
                 </li>
-                <!-- <li class="nav-item"> 
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#insight">Insight</a>
-                </li> -->
                 <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#devops">DevOps</a>
+                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#cicd"> CI/CD </a>
                 </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#cloud">Cloud</a>
-                </li> -->
                 <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#data_engineer">Data Engineer</a>
+                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#sa">System Admin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#aws">Cloud Engineer</a>
                 </li>
             </ul>
         </nav>
@@ -118,7 +115,7 @@
         <hr class="col-8 mx-auto py-lg-4 py-sm-2">
 
         <!-- Dashboard -->
-        <section id="dashboard" class="container pb-5">
+        <section id="da" class="container pb-5">
 
             <!-- Chart Title -->
             <div class="row pt-5">
@@ -346,120 +343,65 @@
         <!-- divider -->
         <hr class="col-8 mx-auto py-lg-2">
 
-        <!-- DevOps -->
-        <section id="devops" class="container py-5">
+        <!-- DevOps - CICD -->
+        <section id="cicd" class="container-flex">
             <div data-bs-spy="scroll" data-bs-target="#trip-navbar" data-bs-root-margin="0px 0px -40%"
                 data-bs-smooth-scroll="true" class="bg-body-white p-3 rounded-2" tabindex="0">
 
-                <div class="row row-cols-1">
+                <div class="row row-cols-1 py-5">
                     <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
-                        DevOps Skill
+                        DevOps - CI/CD Skill
                     </h1>
                     <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
-                </div>
+                </div> <!--devops cicd title -->
 
-                <div class="row g-5 pt-5">
-                    <div class="row row-cols-1">
-                        <div class="px-5 py-3">
-                            <h3 class="fw-bold text-body-emphasis text-center">
-                                CI/CD Pipeline - GitHub Actions
-                            </h3>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-10 col-md-12 mx-auto pt-3">
-                        <img src="./img/devops/devops_cicd.gif" class="d-block w-100 shadow p-0 m-0" alt="cicd diagram">
-                    </div>
-
-                    <div class="col-lg-10 col-md-12 mx-auto pt-3">
-                        <div class="ratio ratio-16x9 shadow p-0 m-0">
-                            <iframe
-                                src="https://www.youtube.com/embed/V_tjzqmmyYc?controls=1&autoplay=1&mute=1&vq=hd1080"
-                                title="GitHub Actions CI/CD Pipeline" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- divider -->
-        <hr class="col-8 mx-auto">
-
-        <!-- DE -->
-        <section id="data_engineer" class="container pb-5">
-            <div data-bs-spy="scroll" data-bs-target="#trip-navbar" data-bs-root-margin="0px 0px -40%"
-                data-bs-smooth-scroll="true" class="bg-body-white p-3 rounded-2" tabindex="0">
-
-                <!-- Title -->
-                <div class="row row-cols-1 pt-5">
-
-                    <!-- title text -->
-                    <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
-                        Data Engineering Skill
-                    </h1>
-                    <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
-                    <p class="text-center lead py-2">
-                        Explore Data Engineering skills by navigating the following slides
-                    </p>
-
-                    <div class="d-flex justify-content-center">
-                        <ul class="lead" style="list-style-type:square;">
-                            <li>On-premises data warehouse solution</li>
-                            <li>ETL Pipeline with PostgreSQL</li>
-                            <li>Data warehouse logical desgin</li>
-                            <!-- <li>Schedule backup task with Jenkins</li> -->
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Data Engineer: Slide -->
+                <!-- DevOps CICD: Slide -->
                 <div class=" row py-3 mb-4">
-                    <div id="deCarousel" class="carousel slide shadow col-md-10 col-sm-12  p-0 mx-auto">
+                    <div id="dicd_Carousel" class="carousel carousel-dark slide shadow col-md-9 col-sm-12  p-0 mx-auto">
 
                         <!-- indicator -->
                         <div class="carousel-indicators">
-                            <button type="button" data-bs-target="#deCarousel" data-bs-slide-to="0" class="active"
-                                aria-current="true" aria-label="de 1"></button>
-                            <button type="button" data-bs-target="#deCarousel" data-bs-slide-to="1"
-                                aria-label="de 2"></button>
-                            <button type="button button-warning" data-bs-target="#deCarousel" data-bs-slide-to="2"
-                                aria-label="de 3"></button>
+                            <button type="button" data-bs-target="#dicd_Carousel" data-bs-slide-to="0" class="active"
+                                aria-current="true" aria-label="cicd github actions"></button>
+                            <button type="button" data-bs-target="#dicd_Carousel" data-bs-slide-to="1"
+                                aria-label="cicd jenkins"></button>
+                            <!-- <button type="button button-warning" data-bs-target="#dicd_Carousel" data-bs-slide-to="2"
+                                aria-label="de 3"></button> -->
                         </div>
 
                         <!-- content -->
                         <div class="carousel-inner">
 
-                            <!-- sa -->
                             <div class="carousel-item active">
-                                <img src="./img/de/on-prem.gif" class="d-block w-100" alt="on-prem sa">
+                                <img src="./img/devops/devops_cicd_github.gif" class="d-block w-100" alt="on-prem sa">
                                 <div class="carousel-caption d-none d-md-block">
-                                    <h5>On-premises Solution Architecture</h5>
+                                    <h5>Git Branching Strategy Diagram</h5>
+                                    <p> Implement a branching strategy with GitHub Environments (dev/stage/prod) <br>
+                                        to isolate and manage multiple environments.
+                                    </p>
                                 </div>
                             </div>
 
-                            <!-- etl -->
                             <div class="carousel-item">
-                                <img src="./img/de/etl.gif" class="d-block w-100" alt="etl pipeline">
+                                <img src="./img/devops/devops_cicd_jenkins_webhook.gif" class="d-block w-100"
+                                    alt="on-prem sa">
                                 <div class="carousel-caption d-none d-md-block">
-                                    <h5>Extract, Transform, Load Pipeline</h5>
+                                    <h5>Jenkins with GitHub Diagram</h5>
+                                    <p> Secure the integration between the on-premises Jenkins and the remote GitHub
+                                        repository by Cloudflare tunnel and GitHub webhook to sync Jenkins jobs and
+                                        repository events.
+                                    </p>
                                 </div>
                             </div>
 
-                            <!-- star schema -->
-                            <div class="carousel-item">
-                                <img src="./img/de/erd.png" class="d-block w-100" alt="star schema">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5>Star Schema</h5>
-                                </div>
-                            </div>
 
                             <!-- Left and right controls -->
-                            <button class="carousel-control-prev" type="button" data-bs-target="#deCarousel"
+                            <button class="carousel-control-prev" type="button" data-bs-target="#dicd_Carousel"
                                 data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Previous</span>
                             </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#deCarousel"
+                            <button class="carousel-control-next" type="button" data-bs-target="#dicd_Carousel"
                                 data-bs-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Next</span>
@@ -470,7 +412,81 @@
 
                 <!-- divider -->
                 <hr class="col-8 mx-auto py-lg-5">
+
+                <!-- CI/CD: GitHub Actions -->
+                <div class="row g-5 p-lg-5 pt-5">
+
+                    <!-- description -->
+                    <div class="col-lg-5 col-md-12 m-0 mb-4">
+                        <h1 class="fs-2 fw-bold text-center py-3">
+                            GitHub Actions CI/CD
+                        </h1>
+                        <p class="lead">
+                            Implement a <b>branching strategy</b> with <b>GitHub Environments</b> (dev/stage/prod) to
+                            manage and isolate multiple environments.
+
+                        </p>
+                        <p class="lead">
+                            Automate <b>unit tests</b> and <b>lint checks</b> on every <b>PR via GitHub Actions</b> to
+                            ensure code quality.
+                        </p>
+                        <p class="lead">
+                            Integrate and visualize <b>performance testing with Grafana K6</b> to enforce thresholds
+                            (<u>error rate ≤ 0.01</u>; <u>p95 latency &lt; 500 ms</u>).
+                        </p>
+                    </div>
+
+                    <!-- video -->
+                    <div class="col-lg-7 col-md-12 m-0">
+                        <div class="ratio ratio-16x9 shadow p-0 m-0">
+                            <iframe
+                                src="https://www.youtube.com/embed/alHpGfgZ-z0?controls=1&autoplay=1&mute=1&vq=hd1080"
+                                title="GitHub Actions CI/CD Pipeline" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="col-8 mx-auto py-lg-2">
+
+                <!-- CI/CD: Jenkins -->
+                <div class="row flex-lg-row-reverse g-5 p-lg-5 pt-5 mt-5">
+
+                    <!-- description -->
+                    <div class="col-lg-5 col-md-12 m-0 mb-4">
+                        <h1 class="fs-2 fw-bold text-center py-3">
+                            Jenkins CI/CD
+                        </h1>
+                        <p class="lead fs-6">
+                            Use <b>JCasC (Jenkins Configuration as Code)</b> to deliver consistent
+                            configurations and accelerate Jenkins provisioning. (e.g., automate plugin installation)
+                        </p>
+                        <p class="lead fs-6">
+                            Leverage <b>Jenkins Job DSL (Domain Specific Languages)</b> with <b>GitHub</b> to codify and
+                            auto-provision jobs from the repo.
+                        </p>
+                        <p class="lead fs-6">
+                            Secure the integration between <b>on-premises Jenkins</b> and <b>remote
+                                GitHub repository</b> by <b>Cloudflare tunnel</b> and <b>GitHub webhook</b>, to
+                            auto-sync
+                            Jenkins jobs with repository events.
+                        </p>
+                    </div>
+
+                    <!-- video -->
+                    <div class="col-lg-7 col-md-12 m-0">
+                        <div class="ratio ratio-16x9 shadow p-0 m-0">
+                            <iframe
+                                src="https://www.youtube.com/embed/_6Rj7tFoMjA?controls=1&autoplay=1&mute=1&vq=hd1080"
+                                title="GitHub Actions CI/CD Pipeline" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
+
+        <!-- divider -->
+        <hr class="col-8 mx-auto">
+
     </main>
 
     <!-- footer -->
