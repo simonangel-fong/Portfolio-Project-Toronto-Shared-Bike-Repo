@@ -34,12 +34,12 @@
                 <li class="nav-item">
                     <a class="nav-link fw-bold py-1 px-0 me-2" href="#cicd"> CI/CD </a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link fw-bold py-1 px-0 me-2" href="#sa">System Admin</a>
-                </li>
-                <li class="nav-item">
+                </li> -->
+                <!-- <li class="nav-item">
                     <a class="nav-link fw-bold py-1 px-0 me-2" href="#aws">Cloud Engineer</a>
-                </li>
+                </li> -->
             </ul>
         </nav>
 
@@ -47,15 +47,15 @@
         <div class="row vh-100 d-flex align-items-center">
             <div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
                 <div class="header-cover-text text-center p-4">
-                    <h1 class="display-5 fw-bold">Toronto Shared Bike</h1>
-                    <h5 class="lead py-3">Comprehensive Data Engineering & Cloud Project</h5>
+                    <h1 class="display-5 fw-bold"> Toronto Shared Bike Analysis </h1>
+                    <h5 class="lead fs-3 py-3">Comprehensive Data Engineering & Hybrid Cloud Project</h5>
                     <p class="fs-5">
-                        A portfolio project showcasing end-to-end data engineering and DevOps skills — from building a
-                        data warehouse and automated pipelines to deploying cloud-native APIs and web applications on
-                        AWS.
+                        A portfolio project analyzing the Toronto shared bike data and showcasing end-to-end data
+                        engineering and DevOps skills — from building an on-premises data warehouse and automated
+                        pipelines to deploying cloud-native APIs and web applications on AWS.
                     </p>
-                    <a href="#dashboard" class="btn btn-warning rounded-pill me-4">Try Dashboard</a>
-                    <a href="#devops" class="btn btn-light rounded-pill">Technical Details</a>
+                    <a href="#da" class="btn btn-warning rounded-pill me-4">Try Dashboard</a>
+                    <a href="#cicd" class="btn btn-light rounded-pill">Technical Details</a>
                 </div>
             </div>
         </div>
@@ -75,9 +75,9 @@
                         <img src="./img/features/dashbaord.jpg" class="card-img" alt="dashbaord">
                         <div class="card-img-overlay d-flex flex-column">
                             <p class="card-title h2 text-white my-auto text-center align-middle">
-                                Dashboard
+                                Data Analysis
                             </p>
-                            <a href="#dashboard" class="stretched-link"></a>
+                            <a href="#da" class="stretched-link"></a>
                         </div>
                     </div>
                 </div>
@@ -121,8 +121,8 @@
             <div class="row pt-5">
 
                 <!-- title text -->
-                <h1 class="display-5 fw-bold text-body-emphasis text-center">
-                    Dashboard
+                <h1 class="display-5 fw-bold text-body-emphasis text-center mb-3">
+                    Data Analysis
                 </h1>
                 <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
                 <p class="text-center lead pt-4">
@@ -143,29 +143,22 @@
                         <option value="station">Station Count Over Years</option>
                     </select>
                 </div>
-            </div>
 
-            <!-- chart -->
-            <div class="row">
-                <div id="chart-container" class="p-4 mx-auto text-center" style="width: 800px;height: 450px;"></div>
+                <!-- chart -->
+                <div class="row">
+                    <div id="chart-container" class="p-4 mx-auto text-center" style="width: 800px;height: 450px;"></div>
+                </div>
             </div>
 
             <!-- divider -->
             <hr class="col-8 mx-auto py-lg-2">
 
-            <!-- Dashboard Title -->
-            <div class="row">
-                <div class="">
-
-                    <!-- title text -->
-                    <p class="text-center lead pt-4">
-                        Explore year-to-year changes by selecting different years in the Tableau dashboard below.
-                    </p>
-                </div>
-            </div>
-
             <!-- Tableau dashboard -->
             <div class="row text-center">
+
+                <p class="text-center lead pt-4">
+                    Explore year-to-year changes by selecting different years in the Tableau dashboard below.
+                </p>
 
                 <div class='tableauPlaceholder mx-auto' id='viz1749863467121' style='position: relative'>
                     <noscript>
@@ -257,7 +250,7 @@
                             <u>Casual users</u> ride <b>less during winter</b> but take <b>longer trips in summer</b>,
                             indicating usage primarily for recreation or leisure.
                         </p>
-                        <a class="btn btn-success" href="#dashboard">Explore Details in Dashboard</a>
+                        <a class="btn btn-success" href="#da">Explore Details in Dashboard</a>
                     </div>
 
                     <!-- video -->
@@ -293,7 +286,7 @@
                             convenience-focused or leisure use. However, they also make shorter trips during the
                             morning peak.
                         </p>
-                        <a class="btn btn-success" href="#dashboard">Explore Details in Dashboard</a>
+                        <a class="btn btn-success" href="#da">Explore Details in Dashboard</a>
                     </div>
 
                     <!-- video -->
@@ -324,7 +317,7 @@
                         <p class="lead">
                             Bikes are also popular in <u>recreational areas</u>, reflecting leisure-oriented usage.
                         </p>
-                        <a class="btn btn-success" href="#dashboard">Explore Details in Dashboard</a>
+                        <a class="btn btn-success" href="#da">Explore Details in Dashboard</a>
                     </div>
 
                     <!-- video -->
