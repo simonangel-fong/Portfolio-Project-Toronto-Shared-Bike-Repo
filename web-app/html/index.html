@@ -48,7 +48,7 @@
             <div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
                 <div class="header-cover-text text-center p-4">
                     <h1 class="display-5 fw-bold"> Toronto Shared Bike Analysis </h1>
-                    <h5 class="lead fs-3 py-3">Comprehensive Data Engineering & Hybrid Cloud Project</h5>
+                    <h5 class="lead fs-4 py-3">Comprehensive Data Engineering & Hybrid Cloud Project</h5>
                     <p class="fs-5">
                         A portfolio project analyzing the Toronto shared bike data and showcasing end-to-end data
                         engineering and DevOps skills — from building an on-premises data warehouse and automated
@@ -67,47 +67,38 @@
 
         <!-- features -->
         <section id="feature-card" class="container py-5 my-5">
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 justify-content-center g-5">
 
-                <!-- Dashboard -->
+                <!-- da -->
                 <div class="col">
-                    <div class="card h-100 overflow-hidden text-bg-dark rounded-4">
-                        <img src="./img/features/dashbaord.jpg" class="card-img" alt="dashbaord">
-                        <div class="card-img-overlay d-flex flex-column">
-                            <p class="card-title h2 text-white my-auto text-center align-middle">
-                                Data Analysis
+                    <div class="card h-100 overflow-hidden rounded-4">
+                        <img src="./img/features/dashbaord.jpg" alt="dashbaord">
+                        <div class="card-body">
+                            <h5 class="card-title">Data Analysis</h5>
+                            <p class="card-text">
+                                Interactive charts powered by live API <br>
+                                Embedded Tableau for year-over-year trends <br>
+                                User behavior insight
                             </p>
-                            <a href="#da" class="stretched-link"></a>
+                            <a href="#da">Details>></a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Insight -->
+                <!-- cicd -->
                 <div class="col">
-                    <div class="card h-100 overflow-hidden text-bg-dark rounded-4">
-                        <img src="./img/features/insight.jpg" class="card-img" alt="insight">
-                        <div class="card-img-overlay d-flex flex-column">
-                            <p class="card-title h2 text-white my-auto text-center align-middle">
-                                Insight
+                    <div class="card h-100 overflow-hidden rounded-4">
+                        <img src="./img/features/cicd.jpg" alt="cicd">
+                        <div class="card-body">
+                            <h5 class="card-title">CI/CD Skill</h5>
+                            <p class="card-text">
+                                Branch-env strategy, automated tests, k6 perf tests <br>
+                                Dual pipelines: GitHub Actions + Jenkins
                             </p>
-                            <a href="#insight" class="stretched-link"></a>
+                            <a class="align-text-bottom" href="#cicd">Details>></a>
                         </div>
                     </div>
                 </div>
-
-                <!-- skill -->
-                <div class="col">
-                    <div class="card h-100 overflow-hidden text-bg-dark rounded-4">
-                        <img src="./img/features/tech.jpg" class="card-img" alt="tech">
-                        <div class="card-img-overlay d-flex flex-column">
-                            <p class="card-title h2 text-white my-auto text-center align-middle">
-                                Skills
-                            </p>
-                            <a href="#devops" class="stretched-link"></a>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </section>
 
@@ -387,7 +378,6 @@
                                 </div>
                             </div>
 
-
                             <!-- Left and right controls -->
                             <button class="carousel-control-prev" type="button" data-bs-target="#dicd_Carousel"
                                 data-bs-slide="prev">
@@ -414,16 +404,16 @@
                         <h1 class="fs-2 fw-bold text-center py-3">
                             GitHub Actions CI/CD
                         </h1>
-                        <p class="lead">
+                        <p class="lead fs-5">
                             Implement a <b>branching strategy</b> with <b>GitHub Environments</b> (dev/stage/prod) to
                             manage and isolate multiple environments.
 
                         </p>
-                        <p class="lead">
+                        <p class="lead fs-5">
                             Automate <b>unit tests</b> and <b>lint checks</b> on every <b>PR via GitHub Actions</b> to
                             ensure code quality.
                         </p>
-                        <p class="lead">
+                        <p class="lead fs-5">
                             Integrate and visualize <b>performance testing with Grafana K6</b> to enforce thresholds
                             (<u>error rate ≤ 0.01</u>; <u>p95 latency &lt; 500 ms</u>).
                         </p>

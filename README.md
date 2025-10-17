@@ -13,7 +13,7 @@
 
 A `hybrid cloud` project designed and automated to analyze [Toronto’s Shared Bike](https://bikesharetoronto.com/) data, revealing user behavior and usage trends.
 
-- **On-Prem Data Warehouse**: Built and automated a local `PostgreSQL`-based data warehouse using `Docker` and `Jenkins` to run nightly `ETL pipelines`, handling data aggregation for over **18 million records** and performance monitoring.
+- **On-Prem Data Warehouse**: Built and automated a local `PostgreSQL`-based data warehouse using `Docker` and `Jenkins` to run nightly `ETL pipelines`, handling data aggregation for over **13 million records** and performance monitoring.
 
 - **AWS Serverless Application**: Deployed a [REST API](https://trip.arguswatcher.net/prod/bike) and interactive [web](https://trip.arguswatcher.net/) visualization using `AWS` services, with infrastructure managed by `Terraform` and `CI/CD` powered by `GitHub Actions`.
 
