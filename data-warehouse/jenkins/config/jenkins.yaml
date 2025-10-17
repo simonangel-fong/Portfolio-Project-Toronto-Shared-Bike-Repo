@@ -128,11 +128,6 @@ jobs:
               githubPush()
               cron('H 0 * * *')
             }
-            wrappers {
-              timeout {
-                absolute(60)
-              }
-            }
             scriptPath("data-warehouse/jenkins/pipeline/Jenkinsfile")
             lightweight()
           }
