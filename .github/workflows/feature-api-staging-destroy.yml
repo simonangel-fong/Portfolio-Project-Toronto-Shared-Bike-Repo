@@ -14,7 +14,7 @@ concurrency:
 jobs:
   destroy_staging:
     name: Destroy Staging
-    if: github.ref_name == 'staging'
+    if: github.ref_name == 'feature-api-staging'
     runs-on: ubuntu-latest
     environment: Staging
     timeout-minutes: 60
