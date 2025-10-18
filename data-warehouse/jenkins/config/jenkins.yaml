@@ -13,7 +13,9 @@ jenkins:
           password: "${JENKINS_ADMIN_PWD}"
         - id: "admin"
           password: "admin"
-
+          properties:
+          - timezone:
+              timeZoneName: "Canada/Eastern"
 security:
   apiToken:
     creationOfLegacyTokenEnabled: false
@@ -65,7 +67,7 @@ unclassified:
     - "jobBuildDiscarder"
   location:
     adminAddress: "${GMAIL_USERNAME}"
-    url: "http://on-prem:8080/"
+    url: "https://onprem.arguswatcher.net/jenkins/"
   email-ext:
     mailAccount:
       credentialsId: "gmail_cred"
@@ -81,10 +83,17 @@ unclassified:
     smtpPort: "465"
     useSsl: true
     useTls: false
+  globalTimeOutConfiguration:
+    operations:
+    - "failOperation"
+    overwriteable: false
+    strategy:
+      absoluteTimeOutStrategy:
+        timeoutMinutes: "60"
 
 jobs:
   - script: >
-      pipelineJob('dev-etl-pipeline') {
+      pipelineJob('etl-pipeline-dev') {
         definition {
           cpsScm {
             scm {
@@ -104,7 +113,7 @@ jobs:
         }
       }
   - script: >
-      pipelineJob('prod-etl-pipeline-daily') {
+      pipelineJob('etl-pipeline-prod-interval') {
         definition {
           cpsScm {
             scm {
@@ -117,7 +126,12 @@ jobs:
             }
             triggers {
               githubPush()
-              cron('@daily')
+              cron('H 0 * * *')
+            }
+            wrappers {
+              timeout {
+                absolute(60)
+              }
             }
             scriptPath("data-warehouse/jenkins/pipeline/Jenkinsfile")
             lightweight()

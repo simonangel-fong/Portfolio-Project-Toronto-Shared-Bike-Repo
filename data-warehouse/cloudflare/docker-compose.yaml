@@ -4,9 +4,7 @@ include:
   - ../nginx/docker-compose.yaml
 
 networks:
-  public-net:
-    driver: bridge
-  monitoring:
+  ingress_net:
     driver: bridge
 
 services:
@@ -17,8 +15,7 @@ services:
     env_file:
       - .env
     networks:
-      - public-net
-      - monitoring
+      - ingress_net
     command: tunnel run
     depends_on:
       - nginx

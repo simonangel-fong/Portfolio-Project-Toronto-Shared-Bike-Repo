@@ -59,10 +59,20 @@ sudo reboot
 
 ```sh
 # upload init script to vm
+# scp ./init.sh ubuntuadmin@on-prem:~
 scp -r -o ProxyJump=root@192.168.1.80 ./init.sh root@192.168.100.110:~
 
 # connect with vm
+# ssh ubuntuadmin@on-prem
 ssh -J root@192.168.1.80 root@192.168.100.110
 
+# initialize app code
 bash init.sh
+
+# set env
+vi ~/project_shared_bike/data-warehouse/cloudflare/.env
+vi ~/project_shared_bike/data-warehouse/jenkins/.env
+
+cd ~/project_shared_bike/data-warehouse/cloudflare
+docker compose up -d --build
 ```

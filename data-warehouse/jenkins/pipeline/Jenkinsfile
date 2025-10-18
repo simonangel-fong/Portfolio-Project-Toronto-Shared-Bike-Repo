@@ -4,7 +4,7 @@ pipeline {
   options {
     disableConcurrentBuilds()   // only one instance
     timestamps()    // show timestamp
-    timeout(time: 30, unit: 'MINUTES')    // timeout for pipeline run
+    // timeout(time: 120, unit: 'MINUTES')    // timeout for pipeline run
     // skipDefaultCheckout(true)   // Prevents auto SCM checkout
 
     // discard old builds
@@ -117,19 +117,19 @@ pipeline {
     stage('Extract Data') {
       steps {
         echo "#################### Extract Data ####################"
-        sh 'docker exec -t postgresql bash /scripts/etl/extract.sh'
+        sh 'docker exec postgresql bash /scripts/etl/extract.sh'
       }
     }
 
     stage('Transform Data') {
       steps {
-        sh 'docker exec -t postgresql bash /scripts/etl/transform.sh'
+        sh 'docker exec postgresql bash /scripts/etl/transform.sh'
       }
     }
 
     stage('Load Data') {
       steps {
-        sh 'docker exec -t postgresql bash /scripts/etl/load.sh'
+        sh 'docker exec postgresql bash /scripts/etl/load.sh'
       }
     }
 
@@ -201,6 +201,7 @@ pipeline {
     }
     
     failure {
+      echo "#################### Failure ####################"
       emailext (
         to: "tech.arguswatcher@gmail.com",
         subject: "FAILURE - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",
@@ -211,6 +212,7 @@ pipeline {
     }
 
     success {
+      echo "#################### SUCCESS ####################"
       emailext (
         to: "tech.arguswatcher@gmail.com",
         subject: "SUCCESS - ${env.JOB_NAME} (#${env.BUILD_NUMBER})",

@@ -1,7 +1,14 @@
 name: toronto-shared-bike
 
 networks:
-  jenkins_network:
+  app_net:
+    driver: bridge
+    internal: true
+  data_net:
+    driver: bridge
+    internal: true
+  # access internet
+  egress_net:
     driver: bridge
 
 volumes:
@@ -29,6 +36,8 @@ services:
       - /var/jenkins_home/workspace:/var/jenkins_home/workspace
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - jenkins_network 
+      - app_net
+      - data_net
+      - egress_net
     ports:
       - "8080:8080"

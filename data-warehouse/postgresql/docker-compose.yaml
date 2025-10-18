@@ -5,8 +5,9 @@ volumes:
   # pgbackup:
 
 networks:
-  public-net:
+  app_net:
     driver: bridge
+    internal: true
 
 services:
   postgresql:
@@ -33,7 +34,7 @@ services:
       # - ${DIR_PGDB:-.}/export/:/export
       - pgdata:/var/lib/postgresql # persist data
     networks:
-      - public-net # public for dev
+      - app_net
     ports:
       - "5432:5432"
     healthcheck:
