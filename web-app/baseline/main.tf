@@ -8,3 +8,16 @@ module "web_bucket" {
   env           = var.env
   web_file_path = var.web_file_path
 }
+
+# ##############################
+# AWS Dynamodb
+# ##############################
+module "dynamodb_tb" {
+  source  = "../module/dynamodb"
+  project = var.project
+  app     = var.app
+  env     = var.env
+
+  data_bucket   = var.data_bucket
+  data_file_key = var.data_file_key
+}
