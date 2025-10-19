@@ -29,7 +29,7 @@ provider "aws" {
   default_tags {
     tags = {
       App         = var.app
-      Environment = var.env
+      Environment = "base-hp"
       Project     = var.project
       ManagedBy   = "terraform"
     }

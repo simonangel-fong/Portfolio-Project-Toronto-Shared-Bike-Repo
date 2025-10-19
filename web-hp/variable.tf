@@ -9,22 +9,36 @@ variable "app" {
   type    = string
   default = "web-app"
 }
-variable "env" {
+variable "env_base" {
   type    = string
-  default = "baseline"
+  default = "base"
 }
-variable "aws_region" { type = string }
-variable "dns_domain" {
+
+variable "env_hp" {
   type    = string
-  default = "trip-baseline.arguswatcher.net"
+  default = "base"
+}
+
+variable "aws_region" { type = string }
+variable "dns_domain_base" {
+  type    = string
+  default = "trip-base.arguswatcher.net"
+}
+variable "dns_domain_hp" {
+  type    = string
+  default = "trip-hp.arguswatcher.net"
 }
 
 # ##############################
 # S3 bucket
 # ##############################
-variable "web_file_path" {
+variable "web_file_path_base" {
   type    = string
-  default = "./html"
+  default = "./html_base"
+}
+variable "web_file_path_hp" {
+  type    = string
+  default = "./html_hp"
 }
 
 # ##############################
