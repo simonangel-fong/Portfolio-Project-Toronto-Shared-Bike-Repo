@@ -11,12 +11,12 @@ variable "app" {
 }
 variable "env" {
   type    = string
-  default = "dev"
+  default = "baseline"
 }
 variable "aws_region" { type = string }
 variable "dns_domain" {
   type    = string
-  default = "trip-dev.arguswatcher.net"
+  default = "trip-baseline.arguswatcher.net"
 }
 
 # ##############################
