@@ -21,3 +21,17 @@ module "dynamodb_tb" {
   data_bucket   = var.data_bucket
   data_file_key = var.data_file_key
 }
+
+# ##############################
+# AWS Lambda
+# ##############################
+module "lambda" {
+  source  = "../module/lambda"
+  project = var.project
+  app     = var.app
+  env     = var.env
+
+  archive_source_file = "../lambda/main.py"
+  archive_output_path = "../lambda/main.zip"
+  dynamodb_table_arn  = module.dynamodb_tb.arn
+}
