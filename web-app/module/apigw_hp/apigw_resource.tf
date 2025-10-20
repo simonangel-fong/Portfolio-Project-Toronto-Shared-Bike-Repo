@@ -17,6 +17,11 @@ resource "aws_api_gateway_method" "apigw_method_get" {
   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
   http_method   = "GET"
   authorization = "NONE"
+
+  request_parameters = {
+    "method.request.querystring.year" = false # false = optional; true = required
+    "method.request.querystring.user" = false # false = optional; true = required
+  }
 }
 
 # get integrate
@@ -28,6 +33,13 @@ resource "aws_api_gateway_integration" "apigw_integration_get" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = var.lambda_arn
+
+  cache_key_parameters = [
+    "method.request.querystring.year",
+    "method.request.querystring.user",
+  ]
+
+  cache_namespace = each.value.id
 }
 
 # get response

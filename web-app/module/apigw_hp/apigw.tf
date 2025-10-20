@@ -20,6 +20,8 @@ resource "aws_api_gateway_rest_api" "rest_api" {
   endpoint_configuration {
     types = ["REGIONAL"]
   }
+
+  minimum_compression_size = 0
 }
 
 resource "aws_api_gateway_account" "apigw_account" {
@@ -124,8 +126,31 @@ resource "aws_api_gateway_stage" "API_ENV" {
     })
   }
 
+  # Enable cache
+  cache_cluster_enabled = true
+  cache_cluster_size    = "0.5" // 0.5 , 1.6 , 6.1 , 13.5 , 28.4 , 58.2 , 118
+
   depends_on = [
     aws_cloudwatch_log_group.api_gateway_logs,
     aws_api_gateway_account.apigw_account
   ]
+}
+
+#  enable Method-level caching
+resource "aws_api_gateway_method_settings" "cached_gets" {
+  for_each    = toset(var.path_list)
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  stage_name  = aws_api_gateway_stage.API_ENV.stage_name
+  method_path = "${each.value}/GET"
+
+  settings {
+    caching_enabled      = true
+    cache_ttl_in_seconds = 60 # start with 60s; tune per endpoint
+    cache_data_encrypted = true
+    metrics_enabled      = true # keep on for tuning; you can disable later
+    logging_level        = "INFO"
+    # logging_level          = "ERROR" # cut down on overhead vs "INFO"
+    throttling_burst_limit = 200
+    throttling_rate_limit  = 100
+  }
 }

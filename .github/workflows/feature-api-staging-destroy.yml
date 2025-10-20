@@ -73,7 +73,7 @@ jobs:
 
       - name: Terraform Plan - Destroy
         id: plan
-        run: terraform plan -out=tfplan -input=false -no-color -destroy
+        run: terraform plan -out=tfplan-destroy -input=false -no-color -destroy
 
       - name: Terraform Apply - Staging Destroy
-        run: terraform apply -auto-approve -no-color tfplan
+        run: terraform plan -auto-approve -no-color tfplan-destroy
