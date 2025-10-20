@@ -56,7 +56,7 @@ resource "aws_cloudfront_distribution" "api_cdn" {
     viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
-    # compress               = true
+    compress               = true
 
     forwarded_values {
       query_string = false
@@ -73,7 +73,7 @@ resource "aws_cloudfront_distribution" "api_cdn" {
     viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
-    # compress               = true
+    compress               = true
 
     forwarded_values {
       query_string = true
