@@ -16,7 +16,7 @@ variable "env_base" {
 
 variable "env_hp" {
   type    = string
-  default = "base"
+  default = "hp"
 }
 
 variable "aws_region" { type = string }

@@ -1,7 +1,7 @@
 # ##############################
 # AWS S3 bucket
 # ##############################
-module "web_bucket" {
+module "web_bucket_base" {
   source        = "../web-app/module/s3"
   project       = var.project
   app           = var.app
@@ -12,7 +12,7 @@ module "web_bucket" {
 # ##############################
 # AWS Dynamodb
 # ##############################
-module "dynamodb_tb" {
+module "dynamodb_tb_base" {
   source  = "../web-app/module/dynamodb"
   project = var.project
   app     = var.app
@@ -25,7 +25,7 @@ module "dynamodb_tb" {
 # ##############################
 # AWS Lambda
 # ##############################
-module "lambda" {
+module "lambda_base" {
   source  = "../web-app/module/lambda"
   project = var.project
   app     = var.app
@@ -33,27 +33,27 @@ module "lambda" {
 
   archive_source_file = "../web-app/lambda/main.py"
   archive_output_path = "../web-app/lambda/main.zip"
-  dynamodb_table_arn  = module.dynamodb_tb.arn
+  dynamodb_table_arn  = module.dynamodb_tb_base.arn
 }
 
 # ##############################
 # AWS API Gateway
 # ##############################
-module "api_gateway" {
+module "api_gateway_base" {
   source  = "../web-app/module/apigw"
   project = var.project
   app     = var.app
   env     = var.env_base
 
   path_list  = var.path_list
-  lambda_arn = module.lambda.arn
-  lambda_id  = module.lambda.id
+  lambda_arn = module.lambda_base.arn
+  lambda_id  = module.lambda_base.id
 }
 
 # ##############################
 # AWS Cloudfront
 # ##############################
-module "cloudfront" {
+module "cloudfront_base" {
   source  = "../web-app/module/cloudfront"
   project = var.project
   app     = var.app
@@ -63,16 +63,16 @@ module "cloudfront" {
   dns_domain  = var.dns_domain_base
   cert_domain = var.cert_domain
   # api
-  apigw_stage = module.api_gateway.stage
-  apigw_id    = module.api_gateway.id
+  apigw_stage = module.api_gateway_base.stage
+  apigw_id    = module.api_gateway_base.id
   # s3 web
-  website_endpoint = module.web_bucket.website_endpoint
+  website_endpoint = module.web_bucket_base.website_endpoint
 }
 
 # ##############################
 # Cloudflare DNS
 # ##############################
-module "cloudflare_dns" {
+module "cloudflare_dns_base" {
   source  = "../web-app/module/dns"
   project = var.project
   app     = var.app
@@ -81,5 +81,5 @@ module "cloudflare_dns" {
   cloudflare_zone_id   = var.cloudflare_zone_id
   cloudflare_api_token = var.cloudflare_api_token
   dns_domain           = var.dns_domain_base
-  target_domain        = module.cloudfront.domain
+  target_domain        = module.cloudfront_base.domain
 }

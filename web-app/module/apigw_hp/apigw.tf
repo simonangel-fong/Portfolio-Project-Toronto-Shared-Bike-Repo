@@ -128,7 +128,7 @@ resource "aws_api_gateway_stage" "API_ENV" {
 
   # Enable cache
   cache_cluster_enabled = true
-  cache_cluster_size    = "1.6" // 0.5 , 1.6 , 6.1 , 13.5 , 28.4 , 58.2 , 118
+  cache_cluster_size    = "0.5" // 0.5 , 1.6 , 6.1 , 13.5 , 28.4 , 58.2 , 118
 
   depends_on = [
     aws_cloudwatch_log_group.api_gateway_logs,
