@@ -77,4 +77,4 @@ jobs:
 
       - name: Terraform Apply - Staging Destroy
         # run: terraform apply -auto-approve -no-color tfplan-destroy
-        run: terraform apply -destroy -auto-approve
+        run: terraform plan -auto-approve -no-color tfplan-destroy
