@@ -32,14 +32,14 @@
                     <a class="nav-link fw-bold py-1 px-0 me-2" href="#da">Data Analysis</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#cicd"> CI/CD </a>
+                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#cicd"> CI/CD Pipeline </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#aws">Cloud Engineer</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link fw-bold py-1 px-0 me-2" href="#sa">System Admin</a>
                 </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link fw-bold py-1 px-0 me-2" href="#aws">Cloud Engineer</a>
-                </li> -->
             </ul>
         </nav>
 
@@ -54,8 +54,8 @@
                         engineering and DevOps skills — from building an on-premises data warehouse and automated
                         pipelines to deploying cloud-native APIs and web applications on AWS.
                     </p>
-                    <a href="#da" class="btn btn-warning rounded-pill me-4">Try Dashboard</a>
-                    <a href="#cicd" class="btn btn-light rounded-pill">Technical Details</a>
+                    <a href="#da" class="btn btn-warning rounded-pill m-2">Try Dashboard</a>
+                    <a href="#cicd" class="btn btn-light rounded-pill m-2">Technical Details</a>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
 
         <!-- features -->
         <section id="feature-card" class="container-fluid py-5 my-5">
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 justify-content-center">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 justify-content-center g-3">
 
                 <!-- da -->
                 <div class="col">
@@ -96,6 +96,21 @@
                                 Dual pipelines: GitHub Actions + Jenkins
                             </p>
                             <a class="align-text-bottom" href="#cicd">Details>></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- aws -->
+                <div class="col">
+                    <div class="card h-100 overflow-hidden rounded-4">
+                        <img src="./img/features/aws.jpg" alt="cicd">
+                        <div class="card-body">
+                            <h5 class="card-title">Cloud Engineer</h5>
+                            <p class="card-text">
+                                Serverless API on AWS with Infrastructure as Code<br>
+                                API Optimization with Caching and Compression
+                            </p>
+                            <a class="align-text-bottom" href="#aws">Details>></a>
                         </div>
                     </div>
                 </div>
@@ -485,6 +500,127 @@
         <!-- divider -->
         <hr class="col-8 mx-auto">
 
+        <!-- DevOps - cloud -->
+        <section id="aws" class="container-flex">
+            <div data-bs-spy="scroll" data-bs-target="#trip-navbar" data-bs-root-margin="0px 0px -40%"
+                data-bs-smooth-scroll="true" class="bg-body-white p-3 rounded-2" tabindex="0">
+
+                <div class="row row-cols-1 py-5">
+                    <h1 class="display-5 fw-bold text-body-emphasis text-center pb-3">
+                        DevOps - Cloud Skill(AWS)
+                    </h1>
+                    <hr class="border-5 border-top border-black col-2 col-md-3 mx-auto">
+                </div> <!--devops cicd title -->
+
+                <!-- DevOps sa: Slide -->
+                <div class=" row py-3 mb-4">
+                    <div id="aws_Carousel" class="carousel carousel-dark slide shadow col-md-9 col-sm-12  p-0 mx-auto">
+
+                        <!-- indicator -->
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#aws_Carousel" data-bs-slide-to="0" class="active"
+                                aria-current="true" aria-label="network"></button>
+                        </div>
+
+                        <!-- content -->
+                        <div class="carousel-inner">
+
+                            <div class="carousel-item active">
+                                <img src="./img/devops/devops_cloud.gif" class="d-block w-100" alt="on-prem sa">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Serverless API & IaC</h5>
+                                </div>
+                            </div>
+
+                            <!-- Left and right controls -->
+                            <!-- <button class="carousel-control-prev" type="button" data-bs-target="#aws_Carousel"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#aws_Carousel"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button> -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- divider -->
+                <hr class="col-8 mx-auto py-lg-5">
+
+                <!-- sa: pve -->
+                <div class="row g-5 p-lg-5 pt-5">
+
+                    <!-- description -->
+                    <div class="col-lg-5 col-md-12 m-0 mb-4">
+                        <h1 class="fs-2 fw-bold text-center py-3">
+                            Serverless API on AWS
+                        </h1>
+                        <p class="lead fs-5">
+                            <b>Architecture (AWS)</b>
+                            <li>
+                                S3 + DynamoDB + Lamdba + API Gateway + CloudFront + Cloudflare DNS
+                            </li>
+                        </p>
+                        <p class="lead fs-5">
+                            <b>Infrastructure as Code (Terraform)</b>
+                            <li>Remote backend in S3 with state locking</li>
+                            <li>tfvars for reusable, non-hard-coded configuration</li>
+                            <li> Modules to organize functionality and enable reuse</li>
+                            <li>for_each statement for dynamic resource creation</li>
+                        </p>
+                    </div>
+
+                    <!-- video -->
+                    <div class="col-lg-7 col-md-12 m-0">
+                        <div class="ratio ratio-16x9 shadow p-0 m-0">
+                            <iframe src="https://www.youtube.com/embed/PXfqz6D7Q-o??controls=1&autoplay=1&mute=1&vq=hd1080"
+                                title="YouTube video player" frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="col-8 mx-auto py-lg-2">
+
+                <!-- sa: dw -->
+                <div class="row flex-lg-row-reverse g-5 p-lg-5 pt-5 mt-5">
+
+                    <!-- description -->
+                    <div class="col-lg-5 col-md-12 m-0 mb-4">
+                        <h1 class="fs-2 fw-bold text-center py-3">
+                            REST API Optimization
+                        </h1>
+                        <p class="lead">
+                            <b>Optimize REST API performance on AWS</b>
+                            <li> CloudFront: edge caching + response compression</li>
+                            <li> API Gateway: method level cachin + resource query string caching</li>
+                        </p>
+                        <p class="lead">
+                            <b>Improve API performance</b>
+                            <li>~60% lower latency (264 ms → 105 ms)</li>
+                            <li>lower error rate (0.04 → 0.01)</li>
+                        </p>
+                    </div>
+
+                    <!-- video -->
+                    <div class="col-lg-7 col-md-12 m-0">
+                        <div class="ratio ratio-16x9 shadow p-0 m-0">
+                            <iframe
+                                src="https://www.youtube.com/embed/b94artW9V6s?controls=1&autoplay=1&mute=1&vq=hd1080"
+                                title="GitHub Actions CI/CD Pipeline" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- divider -->
+        <hr class="col-8 mx-auto">
+
         <!-- DevOps - sa -->
         <section id="sa" class="container-flex">
             <div data-bs-spy="scroll" data-bs-target="#trip-navbar" data-bs-root-margin="0px 0px -40%"
@@ -626,7 +762,6 @@
                 </div>
             </div>
         </section>
-
     </main>
 
     <!-- footer -->
