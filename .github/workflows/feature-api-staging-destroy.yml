@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   destroy_staging:
-    name: Destroy Staging
+    name: Destroy Staging Env
     if: github.ref_name == 'feature-api-staging'
     runs-on: ubuntu-latest
     environment: Staging
@@ -63,7 +63,7 @@ jobs:
           terraform init -reconfigure -input=false \
             -backend-config="bucket=${{ vars.AWS_BACKEND_BUCKET }}" \
             -backend-config="region=${{ vars.AWS_REGION }}" \
-            -backend-config="key=${{ vars.AWS_BACKEND_BUCKET_KEY }}/${{ env.TF_VAR_env }}/terraform.tfstate" \
+            -backend-config="key=${{ vars.AWS_BACKEND_BUCKET_KEY }}/${{ vars.ENV }}/terraform.tfstate" \
             -backend-config="encrypt=true"
 
       - name: Terraform Validate
@@ -76,4 +76,5 @@ jobs:
         run: terraform plan -out=tfplan-destroy -input=false -no-color -destroy
 
       - name: Terraform Apply - Staging Destroy
+        # run: terraform apply -auto-approve -no-color tfplan-destroy
         run: terraform plan -auto-approve -no-color tfplan-destroy
