@@ -4,7 +4,7 @@ pipeline {
   options {
     disableConcurrentBuilds()   // only one instance
     timestamps()    // show timestamp
-    // timeout(time: 120, unit: 'MINUTES')    // timeout for pipeline run
+    timeout(time: 120, unit: 'MINUTES')    // timeout for pipeline run
     // skipDefaultCheckout(true)   // Prevents auto SCM checkout
 
     // discard old builds
@@ -65,6 +65,7 @@ pipeline {
               sh '''
                 docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
                 docker logs --tail=100 postgresql || true
+                sleep 30
               '''
             }
         } 
