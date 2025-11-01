@@ -444,8 +444,8 @@
                             ensure code quality.
                         </p>
                         <p class="lead fs-5">
-                            Integrate and visualize <b>performance testing with Grafana K6</b> to enforce thresholds
-                            (<u>error rate ≤ 0.01</u>; <u>p95 latency &lt; 500 ms</u>).
+                            Integrate and visualize <b>performance testing with Grafana K6</b> to enforce API
+                            performance thresholds (<u>error rate ≤ 0.01</u>; <u>p95 latency &lt; 500 ms</u>).
                         </p>
                     </div>
 
@@ -559,24 +559,25 @@
                             Serverless API on AWS
                         </h1>
                         <p class="lead fs-5">
-                            <b>Architecture (AWS)</b>
+                            <b>API Architecture (AWS)</b>
                             <li>
                                 S3 + DynamoDB + Lamdba + API Gateway + CloudFront + Cloudflare DNS
                             </li>
                         </p>
                         <p class="lead fs-5">
                             <b>Infrastructure as Code (Terraform)</b>
-                            <li>Remote backend in S3 with state locking</li>
-                            <li>tfvars for reusable, non-hard-coded configuration</li>
-                            <li> Modules to organize functionality and enable reuse</li>
-                            <li>for_each statement for dynamic resource creation</li>
+                            <li>Configure S3 remote backend to lock resource state</li>
+                            <li>Use tfvars for reusable configuration</li>
+                            <li>Modularize functionalities to enable reuse</li>
+                            <li>Dynamize resource creation with for_each statement </li>
                         </p>
                     </div>
 
                     <!-- video -->
                     <div class="col-lg-7 col-md-12 m-0">
                         <div class="ratio ratio-16x9 shadow p-0 m-0">
-                            <iframe src="https://www.youtube.com/embed/PXfqz6D7Q-o??controls=1&autoplay=1&mute=1&vq=hd1080"
+                            <iframe
+                                src="https://www.youtube.com/embed/PXfqz6D7Q-o??controls=1&autoplay=1&mute=1&vq=hd1080"
                                 title="YouTube video player" frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                 referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -595,15 +596,15 @@
                             REST API Optimization
                         </h1>
                         <p class="lead">
-                            <b>Optimize REST API performance on AWS</b>
+                            <b>Optimize REST API(AWS) performance</b>
                             <li> CloudFront: edge caching + response compression</li>
                             <li> API Gateway: method level caching + resource query string caching</li>
                         </p>
                         <p class="lead">
                             <b>Improve API performance</b>
-                            <li>+600% higher peak RPS (70 reqs/s → 430 reqs/s)</li>
+                            <li>+500% higher peak RPS (70 reqs/s → 430 reqs/s)</li>
                             <li>-60% lower latency (264 ms → 105 ms)</li>
-                            <li>lower error rate (0.04 → 0.01)</li>
+                            <li>-75% lower error rate (0.04 → 0.01)</li>
                         </p>
                     </div>
 
@@ -708,14 +709,14 @@
                             On-prem Environment Configuration
                         </h1>
                         <p class="lead fs-5">
-                            Convert a repurposed laptop into a homelab with <b>Proxmox VE.</b>
+                            Convert a repurposed laptop into a <b>on-premises homelab</b> with <b>Proxmox VE.</b>
                         </p>
                         <p class="lead fs-5">
-                            Enable Internet access for <b>Promox</b> via <b>Wi-Fi</b> using <b>NetworkManager</b> and
-                            <b>iptables</b>.
+                            Enable <b>Internet access</b> for <b>Promox</b> via <b>Wi-Fi</b> using <b>NetworkManager</b>
+                            and <b>iptables</b>.
                         </p>
                         <p class="lead fs-5">
-                            Enable Internet access and DHCP services for <b>VMs</b>using <b>pfSense</b>.
+                            Enable <b>Internet access</b> and <b>DHCP services</b> for <b>VMs</b> using <b>pfSense</b>.
                         </p>
                     </div>
 
@@ -740,15 +741,15 @@
                             On-prem Data Warehouse Deployment
                         </h1>
                         <p class="lead">
-                            Deploy <b>Star schema</b> data warehouse using <b>PostgreSQL</b>, along with <b>ETL
-                                pipeline</b>.
+                            Deploy <b>Star schema</b> data warehouse using <b>PostgreSQL</b>, along with <b>Extract,
+                                Transform, and Load (ETL) pipeline</b>.
                         </p>
                         <p class="lead">
-                            Monitor system performance using <b>Prometheus</b> and <b>Grafana</b>
+                            Monitor system performance using <b>Prometheus</b> and <b>Grafana</b>.
                         </p>
                         <p class="lead">
                             Automate and accelerate deployment using <b>Shell scripts</b> & <b>Configuration as Code</b>
-                            (Jenkins & Grafana)
+                            (Jenkins & Grafana).
                         </p>
                     </div>
 
