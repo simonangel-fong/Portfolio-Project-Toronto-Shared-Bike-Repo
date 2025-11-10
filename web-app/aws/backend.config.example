@@ -1,3 +1,3 @@
 bucket  = ""
-key     = ""
+key     = "shared-bike-olap/web-api/dev/terraform.tfstate"
 region  = ""
