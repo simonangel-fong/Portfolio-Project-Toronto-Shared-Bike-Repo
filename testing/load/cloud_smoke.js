@@ -1,7 +1,7 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
 
-const TEST = __ENV.TEST || "Default test";
+const TEST = __ENV.TEST || "Smoke test";
 const ENV = __ENV.ENV || "dev";
 
 const DOMAIN = __ENV.DOMAIN || "localhost";

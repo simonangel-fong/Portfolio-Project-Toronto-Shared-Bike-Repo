@@ -147,12 +147,14 @@ jobs:
         uses: grafana/run-k6-action@v1
         id: smoke_testing
         env:
+          TEST: "API Staging Stress Testing"
+          DOMAIN: ${{ env.TF_VAR_dns_domain }}
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
         with:
           debug: true
           fail-fast: true
-          flags: --env TEST="API Staging Stress Testing" --env DOMAIN=${{ env.TF_VAR_dns_domain }}
+          # flags: --env  --env 
           path: |
             ${{ env.DIR_LOAD_TESTING }}/cloud_smoke.js
           #   ${{ env.DIR_LOAD_TESTING }}/cloud_load.js
