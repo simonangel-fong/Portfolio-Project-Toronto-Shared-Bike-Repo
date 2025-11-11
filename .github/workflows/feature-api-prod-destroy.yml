@@ -1,4 +1,4 @@
-name: Feature API Destroy(Manual) - Production Environment
+name: "Delete API(Prod)"
 
 on:
   workflow_dispatch: {}
