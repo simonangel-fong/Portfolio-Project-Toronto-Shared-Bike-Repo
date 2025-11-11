@@ -3,11 +3,11 @@
 # ##############################
 variable "project" {
   type    = string
-  default = "toronto-shared-bike"
+  default = "shared-bike-olap"
 }
 variable "app" {
   type    = string
-  default = "web-app"
+  default = "web-api"
 }
 variable "env" {
   type    = string

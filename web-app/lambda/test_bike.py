@@ -7,17 +7,17 @@ import importlib
 from moto import mock_aws
 
 # lambda path
-LAMBDA_PATH = "web-app/lambda"
+LAMBDA_PATH = "../"
 # app var
 PROJECT = os.environ.get('PROJECT', 'toronto-shared-bike')
 APP = os.environ.get('APP', 'data-warehouse')
 ENV = os.environ.get('ENV', 'dev')
-AWS_REGION = os.environ.get('aws_region', 'ca-central-1')
+AWS_REGION = os.environ.get('AWS_REGION', 'ca-central-1')
 # tb name
-MV_STATION_YEAR = f"{PROJECT}-{APP}-{ENV}-mv_station_year"
+MV_BIKE_YEAR = f"{PROJECT}-{APP}-{ENV}-mv_bike_year"
 
 
-class TestStation(unittest.TestCase):
+class TestBike(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # moto context
@@ -39,7 +39,7 @@ class TestStation(unittest.TestCase):
         # Create table
         cls.region = AWS_REGION
         cls.dynamodb = boto3.resource("dynamodb", region_name=cls.region)
-        cls.table_name = MV_STATION_YEAR
+        cls.table_name = MV_BIKE_YEAR
 
         cls.dynamodb.create_table(
             TableName=cls.table_name,
@@ -49,11 +49,15 @@ class TestStation(unittest.TestCase):
             BillingMode="PAY_PER_REQUEST",
         )
 
-        station_tb = cls.dynamodb.Table(cls.table_name)
-        station_tb.put_item(Item={"pk": "65e08285-6dd5-4826-b67b-964caabd770e","dim_year": 2019, "station_count": 469})
-        station_tb.put_item(Item={"pk": "bb44d3ba-bdd6-41cf-8291-f68be2239c54","dim_year": 2020, "station_count": 611})
-        station_tb.put_item(Item={"pk": "5090dcec-7282-441c-86da-c3bee8608160","dim_year": 2021, "station_count": 627})
-        station_tb.put_item(Item={"pk": "2d4295c7-cc4b-47b5-90e0-3e50764353de","dim_year": 2022, "station_count": 682})
+        bike_tb = cls.dynamodb.Table(cls.table_name)
+        bike_tb.put_item(Item={
+                         "pk": "12af2191-d6f6-4caf-8ac6-6f9ae03eca46", "dim_year": 2019, "bike_count": 4901})
+        bike_tb.put_item(Item={
+                         "pk": "c9110fb1-83b9-4cb3-a92c-310bb5bb6ca8", "dim_year": 2020, "bike_count": 6759})
+        bike_tb.put_item(Item={
+                         "pk": "0072cc01-6036-451d-8cc6-5498faa67818", "dim_year": 2021, "bike_count": 6499})
+        bike_tb.put_item(Item={
+                         "pk": "a8eca7ef-c283-4b4b-8bfb-065847325f1f", "dim_year": 2022, "bike_count": 6829})
 
         # Import your lambda handler
         sys.path.insert(0, LAMBDA_PATH)
@@ -65,11 +69,11 @@ class TestStation(unittest.TestCase):
         cls.mock.stop()
 
     # test case
-    def test_station_all(self):
-        # /station
+    def test_bike_all(self):
+        # /bike
         event = {
             "httpMethod": "GET",
-            "path": "/station",
+            "path": "/bike",
             "queryStringParameters": None
         }
         resp = self.target.lambda_handler(event, None)
@@ -80,20 +84,21 @@ class TestStation(unittest.TestCase):
         body = json.loads(resp["body"])
         self.assertEqual(body["count"], 4)
         # data
-        data = {(r["dim_year"], r["station_count"]) for r in body["data"]}
+        data = {(r["dim_year"], r["bike_count"]) for r in body["data"]}
         self.assertEqual(
             data,
-            {(2019, 469), (2020, 611), (2021, 627), (2022, 682)}
+            {(2019, 4901), (2020, 6759), (2021, 6499), (2022, 6829)}
         )
 
-    def test_station_year(self):
-        # /station?year=2019
+    def test_bike_year(self):
+        # /bike?year=2019
         event = {
             "httpMethod": "GET",
-            "path": "/station",
+            "path": "/bike",
             "queryStringParameters": {"year": 2019},
         }
         resp = self.target.lambda_handler(event, None)
+        print(resp)
 
         # status code
         self.assertEqual(resp["statusCode"], 200)
@@ -105,4 +110,4 @@ class TestStation(unittest.TestCase):
         records = body["data"]
         self.assertEqual(len(records), 1)
         self.assertEqual(records[0]["dim_year"], 2019)
-        self.assertEqual(records[0]["station_count"], 469)
+        self.assertEqual(records[0]["bike_count"], 4901)
