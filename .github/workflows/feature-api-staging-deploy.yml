@@ -123,7 +123,7 @@ jobs:
 
   test_staging:
     name: Testing(K6)
-    # needs: deploy_staging
+    needs: deploy_staging
     runs-on: ubuntu-latest
     environment: Staging
     env:
