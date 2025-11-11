@@ -127,6 +127,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: Staging
     env:
+      DIR_LOAD_TESTING: testing/load
       TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
       TF_VAR_project: ${{ vars.PROJECT }}
       TF_VAR_app: ${{ vars.APP_WEB }}
@@ -135,9 +136,6 @@ jobs:
       TF_VAR_aws_region: ${{ vars.AWS_REGION }}
       TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
       TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
-    defaults:
-      run:
-        working-directory: testing/load
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -145,22 +143,22 @@ jobs:
       - name: Setup K6
         uses: grafana/setup-k6-action@v1
 
-      - name: Run k6 test
+      - name: Run Smoke Testing
         uses: grafana/run-k6-action@v1
-        id: testing_k6
+        id: smoke_testing
         env:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
         with:
           debug: true
           fail-fast: true
-          flags: --env TEST="API Staging Stress Testing" --env VU=100 --env DOMAIN=${{ env.TF_VAR_dns_domain }}
-          # path: |
-          #   ${{ env.DIR_LOAD_TESTING }}/cloud_smoke.js
+          flags: --env TEST="API Staging Stress Testing" --env DOMAIN=${{ env.TF_VAR_dns_domain }}
+          path: |
+            ${{ env.DIR_LOAD_TESTING }}/cloud_smoke.js
           #   ${{ env.DIR_LOAD_TESTING }}/cloud_load.js
           #   ${{ env.DIR_LOAD_TESTING }}/cloud_stress.js
-          path: |
-            ./cloud_smoke.js
+          # path: |
+            # ./cloud_smoke.js
 
       - name: Send email notification
         if: always()
