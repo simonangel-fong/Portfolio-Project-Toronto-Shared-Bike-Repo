@@ -154,7 +154,7 @@ jobs:
         with:
           debug: true
           fail-fast: true
-          flags: --env DOMAIN=${{ env.TF_VAR_dns_domain }}
+          flags: --env DOMAIN=${{ env.TF_VAR_dns_domain }} --env ENV=staging
           path: |
             ${{ env.DIR_LOAD_TESTING }}/cloud_smoke.js
           #   ${{ env.DIR_LOAD_TESTING }}/cloud_load.js
