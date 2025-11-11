@@ -1,4 +1,4 @@
-name: "Delete API(Staging)"
+name: "API-Staging-Destroy"
 
 on:
   workflow_dispatch: {}

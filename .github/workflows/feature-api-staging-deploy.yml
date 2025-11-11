@@ -1,4 +1,4 @@
-name: "Deploy API(Staging)"
+name: "API-Staging-Deploy"
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: "Delete API(Prod)"
+name: "API-Prod-Destroy"
 
 on:
   workflow_dispatch: {}
