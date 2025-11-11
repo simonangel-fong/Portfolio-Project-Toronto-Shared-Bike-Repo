@@ -19,8 +19,6 @@ const DURATION = __ENV.DURATION || "30s";
 const SLA_FAIL = __ENV.SLA_FAIL || "0.01";
 const SLA_DUR_99 = __ENV.SLA_DUR_99 || "1000";
 
-const TARGET = 30;
-
 export const options = {
   thresholds: {
     http_req_failed: [`rate<${SLA_FAIL}`], // SLA: http errors < 1%
