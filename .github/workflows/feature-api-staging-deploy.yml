@@ -150,10 +150,11 @@ jobs:
           TEST: "API-Staging-Stress-Testing"
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+          # --env TEST=${{ env.TEST }}
         with:
           debug: true
           fail-fast: true
-          flags: --env DOMAIN=${{ env.TF_VAR_dns_domain }} --env ENV=${{ vars.ENV }} --env  TEST=${{ env.TEST }}
+          flags: --env DOMAIN=${{ env.TF_VAR_dns_domain }} --env ENV=${{ vars.ENV }} 
           path: |
             ${{ env.DIR_LOAD_TESTING }}/cloud_smoke.js
 
