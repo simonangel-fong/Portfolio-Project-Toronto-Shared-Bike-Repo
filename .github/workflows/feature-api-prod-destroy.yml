@@ -8,7 +8,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: prod-destroy-${{ github.workflow }}-${{ github.ref_name }}
+  group: api-prod-destroy-${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true # Cancel older runs
 
 jobs:
@@ -21,7 +21,6 @@ jobs:
     env:
       DIR_WEB_APP_AWS: web-app/aws
       TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
-      TF_VERSION: 1.9.8
       TF_VAR_project: ${{ vars.PROJECT }}
       TF_VAR_app: ${{ vars.APP_WEB }}
       TF_VAR_env: ${{ vars.ENV }}
@@ -31,7 +30,7 @@ jobs:
       TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
     defaults:
       run:
-        working-directory: ${{ env.DIR_WEB_APP_AWS }}
+        working-directory: web-app/aws
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,7 +38,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: ${{ env.TF_VERSION }}
+          terraform_version: ${{ vars.TF_VERSION }}
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
@@ -56,14 +55,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.terraform.d/plugin-cache
-          key: ${{ runner.os }}-terraform-${{ env.TF_VERSION }}
+          key: ${{ runner.os }}-terraform-${{ vars.TF_VERSION }}
 
       - name: Terraform init - S3 backend
         run: |
           terraform init -reconfigure -input=false \
             -backend-config="bucket=${{ vars.AWS_BACKEND_BUCKET }}" \
             -backend-config="region=${{ vars.AWS_REGION }}" \
-            -backend-config="key=${{ vars.AWS_BACKEND_BUCKET_KEY }}/${{ env.TF_VAR_env }}/terraform.tfstate" \
+            -backend-config="key=${{ vars.PROJECT }}/${{ vars.APP_WEB }}${{ vars.ENV }}/terraform.tfstate" \
             -backend-config="encrypt=true"
 
       - name: Terraform Validate
@@ -77,3 +76,28 @@ jobs:
 
       - name: Terraform Apply - Destroy Prod
         run: terraform apply -auto-approve -no-color tfplan
+
+      - name: Send email notification
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "${{ job.status }} - ${{ github.workflow }}: ${{ vars.PROJECT}} ${{vars.APP_WEB}} (${{vars.ENV}})"
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          html_body: |
+            <h2>GitHub Actions CI/CD Notification</h2>
+            <p><b>Project</b>: ${{ vars.PROJECT}}</p>
+            <p><b>Application</b>: ${{ vars.APP_WEB}}</p>
+            <p><b>Repository</b>: ${{ github.repository }}</p>
+            <p><b>Env</b>: ${{ vars.ENV }}</p>
+            <p><b>Job</b>: ${{ github.job }}</p>
+            <p><b>Status</b>: ${{ job.status }}</p>
+            <p><b>Branch</b>: ${{ github.ref }}</p>
+            <p><b>Workflow</b>: ${{ github.workflow }}</p>
+            <p><b>Commit</b>: ${{ github.sha }}</p>
+            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
