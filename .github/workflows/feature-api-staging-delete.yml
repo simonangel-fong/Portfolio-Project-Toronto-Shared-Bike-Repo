@@ -1,4 +1,4 @@
-name: Feature API Destroy(Manual) - Staging Environment
+name: "Delete API(Staging)"
 
 on:
   workflow_dispatch: {}
