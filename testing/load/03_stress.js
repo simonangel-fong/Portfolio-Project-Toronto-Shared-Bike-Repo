@@ -14,7 +14,7 @@ const TOP_STATION_URL = `https://${DOMAIN}/${ENV}/top-station`;
 
 const VU = __ENV.VU || 5;
 const SCALE = __ENV.SCALE || 1;
-const DURATION = __ENV.DURATION || "30s";
+const DURATION = __ENV.DURATION || "60s";
 
 const SLA_FAIL = __ENV.SLA_FAIL || "0.01";
 const SLA_DUR_99 = __ENV.SLA_DUR_99 || "1000";
@@ -30,15 +30,15 @@ export const options = {
     average_load: {
       executor: "ramping-vus",
       stages: [
-        { duration: `${DURATION}s`, target: VU * 0.2 },
-        { duration: `${DURATION}s`, target: VU * 0.2 },
-        { duration: `${DURATION}s`, target: VU * 0.4 },
-        { duration: `${DURATION}s`, target: VU * 0.4 },
-        { duration: `${DURATION}s`, target: VU * 0.6 },
-        { duration: `${DURATION}s`, target: VU * 0.6 },
-        { duration: `${DURATION}s`, target: VU * 0.8 },
-        { duration: `${DURATION}s`, target: VU * 0.8 },
-        { duration: `${DURATION * 2}s`, target: VU * 1 },
+        { duration: DURATION, target: VU * 0.2 },
+        { duration: DURATION, target: VU * 0.2 },
+        { duration: DURATION, target: VU * 0.4 },
+        { duration: DURATION, target: VU * 0.4 },
+        { duration: DURATION, target: VU * 0.6 },
+        { duration: DURATION, target: VU * 0.6 },
+        { duration: DURATION, target: VU * 0.8 },
+        { duration: DURATION, target: VU * 0.8 },
+        { duration: DURATION, target: VU * 1 },
       ],
     },
   },
