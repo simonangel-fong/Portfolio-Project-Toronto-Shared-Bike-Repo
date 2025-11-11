@@ -40,7 +40,7 @@ module "lambda_hp" {
 # AWS API Gateway
 # ##############################
 module "api_gateway_hp" {
-  source  = "../web-app/module/apigw_hp"  // hp apis
+  source  = "../web-app/module/apigw_hp" // hp apis
   project = var.project
   app     = var.app
   env     = var.env_hp
