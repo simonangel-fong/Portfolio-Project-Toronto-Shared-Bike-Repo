@@ -163,7 +163,7 @@ jobs:
             ./cloud_smoke.js
 
       - name: Send email notification
-        if: failure()
+        if: always()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
