@@ -154,7 +154,7 @@ jobs:
         with:
           debug: true
           fail-fast: true
-          flags: --env DNS_DOMAIN=${{ env.TF_VAR_dns_domain }} --env API_ENV=${{ env.TF_VAR_env }}
+          flags: --env TEST="API Staging Stress Testing" --env VU=100 --env DOMAIN=${{ env.TF_VAR_dns_domain }}
           # path: |
           #   ${{ env.DIR_LOAD_TESTING }}/cloud_smoke.js
           #   ${{ env.DIR_LOAD_TESTING }}/cloud_load.js
