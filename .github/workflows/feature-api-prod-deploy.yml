@@ -93,9 +93,9 @@ jobs:
 
       - name: Terraform Apply - Prod
         run: terraform apply -auto-approve -no-color tfplan
-        
+
       - name: Send email notification
-        if: failure()
+        if: always()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
