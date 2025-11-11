@@ -143,9 +143,9 @@ jobs:
       - name: Setup K6
         uses: grafana/setup-k6-action@v1
 
-      - name: Run Smoke Testing
+      - name: Run Testing
         uses: grafana/run-k6-action@v1
-        id: smoke_testing
+        id: testing
         env:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
@@ -156,6 +156,7 @@ jobs:
           path: |
             ${{ env.DIR_LOAD_TESTING }}/cloud_smoke.js
             ${{ env.DIR_LOAD_TESTING }}/cloud_load.js
+            ${{ env.DIR_LOAD_TESTING }}/cloud_stress.js
 
       - name: Send email notification
         if: always()
