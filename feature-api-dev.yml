@@ -1,0 +1,164 @@
+name: Feature API Pipeline - Development Environment
+
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches:
+#       - "feature-api-dev"
+#     paths:
+#       - "web-app/**"
+#       - "testing/**"
+#       - ".github/workflows/feature-api-dev.yml"
+#   pull_request:
+#     branches: ["feature-api-staging"]
+#     paths:
+#       - "web-app/**"
+#       - "testing/**"
+
+# # read only
+# permissions:
+#   contents: read
+
+# # multiple trigger
+# concurrency:
+#   group: dev-ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref_name || github.run_id }}
+#   cancel-in-progress: true # Cancel older runs
+
+# jobs:
+#   lambda_unit_test:
+#     name: Lambda Unit Test
+#     runs-on: ubuntu-latest
+#     environment: Dev
+#     env:
+#       DIR_UNIT_TESTING: testing/unit
+#       PYTHON_VERSION: "3.11"
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+
+#       - name: Set up Python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: ${{env.PYTHON_VERSION}}
+
+#       - name: Cache pip
+#         uses: actions/cache@v4
+#         with:
+#           path: ~/.cache/pip
+#           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirement*.txt') }}
+#           restore-keys: |
+#             ${{ runner.os }}-pip-
+
+#       - name: Install test dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install -r requirement.txt
+
+#       - name: Run unit tests
+#         run: |
+#           echo "Running Lambda unit tests…"
+#           pytest ${{env.DIR_UNIT_TESTING}}
+
+#   terraform_validate:
+#     name: Terraform Validate
+#     needs: lambda_unit_test
+#     runs-on: ubuntu-latest
+#     environment: Dev
+#     env:
+#       ENV: dev
+#       DIR_WEB_APP_AWS: web-app/aws
+#       TF_VERSION: 1.9.8
+#       TF_LINT_VERSION: v0.53.0
+#       TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
+#     defaults:
+#       run:
+#         working-directory: ${{ env.DIR_WEB_APP_AWS }}
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+
+#       - name: Setup Terraform
+#         uses: hashicorp/setup-terraform@v3
+#         with:
+#           terraform_version: ${{ env.TF_VERSION }}
+
+#       - name: Configure plugin cache dir
+#         run: |
+#           mkdir -pv /home/runner/.terraform.d/plugin-cache /home/runner/.tflint.d/plugins
+#           echo 'plugin_cache_dir = "/home/runner/.terraform.d/plugin-cache"' > /home/runner/.terraformrc
+
+#       - name: Cache Terraform plugin dir
+#         uses: actions/cache@v4
+#         with:
+#           path: /home/runner/.terraform.d/plugin-cache
+#           key: ${{ runner.os }}-terraform-${{ env.TF_VERSION }}
+
+#       - name: Terraform init (no backend)
+#         run: terraform init -backend=false -no-color
+
+#       - name: Terraform fmt
+#         run: terraform fmt -check -recursive -no-color
+
+#       - name: Terraform validate
+#         run: terraform validate -no-color
+
+#       - name: Setup TFLint
+#         uses: terraform-linters/setup-tflint@v4
+#         with:
+#           tflint_version: ${{env.TF_LINT_VERSION}}
+
+#       - name: Cache TFLint plugins
+#         uses: actions/cache@v4
+#         with:
+#           path: /home/runner/.tflint.d/plugins
+#           key: ${{ runner.os }}-tflint-${{ hashFiles('**/.tflint.hcl') }}
+#           restore-keys: |
+#             ${{ runner.os }}-tflint-
+
+#       - name: TFLint
+#         run: |
+#           tflint --init
+#           tflint -f compact
+
+#       - name: Summarize results
+#         id: summary
+#         if: always()
+#         run: |
+#           {
+#             echo "## Dev CI Summary"
+#             echo ""
+#             echo "- **Project**: ${{ vars.PROJECT }}"
+#             echo "- **Application**: ${{ vars.APP_WEB }}"
+#             echo "- **Env**: ${{ env.ENV }}"
+#             echo "- **Job**: ${{ github.job }}"
+#             echo "- **Status**: ${{ job.status }}"
+#             echo "- **Branch**: ${{ github.ref }}"
+#             echo "- **Commit**: ${{ github.sha }}"
+#             echo ""
+#             echo "[View Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+#           } >> "$GITHUB_STEP_SUMMARY"
+
+#       - name: Send failure notification
+#         if: failure()
+#         uses: dawidd6/action-send-mail@v3
+#         with:
+#           server_address: smtp.gmail.com
+#           server_port: 465
+#           secure: true
+#           username: ${{ secrets.EMAIL_USERNAME }}
+#           password: ${{ secrets.EMAIL_PASSWORD }}
+#           subject: "✉️ ${{ vars.PROJECT}} ${{ vars.APP_WEB}} (${{ env.ENV}}): ${{ github.job }} ${{ job.status }}"
+#           to: ${{ secrets.EMAIL_USERNAME }}
+#           from: ${{ secrets.EMAIL_USERNAME }}
+#           html_body: |
+#             <h2>GitHub Actions CI/CD Notification</h2>
+#             <p><b>Project</b>: ${{ vars.PROJECT}}</p>
+#             <p><b>Application</b>: ${{ vars.APP_WEB}}</p>
+#             <p><b>Repository</b>: ${{ github.repository }}</p>
+#             <p><b>Env</b>: ${{ env.ENV }}</p>
+#             <p><b>Job</b>: ${{ github.job }}</p>
+#             <p><b>Status</b>: ${{ job.status }}</p>
+#             <p><b>Branch</b>: ${{ github.ref }}</p>
+#             <p><b>Workflow</b>: ${{ github.workflow }}</p>
+#             <p><b>Commit</b>: ${{ github.sha }}</p>
+#             <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>

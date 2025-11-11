@@ -1,4 +1,4 @@
-name: Feature API Pipeline - Development Environment
+name: UnitTest & LintCheck
 
 on:
   workflow_dispatch:
@@ -10,7 +10,9 @@ on:
       - "testing/**"
       - ".github/workflows/feature-api-dev.yml"
   pull_request:
-    branches: ["feature-api-staging"]
+    branches:
+      - "master"
+      - "feature-api-staging"
     paths:
       - "web-app/**"
       - "testing/**"
@@ -21,25 +23,30 @@ permissions:
 
 # multiple trigger
 concurrency:
-  group: dev-ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref_name || github.run_id }}
+  group: lint-check-${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true # Cancel older runs
 
 jobs:
-  lambda_unit_test:
+  unit_test_lambda:
     name: Lambda Unit Test
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
     environment: Dev
     env:
-      DIR_UNIT_TESTING: testing/unit
-      PYTHON_VERSION: "3.11"
+      PYTHON_VERSION: 3.11
+    defaults:
+      run:
+        working-directory: web-app/lambda
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Check out the repo
+        uses: actions/checkout@v5
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{env.PYTHON_VERSION}}
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Cache pip
         uses: actions/cache@v4
@@ -49,30 +56,51 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install test dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirement.txt
+          pip install -r ./requirements.txt
 
-      - name: Run unit tests
+      - name: Unit Test
         run: |
-          echo "Running Lambda unit tests…"
-          pytest ${{env.DIR_UNIT_TESTING}}
+          pytest
+
+      - name: Send email notification
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "${{ job.status }} - ${{ github.workflow }}: ${{ vars.PROJECT}} ${{vars.APP_WEB}}"
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          html_body: |
+            <h2>GitHub Actions CI/CD Notification</h2>
+            <p><b>Project</b>: ${{ vars.PROJECT}}</p>
+            <p><b>Application</b>: ${{ vars.APP_WEB}}</p>
+            <p><b>Repository</b>: ${{ github.repository }}</p>
+            <p><b>Job</b>: ${{ github.job }}</p>
+            <p><b>Status</b>: ${{ job.status }}</p>
+            <p><b>Branch</b>: ${{ github.ref }}</p>
+            <p><b>Workflow</b>: ${{ github.workflow }}</p>
+            <p><b>Commit</b>: ${{ github.sha }}</p>
+            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
 
   terraform_validate:
     name: Terraform Validate
-    needs: lambda_unit_test
+    needs: unit_test_lambda
     runs-on: ubuntu-latest
     environment: Dev
     env:
-      ENV: dev
-      DIR_WEB_APP_AWS: web-app/aws
       TF_VERSION: 1.9.8
       TF_LINT_VERSION: v0.53.0
       TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
     defaults:
       run:
-        working-directory: ${{ env.DIR_WEB_APP_AWS }}
+        working-directory: web-app/lambda
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -80,7 +108,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: ${{ env.TF_VERSION }}
+          terraform_version: ${{ vars.TF_VERSION }}
 
       - name: Configure plugin cache dir
         run: |
@@ -91,7 +119,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/.terraform.d/plugin-cache
-          key: ${{ runner.os }}-terraform-${{ env.TF_VERSION }}
+          key: ${{ runner.os }}-terraform-${{ vars.TF_VERSION }}
 
       - name: Terraform init (no backend)
         run: terraform init -backend=false -no-color
@@ -120,26 +148,8 @@ jobs:
           tflint --init
           tflint -f compact
 
-      - name: Summarize results
-        id: summary
+      - name: Send email notification
         if: always()
-        run: |
-          {
-            echo "## Dev CI Summary"
-            echo ""
-            echo "- **Project**: ${{ vars.PROJECT }}"
-            echo "- **Application**: ${{ vars.APP_WEB }}"
-            echo "- **Env**: ${{ env.ENV }}"
-            echo "- **Job**: ${{ github.job }}"
-            echo "- **Status**: ${{ job.status }}"
-            echo "- **Branch**: ${{ github.ref }}"
-            echo "- **Commit**: ${{ github.sha }}"
-            echo ""
-            echo "[View Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Send failure notification
-        if: failure()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -147,7 +157,7 @@ jobs:
           secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "✉️ ${{ vars.PROJECT}} ${{ vars.APP_WEB}} (${{ env.ENV}}): ${{ github.job }} ${{ job.status }}"
+          subject: "${{ job.status }} - ${{ github.workflow }}: ${{ vars.PROJECT}} ${{vars.APP_WEB}}"
           to: ${{ secrets.EMAIL_USERNAME }}
           from: ${{ secrets.EMAIL_USERNAME }}
           html_body: |
@@ -155,7 +165,6 @@ jobs:
             <p><b>Project</b>: ${{ vars.PROJECT}}</p>
             <p><b>Application</b>: ${{ vars.APP_WEB}}</p>
             <p><b>Repository</b>: ${{ github.repository }}</p>
-            <p><b>Env</b>: ${{ env.ENV }}</p>
             <p><b>Job</b>: ${{ github.job }}</p>
             <p><b>Status</b>: ${{ job.status }}</p>
             <p><b>Branch</b>: ${{ github.ref }}</p>

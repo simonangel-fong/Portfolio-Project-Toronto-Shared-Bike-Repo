@@ -7,7 +7,7 @@ import importlib
 from moto import mock_aws
 
 # lambda path
-LAMBDA_PATH = "web-app/lambda"
+LAMBDA_PATH = "../"
 # app var
 PROJECT = os.environ.get('PROJECT', 'toronto-shared-bike')
 APP = os.environ.get('APP', 'data-warehouse')
