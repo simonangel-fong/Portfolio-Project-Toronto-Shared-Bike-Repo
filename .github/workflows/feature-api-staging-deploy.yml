@@ -159,8 +159,6 @@ jobs:
             ${{ env.DIR_LOAD_TESTING }}/cloud_smoke.js
           #   ${{ env.DIR_LOAD_TESTING }}/cloud_load.js
           #   ${{ env.DIR_LOAD_TESTING }}/cloud_stress.js
-          # path: |
-            # ./cloud_smoke.js
 
       - name: Send email notification
         if: always()
