@@ -21,112 +21,113 @@ concurrency:
   cancel-in-progress: true # Cancel older runs
 
 jobs:
-  deploy_staging:
-    name: Deploy Staging
-    runs-on: ubuntu-latest
-    environment: Staging
-    timeout-minutes: 60
-    env:
-      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
-      TF_VAR_project: ${{ vars.PROJECT }}
-      TF_VAR_app: ${{ vars.APP_WEB }}
-      TF_VAR_env: ${{ vars.ENV }}
-      TF_VAR_dns_domain: ${{ vars.DNS_DOMAIN }}
-      TF_VAR_aws_region: ${{ vars.AWS_REGION }}
-      TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
-      TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
-    defaults:
-      run:
-        working-directory: web-app/aws
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # deploy_staging:
+  #   name: Deploy Staging
+  #   runs-on: ubuntu-latest
+  #   environment: Staging
+  #   timeout-minutes: 60
+  #   env:
+  #     TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
+  #     TF_VAR_project: ${{ vars.PROJECT }}
+  #     TF_VAR_app: ${{ vars.APP_WEB }}
+  #     TF_VAR_env: ${{ vars.ENV }}
+  #     TF_VAR_dns_domain: ${{ vars.DNS_DOMAIN }}
+  #     TF_VAR_aws_region: ${{ vars.AWS_REGION }}
+  #     TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
+  #     TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
+  #   defaults:
+  #     run:
+  #       working-directory: web-app/aws
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ vars.TF_VERSION }}
+  #     - name: Setup Terraform
+  #       uses: hashicorp/setup-terraform@v3
+  #       with:
+  #         terraform_version: ${{ vars.TF_VERSION }}
 
-      - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.TF_AWS_ROLE }}
-          aws-region: ${{ env.TF_VAR_aws_region }}
+  #     - name: Configure AWS credentials (OIDC)
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         role-to-assume: ${{ secrets.TF_AWS_ROLE }}
+  #         aws-region: ${{ env.TF_VAR_aws_region }}
 
-      - name: Configure Terraform plugin cache
-        run: |
-          mkdir -pv ~/.terraform.d/plugin-cache
-          echo 'plugin_cache_dir = "~/.terraform.d/plugin-cache"' > ~/.terraformrc
+  #     - name: Configure Terraform plugin cache
+  #       run: |
+  #         mkdir -pv ~/.terraform.d/plugin-cache
+  #         echo 'plugin_cache_dir = "~/.terraform.d/plugin-cache"' > ~/.terraformrc
 
-      - name: Cache Terraform plugins
-        uses: actions/cache@v4
-        with:
-          path: ~/.terraform.d/plugin-cache
-          key: ${{ runner.os }}-terraform-${{ vars.TF_VERSION }}
+  #     - name: Cache Terraform plugins
+  #       uses: actions/cache@v4
+  #       with:
+  #         path: ~/.terraform.d/plugin-cache
+  #         key: ${{ runner.os }}-terraform-${{ vars.TF_VERSION }}
 
-      - name: Terraform init - S3 backend
-        run: |
-          terraform init -reconfigure -input=false \
-            -backend-config="bucket=${{ vars.AWS_BACKEND_BUCKET }}" \
-            -backend-config="region=${{ vars.AWS_REGION }}" \
-            -backend-config="key=${{ vars.PROJECT }}/${{ vars.APP_WEB }}/${{ vars.ENV }}/terraform.tfstate" \
-            -backend-config="encrypt=true"
+  #     - name: Terraform init - S3 backend
+  #       run: |
+  #         terraform init -reconfigure -input=false \
+  #           -backend-config="bucket=${{ vars.AWS_BACKEND_BUCKET }}" \
+  #           -backend-config="region=${{ vars.AWS_REGION }}" \
+  #           -backend-config="key=${{ vars.PROJECT }}/${{ vars.APP_WEB }}/${{ vars.ENV }}/terraform.tfstate" \
+  #           -backend-config="encrypt=true"
 
-      - name: Terraform Validate
-        run: |
-          terraform fmt -check -recursive -no-color
-          terraform validate -no-color
+  #     - name: Terraform Validate
+  #       run: |
+  #         terraform fmt -check -recursive -no-color
+  #         terraform validate -no-color
 
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan -out=tfplan -input=false -no-color
+  #     - name: Terraform Plan
+  #       id: plan
+  #       run: terraform plan -out=tfplan -input=false -no-color
 
-      - name: Show plan (JSON)
-        run: terraform show -json tfplan > tfplan.json
+  #     - name: Show plan (JSON)
+  #       run: terraform show -json tfplan > tfplan.json
 
-      - name: Save plan artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan-bundle
-          path: |
-            ./tfplan
-            ./tfplan.json
-          retention-days: 3
+  #     - name: Save plan artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: tfplan-bundle
+  #         path: |
+  #           ./tfplan
+  #           ./tfplan.json
+  #         retention-days: 3
 
-      - name: Terraform Apply - Staging
-        run: terraform apply -auto-approve -no-color tfplan
+  #     - name: Terraform Apply - Staging
+  #       run: terraform apply -auto-approve -no-color tfplan
 
-      - name: Send email notification
-        if: failure()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          secure: true
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "${{ job.status }} - ${{ github.workflow }}: ${{ vars.PROJECT}} ${{vars.APP_WEB}} (${{vars.ENV}})"
-          to: ${{ secrets.EMAIL_USERNAME }}
-          from: ${{ secrets.EMAIL_USERNAME }}
-          html_body: |
-            <h2>GitHub Actions CI/CD Notification</h2>
-            <p><b>Project</b>: ${{ vars.PROJECT}}</p>
-            <p><b>Application</b>: ${{ vars.APP_WEB}}</p>
-            <p><b>Repository</b>: ${{ github.repository }}</p>
-            <p><b>Env</b>: ${{ vars.ENV }}</p>
-            <p><b>Job</b>: ${{ github.job }}</p>
-            <p><b>Status</b>: ${{ job.status }}</p>
-            <p><b>Branch</b>: ${{ github.ref }}</p>
-            <p><b>Workflow</b>: ${{ github.workflow }}</p>
-            <p><b>Commit</b>: ${{ github.sha }}</p>
-            <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
+  #     - name: Send email notification
+  #       if: failure()
+  #       uses: dawidd6/action-send-mail@v3
+  #       with:
+  #         server_address: smtp.gmail.com
+  #         server_port: 465
+  #         secure: true
+  #         username: ${{ secrets.EMAIL_USERNAME }}
+  #         password: ${{ secrets.EMAIL_PASSWORD }}
+  #         subject: "${{ job.status }} - ${{ github.workflow }}: ${{ vars.PROJECT}} ${{vars.APP_WEB}} (${{vars.ENV}})"
+  #         to: ${{ secrets.EMAIL_USERNAME }}
+  #         from: ${{ secrets.EMAIL_USERNAME }}
+  #         html_body: |
+  #           <h2>GitHub Actions CI/CD Notification</h2>
+  #           <p><b>Project</b>: ${{ vars.PROJECT}}</p>
+  #           <p><b>Application</b>: ${{ vars.APP_WEB}}</p>
+  #           <p><b>Repository</b>: ${{ github.repository }}</p>
+  #           <p><b>Env</b>: ${{ vars.ENV }}</p>
+  #           <p><b>Job</b>: ${{ github.job }}</p>
+  #           <p><b>Status</b>: ${{ job.status }}</p>
+  #           <p><b>Branch</b>: ${{ github.ref }}</p>
+  #           <p><b>Workflow</b>: ${{ github.workflow }}</p>
+  #           <p><b>Commit</b>: ${{ github.sha }}</p>
+  #           <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
 
   test_staging:
     name: Testing(K6)
-    needs: deploy_staging
+    # needs: deploy_staging
     runs-on: ubuntu-latest
     environment: Staging
     env:
+      DIR_LOAD_TESTING: testing/load
       TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
       TF_VAR_project: ${{ vars.PROJECT }}
       TF_VAR_app: ${{ vars.APP_WEB }}
@@ -135,9 +136,6 @@ jobs:
       TF_VAR_aws_region: ${{ vars.AWS_REGION }}
       TF_VAR_cloudflare_api_token: ${{secrets.CF_API_TOKEN}}
       TF_VAR_cloudflare_zone_id: ${{secrets.CF_ZONE}}
-    defaults:
-      run:
-        working-directory: testing/load
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -145,22 +143,20 @@ jobs:
       - name: Setup K6
         uses: grafana/setup-k6-action@v1
 
-      - name: Run k6 test
+      - name: Run Testing
         uses: grafana/run-k6-action@v1
-        id: testing_k6
+        id: testing
         env:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
         with:
           debug: true
           fail-fast: true
-          flags: --env DNS_DOMAIN=${{ env.TF_VAR_dns_domain }} --env API_ENV=${{ env.TF_VAR_env }}
-          # path: |
-          #   ${{ env.DIR_LOAD_TESTING }}/cloud_smoke.js
-          #   ${{ env.DIR_LOAD_TESTING }}/cloud_load.js
-          #   ${{ env.DIR_LOAD_TESTING }}/cloud_stress.js
+          flags: --env DOMAIN=${{ env.TF_VAR_dns_domain }} --env ENV=${{ vars.ENV }} 
           path: |
-            ./cloud_smoke.js
+            ${{ env.DIR_LOAD_TESTING }}/01_smoke.js
+            ${{ env.DIR_LOAD_TESTING }}/02_load.js
+            ${{ env.DIR_LOAD_TESTING }}/03_stress.js
 
       - name: Send email notification
         if: always()

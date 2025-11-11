@@ -67,7 +67,7 @@ jobs:
           terraform init -reconfigure -input=false \
             -backend-config="bucket=${{ vars.AWS_BACKEND_BUCKET }}" \
             -backend-config="region=${{ vars.AWS_REGION }}" \
-            -backend-config="key=${{ vars.PROJECT }}/${{ vars.APP_WEB }}${{ vars.ENV }}/terraform.tfstate" \
+            -backend-config="key=${{ vars.PROJECT }}/${{ vars.APP_WEB }}/${{ vars.ENV }}/terraform.tfstate" \
             -backend-config="encrypt=true"
 
       - name: Terraform Validate
