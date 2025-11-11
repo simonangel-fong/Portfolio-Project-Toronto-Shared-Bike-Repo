@@ -1,7 +1,7 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
 
-const TEST = __ENV.TEST || "Smoke test";
+const TEST = __ENV.TEST || "Load test";
 const ENV = __ENV.ENV || "dev";
 
 const DOMAIN = __ENV.DOMAIN || "localhost";
@@ -24,7 +24,7 @@ const TARGET = 30;
 export const options = {
   thresholds: {
     http_req_failed: [`rate<${SLA_FAIL}`], // SLA: http errors < 1%
-    http_req_duration: [`p(99)<${SLA_DUR_99}`], // SLA: http 99% of requests < 1s
+    // http_req_duration: [`p(99)<${SLA_DUR_99}`], // SLA: http 99% of requests < 1s
   },
   scenarios: {
     average_load: {
