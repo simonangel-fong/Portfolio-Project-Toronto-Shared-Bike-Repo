@@ -1,7 +1,7 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
 
-const TEST = __ENV.TEST || "Stress test";
+const TEST = __ENV.TEST || "Breaking Point Test";
 const ENV = __ENV.ENV || "dev";
 
 const DOMAIN = __ENV.DOMAIN || "localhost";
@@ -14,7 +14,7 @@ const TOP_STATION_URL = `https://${DOMAIN}/${ENV}/top-station`;
 
 const VU = __ENV.VU || 5;
 const SCALE = __ENV.SCALE || 1;
-const DURATION = __ENV.DURATION || "60s";
+const DURATION = __ENV.DURATION || "30s";
 
 const SLA_FAIL = __ENV.SLA_FAIL || "0.01";
 const SLA_DUR_99 = __ENV.SLA_DUR_99 || "1000";
@@ -30,14 +30,6 @@ export const options = {
     average_load: {
       executor: "ramping-vus",
       stages: [
-        { duration: DURATION, target: VU * 0.2 },
-        { duration: DURATION, target: VU * 0.2 },
-        { duration: DURATION, target: VU * 0.4 },
-        { duration: DURATION, target: VU * 0.4 },
-        { duration: DURATION, target: VU * 0.6 },
-        { duration: DURATION, target: VU * 0.6 },
-        { duration: DURATION, target: VU * 0.8 },
-        { duration: DURATION, target: VU * 0.8 },
         { duration: DURATION, target: VU * 1 },
       ],
     },

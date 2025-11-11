@@ -32,3 +32,30 @@ docker run --rm --name k6_con --env-file ./.env -e DOMAIN=trip-dev.arguswatcher.
 
 docker run --rm --name k6_con --env-file ./.env -e TEST="Dev-API-Stress-Testing" -e VU=100 -e SCALE=1 -e DURATION=10 -e DOMAIN=https://trip-dev.arguswatcher.net/ -v ./:/app k6 cloud run --include-system-env-vars=true cloud_stress.js
 ```
+
+- High performance
+
+```sh
+cd web-app-hp/aws
+
+terraform init -backend-config=backend.config
+terraform fmt && terraform validate
+
+terraform plan
+terraform apply -auto-approve
+
+terraform destroy -auto-approve
+```
+
+- Test
+
+```sh
+# test
+cd testing/load
+docker build -t k6 .
+
+# cloud
+docker run --rm --name k6_con --env-file ./.env -e DOMAIN=trip-hp.arguswatcher.net -e ENV=hp -e VU=100 -e SCALE=10 -e DURATION=300s -v ./:/app k6 cloud run --include-system-env-vars=true breakpoint.js
+
+docker run --rm --name k6_con --env-file ./.env -e DOMAIN=trip-hp.arguswatcher.net -e ENV=hp -e VU=100 -e SCALE=10 -e DURATION=60s -v ./:/app k6 cloud run --include-system-env-vars=true 03_stress.js
+```
