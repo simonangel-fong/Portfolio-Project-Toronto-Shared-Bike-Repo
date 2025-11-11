@@ -148,17 +148,14 @@ jobs:
         id: smoke_testing
         env:
           TEST: "API Staging Stress Testing"
-          DOMAIN: ${{ env.TF_VAR_dns_domain }}
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
         with:
           debug: true
           fail-fast: true
-          flags: --env DOMAIN=${{ env.TF_VAR_dns_domain }} --env ENV=staging --env  TEST="API Staging Stress Testing"
+          flags: --env DOMAIN=${{ env.TF_VAR_dns_domain }} --env ENV=${{ vars.ENV }} --env  TEST=${{ env.TEST }}
           path: |
             ${{ env.DIR_LOAD_TESTING }}/cloud_smoke.js
-          #   ${{ env.DIR_LOAD_TESTING }}/cloud_load.js
-          #   ${{ env.DIR_LOAD_TESTING }}/cloud_stress.js
 
       - name: Send email notification
         if: always()
